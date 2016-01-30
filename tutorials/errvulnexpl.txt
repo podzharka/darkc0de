@@ -1,0 +1,373 @@
+In this paper I will try to provide you with a basic understanding of
+errors, possible vulnerabilities because of those errors and their
+exploits. t is in no way meant to be a full and complete guide to
+exploits /vulnerabilities but hopefully it will help you learn to recognize
+possible vulnerabilities and how to deal with them.
+Generally speaking there are 3 different types of errors which
+could eventually lead to a possible compromise of a computer-based
+system / network:
+
+Programming errors
+
+Configuration errors
+
+Design errors
+
+
+Errors can be seen as mistakes, although they don't necessarily have to
+be created by accident. It is possible that the original creator of the
+software / device which contains the error, created that error with the
+best intentions and without realizing that it could be a potential
+vulnerability.
+This might sound a bit confusing, but all should become clear later on in this paper.
+To discuss the errors more in dept we need to create a definition of
+the different types of errors so that we can recognize them easier.
+
+
+
+Definitions of the different error types
+
+Programming errors:
+Programming errors are errors made by the programmers of a particular
+piece of software. The most common exploitable programming errors are
+buffer overflows. Think of a buffer overflow as an empty cup:
+The user of the program is going to put coffee in the cup, but the
+programmer does not know in advance how much coffee the user will put
+in there.
+So the programmer must check and test this before actually putting the
+coffee in the cup to prevent the coffee from overflowing the cup.
+Sometimes it's not that easy to check for input size or due to time
+pressure a programmer does not have the time to do write extensive
+error checking functions and so possible buffer overflows and other
+programming errors are created.
+Another example of a programming error is a program that crashes since
+the user did something unexpected like load a wrong type of file into
+the program.
+Of course not all programming errors require user input to do something
+unexpected like crash the program. A program could depend on a
+particular file which is always in a specific location.
+If that file is moved and the programmer doesn't expect that, he might
+not check if the file actually is located there before trying to open
+it. This can result in unexpected behavior if that program tries to
+work with that file after opening it.
+
+These types of errors occur quite often, and most of the times the
+manufacturer distributes patches and updates to resolve the errors
+reported by customers or discovered by themselves.
+
+
+
+Configuration errors:
+Think of a configuration error as if you were a network administrator
+and you need to implement a firewall to protect your network from the
+internet.
+It used to be a common practice to allow every traffic in and out except for the specifically denied types of traffic.
+A simple example is a firewall which is blocking only port 80 since it
+will allow anyone from the internet to connect to the configuration
+page of the firewall and reconfigure it. The rest of the ports are all
+open.
+This of course is a configuration error since anyone could bypass that firewall by using another port number.
+Luckily most manufacturers are aware of this error so they implemented
+exactly the opposite: Everything is blocked unless specifically
+allowed. So now a network administrator does not have to worry about
+new problems found which can access his network through an unused port
+since that port is closed already anyway.
+(I used only ports here as example, but this can apply to different
+types of traffic on the same port as well.)
+
+Another configuration error example is the usage of unmanaged hub's in
+a network instead of managed switches.
+The difference is that a hub is sending all incoming traffic to all
+ports since it does not know behind which port the receiver is located,
+a switch knows this. So, running a sniffer in a network where hub's are
+used instead of switches allows an attacker to view much more traffic
+with possible username / password combinations then when using switches
+on a network.
+Even though this is a configuration error now, it didn't used to be in the past when switches didn't yet exist.
+
+Since these errors almost always occur because the customer has too
+little knowledge of the product or simply not enough time to completely
+configure the product correctly, the customer himself is responsible
+for resolving the error. The manufacturers often provide detailed
+manuals and help files for their products which you should have read
+before configuring and implementing the device or software.
+
+
+
+Design errors:
+A design error can be seen as an error that occurred during the design
+period of the particular software. Even when the programmers spent
+enough time writing routines to verify all user input before taking the
+software in production, and even when the software has been configured
+correctly by the end user, these errors can still cause a great risk
+for the security of a network.
+Let's say a company decided to write a piece of software which would
+allow remote access to a network. Since they have to support the
+software as well, they decided to put in a little backdoor so that can
+login remotely by using the companies name as password.
+What if someone outside that company would discover that backdoor? He
+could login to any network that is using that particular piece of
+software for remote access. The consequences would be disastrous!
+Although these backdoors were created quite often in the past, nowadays
+a company selling such software can't take the risk anymore, since he
+would be held responsible for misusage of that backdoor by attackers.
+
+Another example of a design error is the WEP encryption used for
+securing wireless networks. I'm not going to explain in dept how this
+is a design error since that is beyond the scope of this paper, but
+basically it comes down to this:
+A 3 byte initialization vector is added to the pre-shared encryption
+key to encrypt every packet uniquely. Let's say the pre-shared key is
+"abcde". The initialization vector for packet one could be "123" so the
+total encryption key for that packet would be "123abcde". For the next
+packet the initialization vector could be "234" and so creating the
+encryption key "234abcde".
+The design error lies partially in the fact that there are only 3 byte
+different IV's (Initialization Vector) making a total of 255^3 or 16.5
+million different keys and partially in the encryption algorithm used.
+One could extract several characters of the pre-shared key quite easily
+by reversing part of the algorithm. Because of this design error you
+only need around 100,000 packets with unique IV's for 64-bit and around
+800,000 unique IV's for 128-bit to crack the WEP-key and be able to
+participate and read the complete wireless network. On a busy wireless
+network this can be done in a few hours.
+As you can see, design errors are a bit more complicated to resolve.
+You simply cannot expect the manufacturer to write a quick patch to
+solve the problem, and you cannot refer to the manual of the product to
+resolve the issue yourself. In the case of the WEP encryption a team of
+people created a new standard called WPA as an alternative to WEP
+encryption. This meant that the products using WEP for encryption
+should either be upgraded by replacing them, or through firmware
+updates which allows them to work with the new encryption standard.
+For a more detailed explanation of the design errors discovered in WEP, take a look at the excellent paper from airscanner.com here.
+
+
+
+How could these errors become a vulnerability?
+
+A vulnerability is a weak spot in the protection of an object. The
+object can be anything from a computer to a complete network. I won't
+be summing and explaining all different possible vulnerabilities here
+since that's almost impossible, but I will try to point out what a
+vulnerability is and how that vulnerability could have been created.
+As stated earlier, the most common programming error
+that can be a vulnerability is a buffer overflow. In case of a
+stack-based buffer overflow the buffer is placed on the stack. The
+stack can be seen as a temporary workspace where your processor can
+store data to work with. Now, when you overflow a buffer which is
+placed on the stack you will be able to write data outside of that
+buffers allocated space and so overwriting other data on the stack.
+That other data can be the return address of the calling function.
+Let's say the return address of the calling function is 12345678 and
+that return address is stored on the stack directly after the buffer,
+then the stack would look something like this:
+
+[b]XXXXXXXXXX12345678[/b]
+
+
+
+
+Where XXXXXXXXXX is the buffer which will contain our input. If we put
+in less data then the buffer size then nothing strange will happen, but
+let's say we put in 12 times the character 'A' in a buffer which can
+only hold 10 characters, then the 2 remaining A's would overwrite part
+of the return address. If this makes the return address an invalid
+address, then the function would have no were to return to and the
+program would crash.
+If this program would be a server application then someone would be
+able to put in 12 A's to crash the program and making the program
+inaccessible to all other users. This is an example of a Denial of
+Service attack, so in this case this error has Denial of Service
+vulnerability.
+
+If we take the same example as above but then with a larger buffer,
+then overflowing the buffer would mean that more data has to be put in
+before an actual overflow occurs, but when it occurs, we could write
+some computer code (assembly instructions) which we would use as part
+of our data to put in the buffer. When we would change the return
+address to point to our overflowed buffer by overwriting it then the
+program would try to execute our buffer.
+Since the buffer now contains computer code the program 
+
+Since the buffer now contains computer code the program would not crash
+but instead execute our code. Because that code can be a small piece of
+code starting a shell (command interpreter) and listening to a specific
+port on that computer, this type of code is often referred to as
+"shellcode".
+With this code running one could connect to the specified port and
+execute remote commands on the computer and so gaining control over the
+computer with the same access rights as the user has that originally
+started the vulnerable application on that computer.
+
+For configuration errors the vulnerability can be more
+obvious if we take a look at the example of the firewall. If that
+firewall is configurable remotely via telnet as well, then only
+disallowing access to that firewall via HTTP (port 80) might give the
+network administrator a false sense of security since an attacker could
+still access the configuration of the firewall by connecting to the
+firewall via telnet (port 23).
+However, since customers require different configuration options
+for the products they buy, the manufacturers create highly configurable
+software / devices. This might make the configuration of a specific
+device so specialized that a mistake is easily made. Since the
+configuration of such a device is so complicated a vulnerability can be
+overlooked by the network administrator and so allowing a potential
+attacker access to parts of the network or system to which the attacker
+should not have access to, and so a simple configuration error could
+lead to a potential vulnerability in the network / system.
+
+I already gave an example of a vulnerability caused by a design error with the WEP encryption keys, but it isn't too hard to come up with another example of a vulnerable design error:
+Suppose a software company writes a piece of software for viewing and
+creating text documents. Since they want to sell their product they
+have to design a program which has more seemingly useful capabilities
+then the programs written by competitor software companies.
+They decide to allow users to have more control over their created
+documents by adding a feature which will allow users to write small
+functions (macro's) which can be embedded in the document and which can
+do various things on the computer to assist the viewer of the document.
+What if all this functionality can be used by a malicious attacker to
+craft a document with embedded functions that will replicate itself by
+copying itself to all other documents found on the machine and do
+various other things without the permission of the viewer?
+Then we would have a possible vulnerability in this program which is created by design.
+As you can see an error could lead to a vulnerability and the error
+itself doesn't necessarily have to be an error in the way of something
+that was put there unintentionally. In the case of the macro's used in
+the document the idea to assist the user of the software in creating
+more dynamic documents is great, except it was designed without
+security in mind.
+
+
+
+Then what is an exploit?
+
+An exploit is a way to make use of a found vulnerability to change the
+original functionality of the program or system in such a way that it
+can be used in the advantage of an attacker.
+In computer security the term "exploit" is often used for a specially
+crafted program which sole purpose is to automatically take advantage
+of a vulnerability to either take control of the target program in
+which the vulnerability exists or to stop the target program from
+functioning.
+But using a wrong configuration in a system or network to an attackers
+advantage can be called an exploit as well, although it doesn't
+necessarily have to be a specially crafted program which actually does
+the work.
+I will try to explain the purpose of an exploit a little better by a
+few examples of C code, one will be a simple program with a buffer
+overflow vulnerability and the other one will be the exploit.
+NOTE: the examples given here may behave different with different
+compilers / systems. You might need to change the number of characters
+placed in the buffer before actually overwriting the return address or
+the address of the exploitfunction might be different, but they will
+work.
+
+vulnerable_program.c:
+
+
+ 
+#include "stdio.h" 
+ 
+exploitfunction() 
+{ 
+     printf("This line will be printed after successfully exploiting the buffer overflow.\n"); 
+     system("pause"); 
+     ExitProcess(0); 
+} 
+ 
+normalfunction(char *myargument) 
+{ 
+    char buffer[10]; 
+    strcpy(buffer,myargument); 
+} 
+ 
+main(int argc, char *argv[]) 
+{ 
+    if(argc>1) 
+    { 
+          normalfunction(argv[1]); 
+          printf("\nThese lines get printed during normal execution with at least\ 
+          \n1 commandline argument.\ 
+            \nThe address of exploitfunction is 0x%.8X\n\n",&exploitfunction); 
+    } 
+    else 
+          printf("Please provide the program with at least 1 commandline argument.\n"); 
+    ExitProcess(0); 
+} 
+ 
+As you can see I've created 3 functions, one is the main function and
+the other two are the normalfunction which is executed with normal
+conditions, and the exploitfunction. The idea behind this program is to
+overflow the buffer so that the return address will point to the
+exploitfunction instead of the next instruction after the
+normalfunction.
+Now we need to figure out how big the string of text will need to be to
+completely overwrite the return address on the stack. We do this by
+providing a string as argument which we increase with one character
+every time until the program crashes.
+After I compiled the program using Dev-cpp on a Windows system I was
+able to provide the program with an argument of maximum 27 A's before
+crashing the program.
+Since the address of the exploitfunction is in hexadecimal and often
+the values of the bytes representing the address aren't printable
+characters I wrote a small program which will provide the vulnerable
+program with the necessary argument string to exploit it.
+
+In my case the address of the exploitfunction (which I conveniently printed from within the vulnerable program) is 0x00401290.
+Since the stack stores everything in reverse order on an Intel x86
+system (it won't explain this here in this paper) we need to prepare a
+string which does the same.
+So the eventual value for the argument has to be something similar to 0x41414141414141414141414141414141414141414141414141414141901240.
+As you can see I used the hexadecimal representation of the character
+'A' here (41) since that will be the actual value stored on the stack.
+The resulting exploit can be very simple:
+exploit.c:
+
+
+#include "stdio.h" 
+ 
+main() 
+{ 
+      char workbuffer[200]; 
+      char tempbuf[4]; 
+      strcpy(workbuffer,"vulnerable_program AAAAAAAAAAAAAAAAAAAAAAAAAAAA"); 
+      tempbuf[0]=0x90; 
+      tempbuf[1]=0x12; 
+      tempbuf[2]=0x40; 
+      tempbuf[3]=0; 
+      strcat (workbuffer,tempbuf); 
+      system(workbuffer); 
+      return 0; 
+}
+
+
+
+
+
+All this program does is copy the string "vulnerable_program AAAAAAAAAAAAAAAAAAAAAAAAAAAA" to a buffer and creates another buffer with the new return address which it appends to the workbuffer as well.
+After that, the program calls system() to execute the command in the string. The resulted output:
+CODE
+C:\>exploit.exe
+This line will be printed after successful exploiting the buffer overflow.
+Press any key to continue . . .
+
+So that's great, it worked!
+Or isn't it that great?
+Unfortunately it isn't from a security point of view. As I just showed
+you it surely isn't rocket science to exploit a buffer overflow in a
+program. Although we didn't actually make the program run our own code,
+this can be achieved with a few minor changes.
+For more information on buffer overflows take a look at the famous article written by Aleph One "Smashing the stack for fun and profit".
+
+As discussed in this paper you usually have to take action yourself to
+prevent your system / network from being exploited through a known
+vulnerability. For configuration errors I would advise you to let a
+professional make the necessary configurations so you don't have to
+completely understand how the product works before being able to
+implement it.
+For programming and design errors there often are a lot of people
+testing products of others and posting their findings to several
+security-lists on the internet. So if you keep track of these
+security-lists and make sure you always update your systems to the
+latest versions of software / firmware, you are well on the way to
+maintain a secure environment.

@@ -1,0 +1,77 @@
+Quick Thing for those who try to SQL inject forms based the same way they Sql inject in a url. 
+Some differences. 
+ 
+1.When doing a url based attack to not alter the querty causing it to change before it has run its normal course. 
+ 
+Described in better detail. 
+ 
+Ex: id=15, dont go deleteing the 15 and throwing in a single quote it can cause issues. When i write the article ill explain how and why. Anyways 
+ you would want to plug it in as id=15' 
+ 
+2.Obvious injection points to look for is most places with an equal sign. 
+ 
+3.Unlike a forms based injection where you keep the ' for your injections you wont be doing that for the url based. 
+ 
+Yes for the intail testing you want to plug it in but for a valid query you want to keep the process flowing so 
+ 
+when you do your injection it would be id=15 union blah blah blah. 
+ 
+4.Common mistake of not url encoding charactors. Granted is varies upon what server is running back end. Your going to 
+ 
+want to url endcode. 
+ 
+ex: blind injection test id=15plussign1 to see if you get the id page of 16. You want 15 percentsign2b which is the plus sign 
+ 
+url encoded. Do the same of other special chars if you want them to be read in correctly. 
+ 
+Another injection worth mentioning that i left out of the last article is; Union all select table_name from information_schema.tables-- 
+ 
+Information_schema is a list of all tables within a a database it is found in some but not all sql servers. MS sql and mysql 
+ 
+being two of them. Now this wont always for as sometimes you as a user need certain privledges to access these tables. You can 
+ 
+do the same to get all the column names by do the same injection only doing so with union all select column_name from 
+ 
+information_schema.columns. Now this sort of thing is not limit to just information_schema. Below are listed some tables and 
+ 
+other things with which you can gather the same information but diffrent SQL versions. Im not going to list each command to 
+ 
+get these contents due to the fact im hoping you actully know some SQL and arnt just reading these and going of skid. 
+ 
+One thing you just understand is that even on the same server your syntax for getting these things to work can be diffrent. 
+ 
+For instance i have found that the syntax for one particular url based injection was id='10 and so on. This was a bit diffrent 
+ 
+due to the fact it goes against the general rule not to interupt the natural flow by placing the ' before the valid value. 
+ 
+Generally this isnt how it goes but you never know. There always a bit of testing involved by with some effort,logic and 
+ 
+knowlege of how sites are programmed in general you will get it right. 
+ 
+MS SQL SEVER: 
+Sysobjects 
+Syscolumns 
+ 
+some useful variables to gather info use them with the select commmand 
+ 
+@@language 
+@@microsoftversion 
+@@servername 
+@@servicename 
+@@version 
+ 
+MS ACCESS: 
+Msysobjects 
+MsysQueries 
+MsysRelationship 
+MsysACEs 
+ 
+Oracle: 
+SYS.USER_OBJECTS 
+SYS.TAB 
+SYS.USER_TABLES 
+SYS.USER_VIEWS 
+SYS.ALL_TABLES 
+SYS.USER_TAB_COLUMNS 
+SYS.USER_CONSTRAINTS 
+SYS.USER_TRIGGERS SYS.USER_CATALOG

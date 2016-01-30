@@ -1,0 +1,63 @@
+
+Introduction
+In this article I'll be showing you how to block and ban the IPs of users who try to use scanners to scan your site for weaknesses, along with blocking bots who try to dig too deep. A little coding can go a long way, and that is what I'll be showing you.
+The Problems and Issues
+
+The problem is, many of the bad bots either carry well known or bad user-agent names(well, most modern bad bots don't and hide behind faked UA strings) and ignore the robots.txt standard.
+
+So even though you may have all the common bad bots blocked in the .htaccess file, some will bypass your protection using legit user-agent names. So what we will be working on is creating a bot/scanner trap that will block all the bots who attempt to scan too deep. However, this bot trap is not without fail and can be bypassed. Good thing is, most who attempt to scan the site for a security site are skids and won't know how to bypass this trap, and search engines won't even try.
+Advantages
+
+The advantage to blocking bots and scanners, is that they can drain your bandwidth and slow down site loading, especially if you are on shared hosting.
+
+Creating The Bot Trap
+
+Setting Up
+The first thing that we will want to do is setup the trap, and we will be using a directory called /trap/ in the root directory. When a bot or scanner accesses this directory, they will be IP banned. You will also want to keep in mind that users and your guests will also be banned when they access that directory.
+
+We also want to make sure that we don't ban any legit bots, so if you are not already using the robots.txt file or if you already are, add the following:
+
+User-agent: *
+Disallow: /trap/
+Most bots like Google, Yahoo, and other major search engines will honor the robot settings, and won't touch the /trap/ directory.
+
+The next step is to create index.php in the /trap/ directory and add the following
+
+<?php 
+$agent = $_SERVER['$HTTP_USER_AGENT']; 
+$datum = date("Y-m-d (D) H:i:s",$tmestamp); 
+$ipad = $_SERVER['REMOTE_ADDR']; 
+$ban = "Deny from $ipad # /trap/ $agent - on $datum \r\n"; 
+$file = "../.htaccess"; 
+$search = file_get_contents($file); 
+$check = strpos($search, $ipad); 
+if ($check === FALSE) { 
+$open = @fopen($file, "a+"); 
+$write = @fputs($open, $ban); 
+    echo "The IP <b>".$ipad."</b> has been blocked for an invalid access attempt to a file, directory, or a scanning atempt.; 
+@fclose($open); 
+} else { 
+    echo "The IP <b>".$ipad."</b> has been blocked for an invalid access attempt to a file, directory, or a scanning atempt."; 
+} 
+exit; 
+?> 
+
+
+
+$ban - is what will be written to the .htaccess file. Everything after # is a comment, so if you are like me, you might have many traps setup and like to keep track of where they are getting blocked and what time it happened. NOTE: make sure you CHMOD .htaccess to 666
+$file - you need to edit this depending on where you place your trap
+
+
+Enabling
+Now that the system is in place and ready to go, we need to setup the bait for the bots. Place the code below at the bottom of your index file in the root directory
+
+<a href="/trap/"><img src="images/pix.JPG" border="0" alt=" " width="1" height="1"></a>
+
+
+
+When a bot or scanner comes crawling by, they will see this link and travel to it to be IP banned unless they obey the robots.txt file.
+
+The Results
+Below is an example of the log when someone hits the trap directory. I currently have /admin/ trapped where the IPB ACP would normally be, and it seems like people try to access the ACP daily and they don't even have a reason to.
+
+Deny from ***.***.***.*** # /admin/ - on 1969-12-31 (Wed) 16:00:00

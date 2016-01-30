@@ -1,0 +1,34 @@
+Fake Your IP with SSH Tunnelier & SSH Host Account
+
+Video Guilde Download Link:
+http://rapidshare.com/files/208132514/SSH_SOCK_Tunnelier.rar
+File Name: SSH_SOCK_Tunnelier.rar
+Size: 2002 KB
+Status: Normal Download
+
+First We need to install Bitvise Tunnelier software (required)
+And and SSH host Account (or SSH File Save)
+- You can download the Tunnelier for FREE at www.bitvise.com
+- Then install it on your PC
+Download Link:
+http://dl.bitvise.com/Tunnelier-Inst.exe
+Mirror:
+http://dl.bitvise.com.s3-external-3.amazonaws.com/Tunnelier-Inst.exe
+
+- Here I show how to use SSH Sock with a SSH File Save
+- That is SSH File Save, open it. With SSH File Save you no need to do anything than run it by click Login
+- before using just check what port of the SSH File Save
+Click Services and see what port ^^... here is 7210
+- OK now run the SSH File Save by click Login
+- OK and it said succeeded. (we successfully connected with SSH host account)
+
+Now change your Browser Setting to use with SSH to fake your IP
+(we can Minimize the SSH File Save).
+- In browser, at SOCKS HOST (Sock IP) must always use:
+127.0.0.1
+- And the Port is the SSH Port. Sock type is SOCK5
+- Then check our IP after faking at http://ip-address.domaintools.com
+- And we have done ^^
+
+Remember keep the SSH File Save run and how to know the SSH run or NOT? It's very simple, just look the small icon of the SSH Sock at the Taskbar ...
+When you need to remove faking SSH Sock, just simply do as me ... And we have done

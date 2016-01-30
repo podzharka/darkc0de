@@ -1,0 +1,252 @@
+I have been cracking sixth months ago and everything is good till now so I managed to share my knowledge with you.
+Note: if some links didn't work try googling the tool or the program, sorry for the inconvenience.
+The first thing I think you should do is get "W32Dasm". This is one of the tools you will use regularly when cracking. It is a "disassembler". It disassembles files, so you can see how the program is set out, how it works etc. Get this tool from :-
+
+http://www.woodmann.com/crackz/Tools.htm
+
+Just copy and paste that URL into your browser and you should start downloading. Go get this program now, and resume the tutorial when it's installed.
+
+When you disassemble a file for the first time, you'll look at the contents of your screen and think, "Oh dear...". Don't be discouraged, what you'll be looking at is the program's "Assembly". You will have to get to know what lots of the stuff means. I'm still struggling, but I'm still learning. The assembly of a program is the listing of all the functions it carries out. Every program you disassemble will look similar. When you disassemble a program using W32Dasm you will notice it takes a long time to load some files, depending on the size of the exe you are disassembling. (Especially on my slow excuse for a PC!) Load "calc.exe" (The Windows Calculator) into the disassembler. The one I have is 92KB, but if yours is different, just apply what I say to your version. (P.S. If you skipped ahead without getting W32Dasm, get it now, you honestly will need it from this point on).
+
+Disassembled the calculator? Good. Now, a few basics about the disassembled text. First of all, click on the button on the W32Dasm toolbar that says "Cd Loc". (When you put your mouse over this button it will say "Goto Code Location". Push the button. A window will pop up). Type in the window :-
+
+"010026A6" (Without Quotes)
+
+(Don't worry, it's only a random number I have chosen). Click on OK. All the way down the left side of the page you will see 8 numbers (or letters). These first 8 numbers or letters on each line are the "Addresses" or "Code Locations". Ignore the numbers and letters after the addresses for now. Addresses are used so that if a program says "Carry out the function at address (Whatever the address is)", the program will know where to go next. Things like that. Look at the right hand side of the assembly language. You will see something like the following: (Don't worry if yours isn't the same as what is written here - it's not important).
+
+call 01007387
+
+mov ecx, dword ptr [01013D90]
+
+mov dword ptr [ecx+04], eax
+
+mov eax, dword ptr [01013D64]
+
+mov eax, dword ptr [4*eax+01013CE0]
+
+jmp 01002745
+
+These are the actual instructions. Don't ask me what it all means! I only know the basics right now. Look for an instruction that begins with a "Jmp". Any one you can find. If you're using the same file as me, there will be one just below where your blue bar should be :-
+
+:010026AD E993000000 jmp 01002745
+
+^ ^ ^
+
+Address "Hex" Instruction
+
+Don't worry yourself with hex just yet. See the "Jmp" is followed by an address. Here is a good place to explain that "Jmp" means "Jump". This means that the program will jump from the address specified on the left (e.g. in the above example the address is 010026AD) to the address specified in the Jump instruction (e.g. 01002745). Double-Click on the line with the "Jmp". The blue bar should go onto the line and turn green. Memorize the address after the "Jmp" (E.g. in the above example I mean memorize "01002745"). Look at the toolbar of W32Dasm. You will see a "Jump to" button. Put your mouse over it. It will say, "Execute Jump". Click on the button. Look at where it has taken you. Look on the left, the address is the one specified in the Jump instruction. Go to any random parts in the file and try this jumping procedure some more, so you get used to how jumping and addresses work.
+
+Now I'll explain about different jumps. The "Jmp" was an "Unconditional Jump". This means that the program will jump when it reaches the "Jmp" instruction, no questions asked. There are many other types of jump. Here are some of the most important:
+
+"Je" - Jump if Equal
+
+This will regularly come after a "Cmp" (Compare) instruction. You will see the compare instruction as "Cmp" followed by two values. e.g. Scroll up to address "010025C2" if you are using the same version of calc as me, otherwise, just follow what I'm saying. You'll find loads of "Cmp" instructions in your file also.
+
+:010025C2 3BC3 cmp eax, ebx
+
+:010025C4 0F84DD020000 je 010028A7
+
+This is a typical example of a "Cmp" instruction followed by a "Je". In this example, when the program gets to this point, it will compare the value contained in ebx with the value contained in eax. (EAX and EBX are "Registers". Don't worry about it quite yet!) If the values in these registers are equal, the program will jump when it reaches the next (Je) instruction. If EAX and EBX's value are not equal, the program will not jump, the instruction will be ignored.
+
+"Jne" - Jump if NOT Equal
+
+This is the same sort of thing as "Je", but it's the opposite. It jumps if the compared values are not equal. It would be common to find a "Jne" in a relevant part of code in a program you are cracking, where if the program compares the registration code you entered with the right code, and they don't match, it will jump to a set of instructions that send you the error message.
+
+"Jz" - Jump if Zero
+
+This is like "Je" but it is after the program calculates something. If the answer to the calculation is 0 (Zero), the jump will occur. "Jnz" means Jump if NOT Equal. (Use your common sense). I will explain more about these jumps when I try to explain "SoftICE" to you. There are other jumps, but they don't need explaining now. Without any further ado, let's do some practical work...
+
+You will need two programs :-
+"Hex Workshop" (Version 2.20) (Which we will be cracking) and "Hackers' View" (or "HIEW" for short. This is a tool you will need to start using). Get these programs.
+
+http://ftp.bspu.unibel.by/fileecho/MFEDOS/HIEW616.ZIP
+(Hackers' View - copy and paste the URL and you should start downloading).
+
+http://www.bpsoft.com
+(Hex Workshop)
+
+Some of the links may be dead by the time you get to read this, if that's the case, just find a cracker, they should help you get the tools. (Or you could E-Mail me at "Florestan5@hotmail.com" and I'll send them by mail.
+
+Got the programs? Good. All set up? Run Hex Workshop. (HWorks32.exe). Aha, look in the top right hand corner. "Unregistered Version". We don't like that... Go to "Help", and "About". Here you have the chance to enter the serial number. Enter anything and click on "Register". Unless you are the luckiest person on earth and guessed the correct code, you will be staring at an error message. Write the message down. ("You have entered an invalid registration number" will suffice). Get out of the program. Highlight the HWorks32.exe file and copy it. (Ctrl-C, as if you didn't know). Make 2 copies of the file. Rename one "HWorks32.ex_" for backup, if we totally screw the program up when we're cracking it. Rename the other one "HWorks32.w32". This helps you remember that this is the file you will disassemble using (.w32)Dasm. Load up "HWorks32.w32" into W32Dasm.
+
+Click on find on the W32Dasm toolbar. Get the message you wrote down. Type in "You have entered an invalid". Click on find. It will put you in the section headed "Dialog Information", before you even come to any instructions or addresses. Look up 2 lines. You will see "DialogID_0075". Write this information down, as this is what the program will refer to when it needs the text for the error message. Click on find again. Enter "DialogID_0075" and click on find. You will land on a line that says "Possible reference to Dialog: DialogID_0075". Look up to where it says :-
+
+Referenced by a (U)nconditional or (C)onditional jump at address:
+
+|:0041BCCE(C)
+
+This means that the address 0041BCCE had a conditional jump (I.E a "Je" or "Jne" etc.) that told the program to go to the part of the code that follows the "Referenced by a (U)nconditional or (C)onditional jump at address" text. Eg. When we go to the code location (address) 0041BCEE, we should see one of the following lines:
+
+je 0041BD4D ;or
+
+jne 0041BD4D ;or
+
+jz 0041BD4D (you get the picture).
+
+So lets scroll up to address 0041BCCE. It shouldn't be far away. Found the address? Look. Sure enough:
+
+:0041BCCE 0F8479000000 je 0041BD4D
+
+Write the address down. (Write down "0041BCCE") This instruction "je 0041BD4D" we are about to change, so that is "jne 0041BD4D". DON'T close W32Dasm yet. Minimize it. Run HIEW (Hackers' View). Find your original HWorks32.exe file and open it in HIEW. When this is done, press F4. From here you can select "Decode Mode" which is where we can change what the program does. Select Decode mode. Sure enough, you notice anything familiar? Yep. Good old assembly! Press F5. The top line will change colour and you will be able to put the address we wrote down in here.
+
+Put the address you made a note of. IMPORTANT - Make sure you put a dot (.) before the numbers. So type in (Without quotes of course) ".0041BCCE" Press return. You'll be at the line of code we saw in W32Dasm and wanted to change. Press F3. This will allow you to change stuff. Be VERY careful you don't accidentally change things you're not meant to. Press the right arrow key twice so the underscore is under the 8. Type 85. You changed Je (84) to Jne (85). It should be noted Je is not always 84 and Jne 85. It varies depending on how many bytes are in the instruction. "Bytes" consist of two hex characters. So the line we are editing has 6 bytes. (12 Characters). Other times, for example when there is only 2 bytes in the jump instruction, the first byte is the one you will modify, not the second. and in that case, je will be 74, and jne would be 75. But let's not go into that right now.
+
+You have changed the second byte in our instruction. That has changed je to jne. press F9 to update the file and get out of editing mode. Press F10 to get out of HIEW. Go and run "HWorks32.exe". This is the file you just changed. Go to Help, and About again. Type in any code. Click "Register". Presto! Registered! Choose a name and company and press OK. Get out of HWorks32.exe and then run it again to make sure it stays cracked. (You'll find a lot of programs you think you'll have cracked this way, but then when you run them after you exit, it'll say it's unregistered again). Yep. This is still regged. Congrats. You've just cracked your first program!!! Now you can close W32Dasm. (We just kept it open in case the byte we changed didn't do anything).
+
+The next thing I'm going to do is show you "SoftICE". Go get this superb program. You'll need it if you want to do "proper" cracking, where you find registration codes, without even modifying the program. That's the best, cleanest type of cracking you can do. It's also the type of cracking you'll get to feel you've really achieved something. Get SoftICE. It can be found at:
+
+http://soft.ivanovo.ru:8100/Win/SoftICE/si325w98.zip
+(copy and paste the URL into the browser to start downloading)
+
+You'll also need a program called "WinRAR". You can get it from www.download.com if you haven't got it already. Once you start installing it you'll be asked to enter your name and registration info. Register it. It's only £30...I used a code that I got passed on to me by another cracker by way of a tutorial. Usually you shouldn't use other peoples' reg info to reg programs. That's what lamers do who can't crack programs. However cracking SoftICE requires specialist tools, and is I expect, waaaaaaay beyond your (and mine!) capability. SoftICE is a tool you WILL need to crack programs efficiently. Use the following registration number: "1907-0000DD-99". Follow the instructions and install. Let it make changes to your autoexec.bat, as it needs to be loaded as a program before windows starts.
+
+When SoftICE is installed, go to the SoftICE directory and open the "winice.dat" file with notepad. Find the line that says "INIT=Code On" or similar. Change that line to the following :-
+
+INIT="lines 60;color f a 4f 1f e;wd 22;wc 22;code on;x;"
+
+This just tells the program how many lines to allow to each "section" of SoftICE, and it gives it some more interesting colours than the boring ones the installation gives it. Now go down to where it says "Examples of Export symbols" and there will be a list of files starting with ";EXP=". Remove all of the ; symbols from the beginning of those lines. This makes sure that when we restart our computer and go into SoftICE we can set "Breakpoints" on the windows "API" (Which is vital to us!) Save the file and restart your computer.......................
+
+Okay, your back. It might be a good idea to print out the next few paragraphs (Until I say "Stop Printing"), because when you're in SoftICE, you can't access any other programs until you leave, and we don't want to be going back and forth between SICE (SoftICE) and Notepad all the time, and when we start cracking, we won't be able to get out of SoftICE of it'll ruin our work, and we'll have to start again.
+
+---------------------------------------START PRINTING HERE---------------------------------------
+
+Press Ctrl+D and you'll see SoftICE in all it's glory. The top section with the first line of text starting with "EAX=" is the section of SoftICE for registers. Registers are places in memory. Memory is where all the information is kept, and registers save the addresses of the places in memory that are important to the program at that time. (That's not the only way they work, but it's all you need to know for now). The line of characters "o d i s z a p c" are all flags. ("o" is a flag, "d" is a flag etc.) The only important one to us right now is the "Zero" flag. That's the "z". You notice, some flags will be highlighted. These are the flags that are active. Remember when we were talking about jumps, and we talked about "jz" (Jump if Zero) and "jnz" (Jump if not Zero). This is what it looks at. These flags are either active or inactive, but they are always there.
+
+For example if in SoftICE we came across a piece of code that had a "jz" in it, we could look at the zero flag just before that function was carried out, and we would know it the program would jump or not! Cool eh? While we are talking about code, let's look at the code section of SICE. (The yellow (Well, they should be yellow) lines separate the sections of SICE). This 3rd section is the "Code Window". (I'll talk about the 2nd section in a minute). The code window should look familiar. The difference between the code here, and the code in W32Dasm, is that the code here in SICE is actually being executed, and when you exit SICE, the highlighted (red) line of code will be executed straight away. This is one of the reasons SICE is so powerful. Look at the 2nd section. This is the "Data Window". This is the memory basically. Type in:
+
+d edx
+
+and press Enter. You should see the Data Window change. What you've just told SICE to do is "Display EDX". SoftICE showed you the memory at EDX. Look at the Registers Window where it says EDX=(whatever). You will notice that the number after EDX is the first number in the Data Window. This is because EDX is storing the address in memory that you have just told SoftICE to display. If you got a message saying "Invalid Address", don't worry, just use my example with EAX or ESI etc. I'm just trying to explain registers. That is how the Data Window works. The last section is just where you type in commands. Now lets do a real crack! Get "5 or More" version 2.0a from :-
+
+http://www.midstream.com
+
+Got the program, good! Then let's begin, set the program up and run it. You'll see "EVALUATION COPY" at the top of the window. Go to "Help" and click on "Register". We see two boxes to enter the information that is needed to register the program. Go into SICE (Ctrl+D remember). The next thing we do is "Break" into SoftICE when the program reads in what we enter. For the program to get the information we enter into the boxes, it will need to use the windows API functions. We will need to tell SoftICE to come to life when a program uses one of these functions. Most programs will use one of the following functions:
+
+"GetWindowText" "GetWindowTextA"
+
+"GetDlgItemText" "GetDlgItemTextA"
+
+The ones without the A's are for 16 bit programs, and since programs are not much made in 16 bit any more, it's usually just safe to use the ones with the A's. The A at the end of functions means it's for use with a 32 bit program only. So you're in SICE. I checked and this program uses "GetDlgItemTextA". If you try to use "GetWindowTextA" you just get confused! So type in
+
+"bpx getdlgitemtexta" [Return]
+
+Bpx simply is the instruction to "BreakPoint on eXecute". i.e. the program breaks when it executes the api function or call. Anyway, type anything in the two boxes I used "Liszt" for my name, and "12345" for my code. Click OK. !BAM! You're in SoftICE! You're at the point in the program where the program is calling the api function "GetDlgItemTextA" to get the name you entered. Press Ctrl+D to get out of SoftICE and you should be immediately brought back to SoftICE where the function is called again, this time to get the code you entered. Remember for the future, you will have to let SoftICE break however many boxes you have to fill in. If in a program you had to enter a name, a code, AND a company, for example, you would set the BreakPoint, press OK, get out of SoftICE, and then get out of SoftICE again, because it would have 3 boxes to read from, so it would need to call the function 3 times.
+
+Anyway, SoftICE has broken twice... We are now at the beginning of the "GetDlgItemTextA" function. The code in the code window below the highlighted line is the code for the function. Press F11. This lets the program carry out the function, but returns you to SoftICE IMMEDIATELY after the function has finished. Now you should be in the 5 or More program code. Press F10 until you get to the instruction:
+
+call 00405EF0
+
+When that instruction is highlighted, press F8. There is a good reason for this...
+
+Pressing F10 steps over calls, while F8 steps INTO calls. Example time... Pressing F10 will carry out all of the instructions it comes across inside the call, until the program returns to the point where the call was. OK, I think I'd better explain about calls now.
+
+Calls are similar to jumps. When there is a call, say for example, we was to come across the following:
+
+:004018D9 E8520D0000 call 00402630
+
+:004018DE 8D4C2414 lea ecx, dword ptr [esp+14]
+
+:004018E2 C684246C02000002 mov byte ptr [esp+0000026C], 02
+
+The program goes to the address 00402630. What we have here for example is:
+
+:00402630 6AFF push FFFFFFFF
+
+:00402632 6896CF4000 push 0040CF96
+
+:00402637 64A100000000 mov eax, dword ptr fs:[00000000]
+
+:0040263D 50 push eax
+
+:0040263E 64892500000000 mov dword ptr fs:[00000000]
+
+:00402645 51 push ecx
+
+:00402646 C3 ret
+
+This means the program would carry out all of the instructions in this part of code (from 00402630) and when it got to 00402646 (A "Return" instruction) it would go to 004018DE. (The instruction after the call to the above piece of code.) In SICE, pressing F10 at a call, would execute all of the instructions until the return instruction automatically, without you having a chance to see what is going on inside the call. When you press F8, you go inside the code, and the instructions are executed one by one, as you press F10 or F8. You should find that information valuable.
+
+Anyway, back to our example, "5 or More". You should have just pressed F8 instead of F10. Don't press anything else yet. Look at the code. You should be looking at the following instructions on the right side of the Code Window:
+
+MOV EAX,[ESP+04]
+
+TEST EAX,EAX
+
+JZ 00405F32
+
+CMP BYTE PTR [EAX],31
+
+JNZ 00405F32
+
+CMP BYTE PTR [EAX+01],36
+
+JNZ 00405F32
+
+CMP BYTE PTR [EAX+02],31
+
+JNZ 00405F32
+
+CMP BYTE PTR [EAX+03],33
+
+JNZ 00405F32
+
+CMP BYTE PTR [EAX+04],35
+
+JNZ 00405F32
+
+CMP BYTE PTR [EAX+05],35
+
+JNZ 00405F32
+
+CMP BYTE PTR [EAX+06],31
+
+JNZ 00405F32
+
+CMP BYTE PTR [EAX+07],30
+
+JNZ 00405F32
+
+CMP BYTE PTR [EAX+08],00
+
+MOV EAX,00000001
+
+JZ 00405F34
+
+XOR EAX,EAX
+
+RET
+
+Okay, I'll try to explain what's going on here. The first line of the above code puts the registration code you entered into EAX. The second line tests EAX with itself, and if the outcome of the test is 0 (Zero), that means that nothing was entered into the registration box, and if this happens, when the program reaches the next line of code, it will jump to 00405F32. So maybe the code at 00405F32 is the code to tell the program to get the error message. Looking at the next lines of code, there is a lot of things compared, and always, if the outcome here isn't zero, it will jump tp the same address (00405F32). So it's pretty good to assume that the code at 00405F32 is the error message process, which must mean that this is the process that checks the registration code you entered to the valid code.
+
+Look in EAX by typing "d eax". Look at the writing in the DATA Window (The one above the Code Window). Look at the right side of this window. The code you entered should be at the first line. The fourth line of the above code CoMPares the byte at EAX with the number 31. We can see EAX in the Data window at the moment. We can see that the first number/letter in view is the first digit of the code you entered. This is the number/letter it compares to the number 31. When we see something like this, with lots of numbers around 30, it will usually be hex. You can find out what the "ASCII" (Normal) value of hex 31 is by typing in "? 31". It will show you different values, the one at the end in the quotation marks is the "Normal Value".
+
+We see that Hex 31 = Normal 1. That tells us that the program compares the your first digit to 1. If the first digit of the code you entered isn't 1, the program will jump in the fifth line of the above code to the error message (00405F32). The next (Sixth) line of code compares EAX+01 to Hex 36. EAX+01 is as simple as that - EAX+01, If you type in "d eax+01" it will show you the second digit of the code you entered. Because it is EAX plus 01 place, which means the second digit of the code you entered. (I hope you understood that!) type "? 36". You see that is compares the second digit of the code you entered with 6. (Assuming, of course it hadn't already jumped after the 1st compare!). So we can see that the first two numbers of the valid registration code are 1 and 6. By looking at the rest of the code down to the 19th line of the above code, we can see that the correct registration code is:
+
+16135510
+
+An important thing to mention is that the valid registration code was already inside the program, and didn't have to be calculated. That tells us that the registration code will work for any name you enter. Other more difficult programs will take you're entered code, make the correct code for the name you entered, and compare your correct code with the one you entered. This means that codes will be different for each name that is entered in harder programs. (This program is easy to crack). Before you leave SoftICE, let's look at the rest of the code above. The 20th line compares EAX+08 to Hex 00. If type "? 00" you'll see that 00 is equal to nothing. That does NOT mean a space, (A space is Hex 20) it means Hex 00 is equal to nothing, so the program is just checking that there wasn't anything entered after the final digit.
+
+The actual program won't let you enter more than 8 characters anyway, so this must be in case bad crackers try to modify the contents of the memory, and mess up. So the CMP BYTE PTR [EAX+07],30 is the last digit of the code. If for some reason, the memory contains more than 8 characters at EAX, it would jump to a different part of code that I haven't bothered to look at because it is irrelevant. The next line (XOR EAX,EAX) zero's EAX, because it doesn't need it anymore (Note from CrackZ - actually this code is never executed, see the MOV EAX, 1 = good guy and EAX=0 is bad, EAX's value is checked after the RET). The next line is RET (Return). When the program (If the code is correct) reaches this, it will go back to the line after the call we pressed F8 at.
+
+See how calls work now? When we are sent to the first line of the above code by the call, there aren't any instructions that jump to a good registration message, only jumps to the bad message, so theoretically, it would be possible to crack the program using "Hackers' View" by finding the address of the call to the registration routine, and simply replacing the call instruction with NOP (No OPeration) instructions. In fact, yeah, we'll try that in a minute! You can leave SoftICE now, but make sure you clear all of the breakpoints before you leave, because we don't need them anymore. To do this type "bc *". Get out of SICE (Ctrl-D). Go to help in 5 or More, and go to register. Type in any name, and the code we found out. (16135510). WOW! It worked. Don't you feel good? You didn't even have to modify the program's code! It's a "Clean Crack"!
+
+--------------------------------------STOP PRINTING HERE-----------------------------------------
+
+Okay, now close the program. Go to the windows directory and find "5ormore.ini". Delete it. Now go back to the game directory and make a backup of the 5ormore.exe in case we screw up (You may want to rename it 5ormore.w32). Done? Good. Run HIEW (Hackers' View) and open 5ormore.exe. Press F4 and select Decode Mode. Press F5 and type ".0040609D" (This is the address that calls the registration check - The place we pressed F8). You are at the line:
+
+.0040609D E84EFEFFFF call 00405EF0
+
+This is the right line. We want to get rid of the call, so we are going to change the bytes that tell the program what to do. I'll explain something first. Look at the E84EFEFFFF. These are the letters and numbers that tell the program what to do. They are what we change. To tell the program to jump to the registration check, it needs 5 bytes (Remember, a byte is two characters). So we need to make sure we replace exactly 5 bytes, no more, no less. A NOP instruction (No OPeration) only requires 1 byte, so we will need to put in 5 NOP instructions, so it has just canceled the call without doing anything else. Press F3. Now, carefully change the bytes to NOPs by pressing "90" five times. Press F9. Press F10. Go back to 5ormore.exe and run the program.
+
+Go to register and type in a name and any old number (not the correct one). It says regged! Great! Close the program, and then start it again to make sure... It says UNREGISTERED!!!! There is a simple reason for this. Each time the program begins, it gets the registration information you entered last time from the 5ormore.ini file in the windows directory, and then carries out the registration check again on the information to check the information is valid. So unless you want to go to register every single time you play the game, we have more work to do. Run W32Dasm. Open 5ormore.W32 (The backup copy). Look at the disassembly. Click on find. Type in:
+
+call 00405EF0
+
+Now click OK. Remember the call to 00405EF0 is the call to the registration check. When W32Dasm has found something, write the address down. You should find two occurences. The first address should be "00405EE2", and the second should be "0040609D". You can close W32Dasm if you want, because I know what we have to do, and we won't need it anymore. Run HIEW and open 5ormore.exe. Press F4 and go to Decode Mode. We are going to get rid of both of these calls that we wrote down. Press F5 and type ".00406EE2" (This is the first address you wrote down). Press F3. There is 5 bytes in this call instruction, so we will need to type in "90" five times. Done? Press F9 to update the file. Now the next address. Type ".0040609D" (The other address from W32Dasm). Huh? What's this, there's already five NOPs here! Yep. That's because, remember, you already changed this one, before we found out that it checked the "5ormore.ini" file when it starts. We saw it as a call in W32Dasm, because we loaded the backup file, and we hadn't changed that file whatsoever with HIEW. So close HIEW.
+
+Run "5ormore.exe" Wow! It will stay registered this time! Exit 5 or More, run 5 or More, exit 5 or More, run 5 or More. Yeah, we made it so that the program didn't find an error with registration information when it starts. (That's because we stopped it from checking the code, so it couldn't jump to the unregistered code routine.) There we go! If you can find registration codes using SoftICE, do that, because it's so much better than modifying a program. I hope this information has been valuable! It should have! If you couldn't understand it, go through it all again. (I'm NOT kidding. If you want to learn, you have to understand these things).
+If I get enough E-Mails requesting more tutorials, I'll certainly consider it. If I get enough requests, I'll talk more about finding codes in SoftICE, where the program has to calculate your own code (much harder most of the time). All comments, questions, suggestions welcomed.
+Note: if some links didn't work try googling the tool or the program, sorry for the inconvenience.
+Best regards,
+Aym
+

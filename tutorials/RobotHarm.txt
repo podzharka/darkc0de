@@ -1,0 +1,57 @@
+Robots.txt harmless? Or dangerous?
+By K1u
+
+So alright... what is this strange file in the root of your directories you question?
+
+Let me break down what it basically is... all it basically is, is a rule set for search engines.
+
+Example of a robot.txt file.
+
+# This is my robots.txt file!
+User-agent: *
+Disallow: /idontwantthisindexedbysearchengines/
+
+Now let me explain what it is line by line.
+
+# This is a User agent... example Firefox or Konqueror, * is anything.
+User-agent: *
+
+# This is a rule for search engines not to index this folder.
+Disallow: /idontwantthisindexedbysearchengines/
+
+Now lets talk about why robots.txt can be dangerous.
+
+All websites out there that are using the Robots file most likely have it exposed.
+
+Here take this - http://k0h.org/robots.txt
+
+Well your probably asking what do I do now? Instead of using root folders of your "private" things, make a new folder named something like 021873257923 then store the other folder in there. Note... never ever store very important things on your Webserver, even if its protected by robots.txt.
+
+Now lets build our own robots.txt file.
+
+# This is a comment... these are ignored.
+User-agent: *
+Disallow: /273432087423374242/
+
+User-agent: Googlebot-Image
+Disallow: /images
+
+# Alexa's bot is a bit aggressive so I think I shall make it wait 1 minute (60 seconds) until it can view another page.
+User-agent: IA_Archiver
+Crawl-Delay: 60
+
+Questions!
+
+Ok... see I have over 300 folders staring with admin... none should be indexed... what do I do? Is there some sort of wildcard I can use?
+
+Simply Disallow: /admin without the ending /.
+
+Are there engines that do not obey robots.txt?
+
+Yep.
+
+My host disallows Robots.txt...
+
+They probably don't... you just have not tryed selecting view hidden files in your FTP client. Look into others methods... google is your friend.
+
+On a side note. I have not written this in the official tutorial, but alot of people asked me why make a directory 349823423423 for instance and the answer is because it is harder for script kiddies to do a directory name brute force on your site and find out your private directories name.

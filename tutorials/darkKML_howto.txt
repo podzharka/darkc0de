@@ -1,0 +1,124 @@
+HowTo :
+
+http://www.darkc0de.com/others/darkKML.py
+
+
+
+
+this script is used for visualization, to make website & ip locations visible on a common application,
+google-earth. i have many ways displaying ip information in different visual forms, google earth provides
+some good containers to store more information then most other solutions.
+
+the script is easy to understand if you came as far as dictionary's with your python
+learning. i use this as a module in another project with a mysql database, this is a customized version
+which is easy to use and easy to customize.
+if you get a hold on it there are plenty of api ports in other languages all following the same scheme.
+
+ok here a howto on my darkKML.py my latest small script.
+
+what it does:
+
+the script is a constructor for .kml files (Keyhole Markup Language (KML) is an XML-based language schema for expressing geographic
+annotation and visualization on existing or future Web-based, two-dimensional maps and three-dimensional Earth browsers, in our case
+Google Earth)
+
+in case you havent heard of google earth ^^
+
+http://earth.google.com/
+
+
+
+
+a nice feature of GE is that the use can create placemarks, of locations and saves them in kml as mentioned above.
+To be able to create google earth latitude/longitude placemarks from ip adresses or urls, we need a database that holds the basic
+information we need. some of you might have already used GeoIP from maxmind, they provide a GPL Database that does the trick for us.
+this database is a .dat file, in binary format which is accessed via a python module/c module that needs to be built&installed on
+the system you want the run the script on.
+
+get the host db here :
+
+http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
+
+
+
+
+place it somewhere on the system, preferably in the directory of darkKML.py. if you choose a different location for the .dat file be sure to adjust this line in the script:
+
+geoDBpath = 'GeoLiteCity.dat'
+
+
+
+
+and your're half way through.
+next step is to get the geoip c lib's and the python class for your system.
+
+go here:
+
+http://www.maxmind.com/app/c
+
+
+
+
+and here:
+
+http://www.maxmind.com/app/python
+
+
+
+
+the how-to-install is explained there + all downloadlocations are in place
+
+alternatively on ubuntu just type:
+
+sudo apt-get install libgeoip1 && sudo apt-get install python-geoip
+
+
+
+
+so much for the setup.
+
+the script takes a list of urls or ip adresses, gets info on very entry in the list and creates a final
+kml file ready to open with google earth. acceptable file formats are.
+
+www.darkc0de.com
+www.milw0rm.org
+www.blackle.com
+
+94.22.133.29
+42.5.113.185
+87.65.1.99
+
+76.43.23.6:8080
+34.23.65.7:80
+81.4.53.77:8181
+
+dont mind the length of the file, i tested it up to 50.000 entries and it still works.
+so all you have to do is create a simple .txt file holding alot of urls and you are ready to go.
+
+
+before you create your first file take a note of 2 parameters that you may want to adjust inside the script
+
+verbose = True
+
+
+
+
+gives you console output of whats happening, this is nice.. yes as long as you have less than 20 hosts.
+if you dont want the outout change True to False and its silent.
+
+wwwcheck = True 
+
+
+
+
+this is important to change if you want to check servers that are NOT webservers.
+means, if you want to check your proxylist, its a bad idea to get webserver info.
+this will of course remove alot on information form the final kml file and produce much smaller files.
+** if you turn this option of you cut the net communication of the script, its way faster then **
+
+
+python darkKML.py myiplist.txt
+....
+....
+creates the file.kml as named by the user in the scriptdirectory, all you have to do is
+double click the kml file and google earth opens up. showing you some yellow markers.

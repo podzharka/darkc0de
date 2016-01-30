@@ -1,0 +1,431 @@
+ok a quick guide to linking IRCD''s by Jackh4xor. (Unreal Moded ircd)
+
+Ok so i am assuming you have compiled your IRCd's as one hub, one leaf..
+
+To make things easier to follow from here on we will refer to the hub as server one, and the leaf as server two.
+
+Ok so lets jump in and start to edit the unrealircd.conf for server one.
+
+Server One
+
+The first block we need to look at is the "me" block, your me block should look something like this;
+<div class="jscript"><pre>me {
+name "yourserverhub.com";
+info "santasunreallinkingguide";
+numeric 1;
+};
+</pre></div>
+
+
+Ok so not alot to this block, all pretty simple stuff, you need to edit the name line so that it is relevant to your server one, same with the info line; The most important line of this entire block is the "numeric" line. It is important that the numeric line is different for each of the servers your are going to link otherwise they will collide and and you will get connection refused upon trying to connect to your other servers.
+
+Ok so now that the me block is out of the way, the next thing we are going to want to do is create some class blocks.
+As a rule it is always best to create these class blocks directly below your "me" block.
+You will need two class blocks one for clients, and one for servers.... These blocks should look similar to these;
+
+
+<div class="jscript"><pre>class clients
+{
+pingfreq 600;
+maxclients 90000;
+sendq 150000;
+recvq 4000;
+};
+class servers
+{
+pingfreq 90;
+maxclients 10; /* Max servers we can have linked at a time */
+sendq 1000000;
+connfreq 100; /* How many seconds between each connection attempt */
+};
+</pre></div>
+
+
+Ok so again, all pretty simple stuff here these two blocks deal with how the servers and clients connect, starting with the "class clients" block we have ping freq, you are going to want to set this around 600 if your servers are hosting bots, (the higher you set the ping freq - the less "ping time outs" you will get)
+Next line we have max clients set this so that it is relevant to your OS's security limits and unreal build, (on linux check your max connections by typing "ulimit -n" in console) sendq and recvq set these fairly high also.
+
+ok "class server" block as said, deals with how the server connections are dealt with, "ping freq" set this as you like,
+"maxclients" in this block is simply the maximum number of servers you can connect to, sendq (set this pretty high) and "connfreq" (how many seconds between each connection attempt)
+
+simple simple. So far these steps can be applied to both server one and server two configs infact the only block you will need to edit for server two so far is the "me" block (remembering to change the numeric).
+
+now we have to create a listen block, this is the block that will tell the IRCd to listen for server connections on a specified port, (you cannot use the same port that your clients connect to) for this tutorial we will use port "12345"
+your block should look like this:
+
+<div class="jscript"><pre>listen 127.0.0.1:12345 {
+options {
+serversonly;
+};</pre></div>
+
+
+Ok so again all very simple stuff, here we are telling the IRCD to listen for connections on localhost port 12345;
+you can use either the local loopback ip address of your server, the normal ip address or simply "localhost" when defining the IP.
+
+Options, obviously we want it to listen for "servers only" you can also add other options such as auto connect but for this tutorial we will use this simple listen block.
+
+OK if you have made it this far, you are ready to now create your "link" block for server one.
+Link blocks look like this;
+
+<div class="jscript"><pre>link serverleaf.com { /* name of the server you want to link to has to be the same as the name given in its meblock */
+username *;
+hostname 99.99.99.99; /*the server you want to link to ip address */
+bind-ip *;
+port 12345; /* port for server to connect to defined inn the listen block above */
+leaf * ; /* server two is a leaf */
+password-connect "password"; /* passwords much match on both servers */
+password-receive "password";
+class servers;
+options {
+
+};
+};
+</pre></div>
+
+
+I have commented the block to help you remember how things go, because this is the block that most people make errors on.
+
+the first line `"link" it is important that you use name of the server you want to link to, the name has to be the same as the name given in that servers "me" block.
+In this tutorial we use wildcard for username.
+the hostname line, we specify the ip address of the server we want to connect to.
+we use wildcard for "bind-ip"
+we then specify the port we created in the server listen block.
+specify that the server we are connnecting is the leaf.
+and set the passwords which must be the same for bother servers.........
+
+server one, done.
+
+
+Server Two
+
+ok for this section, i will blast through alot quicker, as most of it is covered in the first section
+
+me block
+
+<div class="jscript"><pre>me {
+name "leafserver.com";
+info "jackh4xorguide";
+numeric 2;
+};
+</pre></div>
+
+
+
+Ok so edit the me block so that it is relevant to your server two (leaf)
+CHANGE THE NUMERIC.
+
+class blocks can be exactly the same as server one.
+<div class="jscript"><pre>class clients
+{
+pingfreq 600;
+maxclients 90000;
+sendq 150000;
+recvq 4000;
+};
+class servers
+{
+pingfreq 90;
+maxclients 10; /* Max servers we can have linked at a time */
+sendq 1000000;
+connfreq 100; /* How many seconds between each connection attempt */
+};
+</pre></div>
+
+
+listen block for servers can also be exactly the same as server one if using local loopback for IP, otherwise just specify server two's IP address.
+
+
+<div class="jscript"><pre>listen 127.0.0.1:12345 {
+options {
+serversonly;
+};</pre></div>
+
+
+
+link block
+
+link yourserverone.com { /* name of the server you want to link to has to be the same as the name given in its meblock */
+username *;
+hostname 88.88.88.88; /*the server you want to link to ip address */
+bind-ip *;
+port 12345; /* port for server to connect to defined inn the listen block above */
+hub * ; /* server two is a leaf */
+password-connect "password"; /* passwords much match on both servers */
+password-receive "password";
+class servers;
+options {
+
+};
+};
+
+ok so for server two link block you are going to want to link to yourserverone.com (as specified in the server one "me" block)
+set the hostname to your server one's IP. set the port 12345, set the passwords so they are the same as the other server.
+
+
+....and thats it your done.
+
+almost..
+
+ok so now rehash or restart your servers oper up on one of your IRCDs for this example we are on the leaf (server 2) and type <div class="jscript"><pre>/connect yourserverone.com 12345</pre></div>
+/connect server port
+
+
+if all is well your IRCDs will now be linked.
+
+To make bots spread evenly over the two IRCDs you will now need to setup a "round robin" dns.
+
+anyway below i will provide an unrealircd.conf template, laid out in the way described in this tutorial for you to use.
+
+
+######################################## 
+#              ME Block                # 
+####################################### 
+ 
+me { 
+        name "yourserverone.com"; 
+        info "jackh4xor"; 
+        numeric 1; 
+}; 
+ 
+#################################################### 
+#    class block                                   # 
+################################################### 
+ 
+class           clients 
+{ 
+        pingfreq 600; 
+        maxclients 90000; 
+        sendq 150000; 
+        recvq 4000; 
+}; 
+class           servers 
+{ 
+        pingfreq 90; 
+        maxclients 10;          /* Max servers we can have linked at a time */ 
+        sendq 1000000; 
+        connfreq 100; /* How many seconds between each connection attempt */ 
+}; 
+ 
+#################################### 
+# server listen block  ############ 
+################################## 
+ 
+listen 66.66.66.66:12345 { 
+        options { 
+                serversonly; 
+        }; 
+}; 
+ 
+################################################# 
+# LINK BLOCK                        ############ 
+############################################### 
+ 
+ 
+link yourserverttwo.net { 
+        username *; 
+        hostname 11.11.11.11; 
+        bind-ip *; 
+        port 12345; 
+        hub * ; 
+        password-connect "password"; 
+        password-receive "password"; 
+        class servers; 
+        options { 
+ 
+        }; 
+ 
+}; 
+ 
+######################################## 
+#             Admin Block              # 
+######################################## 
+ 
+admin { 
+        "jackh4xor"; 
+ 
+ 
+}; 
+ 
+######################################## 
+#             Allow Block              # 
+######################################## 
+allow { 
+        ip *@*; 
+        hostname *@*; 
+        class clients; 
+        maxperip 5; 
+}; 
+ 
+######################################## 
+#            Listen Block              # 
+######################################## 
+ 
+ 
+listen         *:6667; 
+######################################## 
+#            Operator Block            # 
+######################################## 
+ 
+ 
+oper Jackh4xor { 
+        class           clients; 
+        from { 
+                userhost *@*; 
+        }; 
+        password "" { md5; }; 
+        flags 
+        { 
+                global; 
+                services-admin; 
+                can_rehash; 
+                can_die; 
+                can_restart; 
+                helpop; 
+                can_wallops; 
+                can_globops; 
+                can_localroute; 
+                can_globalroute; 
+                can_localkill; 
+                can_globalkill; 
+                can_kline; 
+                can_gzline; 
+                can_gkline; 
+                can_unkline; 
+                can_localnotice; 
+                can_globalnotice; 
+                netadmin; 
+                can_zline; 
+                get_umodew; 
+                get_host; 
+                can_override; 
+    }; 
+    snomask *; 
+    maxlogins "2"; 
+}; 
+ 
+######################################## 
+#               Settings               # 
+####################################### 
+ 
+drpass { 
+        restart "muster321pw"; 
+        die "pw123muster"; 
+}; 
+ 
+set { 
+        network-name            "Linked Net"; 
+        default-server          "irc.FGT.eu"; 
+        services-server         "services.priv8.com"; 
+        help-channel            "#lobby"; 
+        hiddenhost-prefix       "0wn3d"; 
+        cloak-keys { 
+        // Don't use the same keys 
+                "aIRgFoAr1HnF5h5sDb7x4YwA6pW"; 
+                "P9FdZnR1gl5sJ7hVz4Zb7x4YwpW"; 
+                "OI8r1ZnR6gl3sJ7hVz4Zb7x4YnX"; 
+        }; 
+ 
+        hosts { 
+                local            "darkc0de.com"; 
+                global           "darkc0de.com"; 
+                coadmin          "darkc0de.com"; 
+                admin            "darkc0de.com"; 
+                netadmin         "darkc0de.com"; 
+                servicesadmin    "darkc0de.com"; 
+                host-on-oper-up "yes"; 
+        }; 
+}; 
+ 
+set { 
+        allowed-nickchars { 
+                latin1; 
+        }; 
+        kline-address    "kline@creavix.de"; 
+        modes-on-connect "+xwGi"; 
+        modes-on-oper    "+xwgspH"; 
+        restrict-usermodes "G"; 
+        restrict-channelmodes "G"; 
+        modes-on-join "+nust"; 
+ 
+        oper-auto-join "#admins"; 
+ 
+        dns { 
+                nameserver 127.0.0.1; 
+                timeout 2s; 
+                retries 2; 
+        }; 
+        options { 
+                hide-ulines; 
+                show-connect-info; 
+                show-opermotd; 
+                allow-part-if-shunned; 
+                flat-map; 
+                fail-oper-warn; 
+        }; 
+ 
+        maxchannelsperuser 30; 
+        anti-spam-quit-message-time 100s; 
+        static-quit "Client hat die Verbindung getrennt"; 
+        oper-only-stats "*"; 
+ 
+        throttle { 
+                connections 3; 
+                period 60s; 
+        }; 
+        anti-flood { 
+                nick-flood 50:60; 
+        }; 
+ spamfilter { 
+                ban-time 1d; 
+                ban-reason "Spam/Advertising"; 
+                virus-help-channel "#help"; 
+        }; 
+        default-bantime "0"; 
+ 
+}; 
+ 
+#       ##### Modules ##### 
+ 
+include "help.conf"; 
+include "badwords.channel.conf"; 
+include "badwords.message.conf"; 
+include "badwords.quit.conf"; 
+include "spamfilter.conf"; 
+loadmodule "src/modules/commands.so"; 
+loadmodule "src/modules/cloak.so"; 
+ 
+#       ######################################## 
+#       #              Log Block               # 
+#       ######################################## 
+ 
+ 
+log ircd.log { 
+        maxsize 5MB; 
+        flags { 
+                errors; 
+                kills; 
+                sadmin-commands; 
+                chg-commands; 
+                oper-override; 
+                spamfilter; 
+                kline; 
+                tkl; 
+        }; 
+}; 
+ 
+ 
+ 
+ban nick { 
+        mask "*S*e*r*v*"; 
+        reason "Gesperrt"; 
+}; 
+ 
+ulines { 
+        services.priv8.com; 
+        stats.priv8.com; 
+}; 
+ 
+tld { 
+        mask *@*; 
+        motd "motd.conf"; 
+        rules "rules.conf"; 
+}; 

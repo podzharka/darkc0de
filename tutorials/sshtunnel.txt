@@ -1,0 +1,31 @@
+[Written by Dentrino]
+
+SSH Tunneling - Setting up a SOCKS proxy.
+
+This tutorial is aimed at people with secure shell access who want to use this ssh connection to setup a reliable SOCKS4.
+This doesn't matter on UID or anything, can be limited, root.. whatever as long as it's an SSH connection to the server.
+
+WHAT YOU WILL NEED
+
+SSH access on a server.
+PuTTy
+
+Start up PuTTy and type in the connection info. Hostname and port as usual.
+
+Once that is done, don't start the connection. Look down the menu on the left hand side, and click on SSH then inside: Tunnels
+
+Now underneath the box destination, tick the checkbox 'Dynamic' and leave the check box below set as Auto
+
+Now look above and in the box called source port, type 1080. Once this is done press add.
+
+Now connect as you would usually to this SSH server and LOGIN as normal.
+
+Once you've logged in the socks proxy is up! the socks4 stays up as long as the ssh connection is active.
+
+Now in the app of your choice e.g FireFox; add the socks 4 proxy. Add the hostname localhost and the port 1080.
+
+You are now surfing securely through the servers connection rather than your own.
+
+Enjoy.
+
+Dentrino

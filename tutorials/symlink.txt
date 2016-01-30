@@ -1,0 +1,56 @@
+To day i will explain Symlink function
+
+
+first this function we used it to make shortcut for any file or folder we need
+
+so this function will be very useful for us to read any folder or file we want
+
+and this help us in Hacking sites as u could see safe_mode on in sometims
+
+and u can't read files or u can see some times that Your id is user(phpsuxec)
+
+and u can't move to the other web sites folders or reading files on the others
+
+websites on the same server cuz ur id is phpsuxec not nobody
+
+let's start explain this useful function
+
+first type this cmd in the command line
+
+ln -s /home/user/public_html/folder shortcutFolder
+
+replace the first path with the folder w want to make shortcut of it
+
+and then execute this cmd
+
+and and this will make shortcut in ur current path for the folder that u typed
+
+in the first path the u will find the shortcut with name shortcutFolder As u typed
+
+so open this shourtcut via browser and u will see the the contains of the folder that u make a shortcut of it
+
+but in sometimes u make shortcut of folder that have index.php or index.html
+
+and u can't see the contains of folder cuz there is index
+
+so u should upload .htaccess file and write in it this
+
+DirectoryIndex seees.html
+
+this will change the name of index in the shortcut folder
+
+and so u can see contains in the shortcutfolder
+
+notice that if ur id not phpsuxec u should make the folder that contains
+
+the short cut folder with 777 perm
+
+some servers didn't allow symlink u can write this in htaccess file
+
+Options +FollowSymLinks
+
+notice that u should upload.htaccess in the same folder that contain shortcut folder i mean that the shortcut folder and .htaccess file must be in the same folder
+
+any questions i will answer it
+
+contact:hacking-hell@msn.com

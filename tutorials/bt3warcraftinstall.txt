@@ -1,0 +1,122 @@
+4 hours TT me noob
+
+STEP 1:
+
+ 
+#Download and install backtrack 3 burn it to a disk 
+#Launch backtrack 3 live: 
+mount 
+umount /dev/hda1 # or sda1 
+#umount /anyother/partions# 
+fdisk 
+n 
+p #just put in a partion somewhere if you know what to do 
+1 # or first available 
+w 
+reboot 
+
+
+
+
+STEP 2:
+
+ 
+mount 
+umount /dev/hda1 
+mke2fs /dev/hda1 
+mkdir /mnt/backtrack 
+mount /dev/hda1 /mnt/backtrack 
+# Launch GUI 
+#Field 1: alraedy set 
+#Field 2: /mnt/backtrack 
+#Field 3: /dev/hda # or /dev/sda whichever applies 
+#Uncheck the restore checkbox ASSUMING YOU HAVE NO PREVIOUS OS 
+#INSTALLED 
+#CLICK INSTALL 
+reboot 
+
+
+
+
+
+STEP 3 IS ONLY NECESSARY IF YOUR HARDWARE DOESN'T NATIVELY SUPPORT DIRECT 3D MOST DON'T!
+STEP 3:
+
+ 
+#GO HERE AND FOLLOW THE INSTRUCTIONS 
+#MAKE SURE TO SET A VIRTUAL DESKTOP PReferably 640x480 
+http://wine-review.blogspot.com/2007/11/directx-90c-on-linux-with-wine.html 
+
+
+
+
+AND/OR
+STEP 3:
+
+ 
+#Get a 1/2gig usb drive plug it into a windows installation with direct X 
+#Copy everything in system32 or just the files 
+#go back to backtrack3 
+#copy all the files in system 32 into 
+#/root/.wine/c_drive/windows/system32 
+
+
+
+
+STEP 4: OR IGNORE AND DO SIX AND THEN FIVE
+
+ 
+#Install war3 
+cd /path/tocd/ 
+wine install.exe 
+#... this is pretty straight forward 
+
+
+
+
+
+STEP 5:
+
+ 
+#GET AWC 
+http://www.freewebs.com/superbug77/AWC.rar 
+#GET FREEBSD RAR COMMANDLINE 
+http://www.win-rar.com/index.php?id=160&dl=rarbsd-3.7.1.tar.gz 
+#DO STUFF 
+tar -xvf rarbsd-3.7.1.tar.gz 
+unrar e AWC.rar /root/AWC 
+cd AWC 
+wine AWC.exe 
+#Configure LOWEST GRAPHICAL SETTINGS AND 
+#Unset the option in graphics specifically mentioned for opengl 
+
+
+
+
+
+STEP 6:
+
+ 
+#Update warcraft due to the fact that warcraft tries to restart wc3 which just 
+#massively fucks shit up 
+#Trying to update it is a lost cause BUT WASTE YOUR TIME IF YOU WANT! 
+#You might have luck with making xwindows control it....probably not 
+ 
+# I advise you to transfer the files from and updated war3 install that are #patched 
+ and copy 
+#IF you skipped 4 just copy everything and you are set 
+#IF you did 4 then well great 
+
+
+
+
+
+STEP 7:
+
+ 
+cd "/root/.wine/drive_c/Program Files/Warcraft III" 
+wine "Frozen Throne.exe" -opengl 
+
+
+
+And get ready for the lag

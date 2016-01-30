@@ -1,0 +1,62 @@
+may be this tricks is old but its not useless
+
+
+In this tutorial I will be showing you 4 ways of how to make a Trojan undetectable to Anti-Virus software. I am sure there are more then 4, but these should help get you started.
+1. Encryptors/Compressors:
+
+You would think this should be the easiest way to UD (Undetect) a Trojan...but alas, it is not. The problem is simply this, most people use the same Trojans and Packers so often that Anti-Virus software knows pretty much all the signatures. They either use Ardamax Keylogger, Optix Pro, Beast, ProRat etc. for Trojans. For Packers they use UPX, PECompress, AsPack, Mophine etc. Again, none of these combinations work because all the signatures have been flagged. The best way this option will work is to find lesser known Packers and Trojans to work with.
+
+Try a Google search for Executable Packers. Get a few that you have not heard of before or that have a decent rating. If it is not freeware, I am sure there will be a Crack for it. For Trojans, three good resources are VXChaos, LeetUpload or VX Heaven. Remember to pick the ones that are not well known and try to mix and match those Trojans and Packers.
+2. Byte Adders:
+
+This technique allows you to add junk bytes to your Trojan as to confuse Anti-Virus software. It does this by moving the code around inside the executable as the bytes are being added. This means that the signature will not be in the place the Anti-Virus expects it to be. A good tool for this would be StealthTools v2.0 by Gobo.
+3. Hex Editing:
+
+This is much more complicated and takes a lot more practice to get right. The idea here is to find the signature that Anti-Virus software has flagged inside of your Trojan and change it by adding a different byte, or changing the Offset to one of its other equivalents.
+
+
+The three things you will need here is a File Splitter, Hex Editor and a Anti-Virus Offset Finder. The File Splitter will cut your executable into smaller files (preferably 1 byte per file). You then use your Hex Editor on the file that holds the signature and change that signature. Or, you can keep the file complete and use your AV Offset Finder to find the Offsets automatically and just change the signatures found with your Hex Editor.
+
+
+Step One: Place your Trojan Server in a folder.
+
+
+Step Two: Split your Server with your File Splitter into 1 byte per file. This may make a lot of files in your folder (depending on how large the Server is), but it is worth it because you will know that only one or two of those files has the signature that is flagged and all the rest are clean.
+
+
+
+Step Three: Scan your folder with your Anti-Virus software and make note of which files it says are infected. Those will be the ones you edit.
+
+
+Step Four: Open up each infected file with your Hex Editor and change the Offset. There is no fool proof way of doing this, you will have to experiment. Since this will be a 1 byte file, there will not be much you need to change. Just change one character or byte at a time and then save your progress. Re-scan to see if it worked. If it did not, go back and try again.
+
+
+Step Five: Once you feel that you have found all signatures and changed them, Rejoin your files with your File Splitter and test your Server to see if it works. Remember that too much Editing will make your Server useless so be careful.
+
+
+(Optional) Step Six: Another good way is to use a Anti-Virus Offset Finder that will find the correct Offset automatically so you do not have to search for them or split your Server. Get AV Devil 2.1 to find the Offsets (password is: to0l-base).
+
+You have to remember that different AV software use different signatures, so scan with as many as you can.
+4. Source:
+
+The very best way to make an undetectable Trojan has always been to make your own. I know it may seem like a daunting task to do, but it could be simpler then you think. Here I will give a few options on how to do this. The reason why you would want to make your own Trojan is the fact that each time it is compiled, it is given a new signature. Changing just a single string in the Source code can make it undetectable.
+Option 1: Free Trojan Source Code.
+
+Finding free Trojan source code is not hard. Again, going to places like VXChaos or Planet Source Code can yield a plethora of really good and lesser known Trojan code. Pick what Programming Language you like and look for examples. Not much needs to be changed to makes these undetectable. A simple recompile will sometimes do the trick.
+Option 2: Decompiling.
+
+Some may call this "Stealing" source code. I like to call it "Borrowing". The first thing you need to know is what language your Trojan is in. Lets say your Trojan was Optix Pro, your programming language would be Delphi. A good Delphi Decompiler would be DeDe. Decompile Optix Pro with DeDe then recompile it with a Delphi compiler and viola! Just change a few strings around within the source and you should have a undetectable Optix Pro.
+
+Another way would be to open your Trojan with a Debugger or Disassembler. Copy down the ASM code and then recompile it in a ASM compiler. That maybe a bit more tricky, but the idea is the same. Try to convert the executable into pure ASM as best you can. There are many free Debuggers/Disassemblers, Google for them.
+A word of warning, if you do find your own way of making a Trojan undetectable, DO NOT disclose it. You will find your Trojan detected in a very short amount of time. What I have taught here are just the basics of Trojan UDing. It will be up to you to use this knowledge and make it work. Also, DO NOT use any online virus scans to see if your Trojan has been detected. Your signature will be captured and sent to AV companies.
+
+Well I hope this tutorial helped you out in some small way. Just one of the examples above could make an undetectable Trojan, or you may need to mix and match them. Try what you can, don't be afraid to experiment, and good luck!
+
+Code:
+
+http://vxchaos.official.ws/
+http://vx.netlux.org/
+http://www.to0l-base.de/Packer_Crypter/AV%20Devil%202.1.rar
+Password : to0l-base
+http://www.planet-source-code.com/
+http://www.woodmann.com/crackz/Tools.htm

@@ -1,0 +1,414 @@
+cat > a.out
+Writing Linux programs in raw binary
+by G-Brain
+
+C
+
+Let's begin with Linux system calls. A system call is a request made
+by a program to the operating system for performing certain
+tasks. System calls provide the interface between a process and the
+operating system.
+
+A good example of a Linux system call is _exit:
+
+void _exit(int status)
+
+The function _exit() terminates the calling process "immediately". Any
+open file descriptors belonging to the process are closed; any
+children of the process are inherited by process 1, init, and the
+process's parent is sent a SIGCHLD signal.
+
+The value of status is returned to the parent process as the process's
+exit status.
+
+In a C program, you could use _exit like this:
+
+_exit(0)
+
+Ending the program with a status of 0, indicating success.
+
+Another example of a system call is write:
+
+ssize_t write(int fd, const void *buf, size_t count)
+
+write() writes up to count bytes from the buffer pointed buf to the
+file referred to by the file descriptor fd.
+
+On success, the number of bytes written is returned (zero indicates
+nothing was written). On error, -1 is returned, and errno is set
+appropriately.
+
+Here's how you'd use write() from a C program:
+
+write(1,"Test\n",5)
+
+There are 3 standard POSIX file descriptors (Linux is mostly POSIX
+compliant):
+0 = Standard Input (stdin)
+1 = Standard Output (stdout)
+2 = Standard Error (stderr)
+
+So what the above line of code would do, is write "Test\n" up to the
+5th byte to standard output.
+
+That should explain how system calls work.
+
+System call table:
+http://docs.cs.up.ac.za/programming/asm/derick_tut/syscalls.html
+
+To get system call documentation, use
+
+man 2 syscall
+
+For example:
+
+man 2 write
+
+Here's a C program using write():
+
+syscall.c
+int main()
+{
+    write(1,"Test\n",5)
+    return 0;
+}
+
+Note that we can't use _exit(), as exiting is handled by main() in C.
+
+To see what system calls are being made, use strace. Example:
+
+$ gcc -o syscall syscall.c
+$ strace ./syscall
+execve("./syscall", ["./syscall"], [/* 42 vars */]) = 0
+brk(0)                                  = 0x804a000
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+open("/etc/ld.so.cache", O_RDONLY)      = 3
+fstat64(3, {st_mode=S_IFREG|0644, st_size=136536, ...}) = 0
+mmap2(NULL, 136536, PROT_READ, MAP_PRIVATE, 3, 0) = 0xb7fc2000
+close(3)                                = 0
+open("/lib/libc.so.6", O_RDONLY)        = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\360d\1"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0755, st_size=1575187, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fc1000
+mmap2(NULL, 1357360, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0xb7e75000
+mmap2(0xb7fbb000, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x146) = 0xb7fbb000
+mmap2(0xb7fbe000, 9776, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xb7fbe000
+close(3)                                = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7e74000
+set_thread_area({entry_number:-1 -> 6, base_addr:0xb7e746c0, limit:1048575, seg_32bit:1, contents:0, read_exec_only:0, limit_in_pages:1, seg_not_present:0, useable:1}) = 0
+mprotect(0xb7fbb000, 4096, PROT_READ)   = 0
+munmap(0xb7fc2000, 136536)              = 0
+write(1, "Test\n", 5Test
+)                   = 5
+exit_group(0)                           = ?
+Process 3492 detached
+
+Never mind that stuff at the top, you can see our system call being
+executed at the bottom.
+
+Assembler
+
+Try opening the executable we created above, syscall, in a hex
+editor. It's huge, and it's full of stuff we don't need. Surely, we
+could use some GCC compiler flags to make it smaller, but to really
+understand what's going on, we'll have to write our stuff in
+assembler.
+
+syscall2.asm
+format ELF executable
+entry _start
+
+segment readable executable
+
+_start:
+        mov     al,     4
+        mov     bl,     1
+        mov     ecx,    message
+        mov     dl,     messageLen
+        int     0x80
+
+        mov     al,     1
+        mov     bl,     0
+        int     0x80
+
+segment readable writable
+
+message         db      'Test',0x0a
+messageLen      =       $-message
+
+Which can be assembled using the following command:
+
+fasm syscall2.asm
+
+Note that we're using fasm, the flat assembler
+(http://www.flatassembler.net) because it produces neat code, and
+doesn't clutter our executables like nasm does.
+
+Let's go through the code:
+
+format ELF executable
+entry _start
+
+We want an ELF executable, and we want it to start at _start.
+
+segment readable executable
+
+A.K.A section .text. This tells the assembler that everything under
+this line will be readable and executable (=code) unless stated
+otherwise (with a new "segment" instruction).
+
+_start:
+
+This is the entry point of our program.
+
+mov     al,     4
+mov     bl,     1
+mov     ecx,    message
+mov     dl,     messageLen
+int     0x80
+
+Woah, what's that? I'll tell you what it is:
+
+write(1,"Test\n",5)
+
+The syscall number for write() is 4 (as seen in the aforementioned
+Syscall Table
+(http://docs.cs.up.ac.za/programming/asm/derick_tut/syscalls.html), 1
+is standard output, message is "Test\n", messageLen is 5, and int 0x80
+calls the kernel.
+
+So what we do is, we put the syscall number in the al register, the
+arguments in the other registers as shown in the Syscall
+Table(http://docs.cs.up.ac.za/programming/asm/derick_tut/syscalls.html),
+and then we call the kernel with int 0x80. Pretty easy.
+
+Let's move on:
+
+mov     al,     1
+mov     bl,     0
+int     0x80
+
+System call 1, and it's first argument is 0. System call 1 is _exit,
+so we get:
+
+_exit(0)
+
+Makes sense, right?
+
+On with the show:
+
+segment readable writable
+
+message         db      'Test',0x0a
+messageLen      =       $-message
+
+Readable, writable = data.  db = define byte, and so it does. It
+defines message as a set of bytes.  $ = the current address.
+
+The current address minus the address of message returns the length of
+message, which is 5. This is a cool trick.
+
+Now, try strace'ing our program to see how awesome it is:
+
+$ fasm syscall2.asm
+$ strace ./syscall2
+execve("./syscall2", ["./syscall2"], [/* 43 vars */]) = 0
+write(1, "Test\n", 5Test
+)                   = 5
+_exit(0)                                = ?
+Process 3627 detached
+
+Woah! We can actually understand that!
+
+Hexadecimal
+
+Let's take a look at the syscall2 executable we produced in
+hexadecimal. I'll be using emacs' hexl-mode. Use whatever you like.
+
+87654321  0011 2233 4455 6677 8899 aabb ccdd eeff  0123456789abcdef
+00000000: 7f45 4c46 0101 0100 0000 0000 0000 0000  .ELF............
+00000010: 0200 0300 0100 0000 7480 0408 3400 0000  ........t...4...
+00000020: 0000 0000 0000 0000 3400 2000 0200 2800  ........4. ...(.
+00000030: 0000 0000 0100 0000 7400 0000 7480 0408  ........t...t...
+00000040: 7480 0408 1300 0000 1300 0000 0500 0000  t...............
+00000050: 0010 0000 0100 0000 8700 0000 8790 0408  ................
+00000060: 8790 0408 0500 0000 0500 0000 0600 0000  ................
+00000070: 0010 0000 b004 b301 b987 9004 08b2 05cd  ................
+00000080: 80b0 01b3 00cd 8054 6573 740a            .......Test.
+
+"Now what the hell is that?", I hear you ask. Actually, it's not that
+hard. You just need to have the right documents.
+
+The outer parts are added by hexl-mode, they indicate the address of
+each byte.
+
+The first part is just the ELF header, up to 0x74, where our actual
+program starts:
+
+b004 b301 b987 9004 08b2 05cd
+80b0 01b3 00cd 8054 6573 740a
+
+That's it. That's our whole program. Like, seriously.
+
+Let's try translating it back to assembler:
+
+Reading the Intel Software Developers Manual Volume 2A
+(http://download.intel.com/design/processor/manuals/253666.pdf)
+Appendix A: Opcode map, we discover the following:
+
+b0 means: move immediate byte into the AL register (referring to the
+next byte, 04)
+
+b0 04
+mov al, 4
+
+b3 means: move immediate byte into BL register
+
+b3 01
+mov bl, 1
+
+b9 means: move immediate word or double into the eCX register
+(referring to 87 90 04 08)
+
+b9 87 90 04 08
+mov ecx, message
+
+Where 87 is the address of our string "Test\n". The rest of the bytes,
+I'm not so sure, but it's a constant (it's the same sequence even if
+you write anther string). I'll make sure to update this document when
+I find out.
+
+Anyway, on with the show.
+
+b2 05
+mov dl, messageLen
+
+And to top it off... call the kernel!
+
+cd 80
+int 0x80
+
+Let's repeat that:
+
+write(1,"Test\n",5);
+
+mov     al,     4
+mov     bl,     1
+mov     ecx,    message
+mov     dl,     messageLen
+int     0x80
+
+b0 04
+b3 01
+b9 67 80 04 08
+b2 05
+cd 80
+
+
+It makes perfect sense!
+
+Now, for exiting:
+
+b0 01
+b3 00
+cd 80
+
+mov al, 1
+mov bl, 0
+int 0x80
+
+exit(0);
+
+And the last part....
+
+54 65 73 74 0a
+
+Test\n
+
+Now the whole thing one more time:
+
+write(1,"Test\n",5);
+exit(0);
+
+mov     al,     4
+mov     bl,     1
+mov     ecx,    message
+mov     dl,     messageLen
+int     0x80
+
+mov     al,     1
+mov     bl,     0
+int     0x80
+
+message         db      'Test',0x0a
+messageLen      =    $-message
+
+b0 04
+b3 01
+b9 67 80 04 08
+b2 05
+cd 80
+
+b0 01
+b3 00
+cd 80
+
+54 65 73 74 0a
+
+It's a sequence of numbers, and we actually understand it! Do not try
+and tell me that that is not fucking awesome.
+
+Only one step left....
+
+Binary
+
+At last, you will find out how to write programs in
+binary. Hexadecimal is actually shorthand for binary, so the right
+numbers are already there, we just have to convert bases.
+
+I'll assume you know how binary and hexadecimal work. If not, go
+Google it.
+
+Hexadecimal F is Binary 1111
+Hexadecimal A is Binary 1010
+Hexadecimal 5 is Binary 0101
+Hexadecimal 1 is Binary 0001
+
+Right?
+
+Now that's single digits, you know, the easy stuff. How hard would it
+be to convert multiple digits?
+
+Hexadecimal FF is Binary 1111 1111
+Hexadecimal 0A is Binary 0000 1010
+
+It turns out you can just convert the numbers individually!
+
+Converting our program to binary is simple:
+
+b0 04
+b3 01
+b9 67 80 04 08
+b2 05
+cd 80
+
+b0 01
+b3 00
+cd 80
+
+54 65 73 74 0a
+
+1011 0000 0000 0100
+1011 0011 0000 0001
+1011 0110 0111 1000 0000 0000 0100 0000 1000
+1011 0010 0000 0101
+1100 1101 1000 0000
+1011 0000 0000 0001
+1011 0011 0000 0000
+1100 1101 1000 0000
+
+0101 0100 0110 0101 0111 0011 0111 0100 0000 1010
+
+And that's all there is to it! Of course, a sequence of bits like that
+is unmaintainable, but now you know: how it works.
+

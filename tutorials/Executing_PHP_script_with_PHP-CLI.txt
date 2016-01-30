@@ -1,0 +1,128 @@
+(Info : article collected from different sites with some edit. )
+
+# Introduction
+Most hackers use PHP script to make server application programming interface or we can call it by shell scripting. This's not a web development with PHP !!
+
+We sometimes find this PHP script uploaded on milw0rm.com or any other underground sites. If u know nothing about it, how to deal with it, then this article will be really usefull for ur hacking knowledge.
+
+# What is PHP CLI?
+PHP CLI is a short for PHP Command Line Interface. As the name implies, this is a way of using PHP in the system command line. Or by other words it is a way of running PHP Scripts that aren't on a webserver (such as Apache web server or Microsoft IIS). People usually treat PHP as web development, server side tool. However, PHP CLI applies all advantages of PHP to shell scripting allowing to create either service side supporting scripts or system application even with GUI!
+
+PHP CLI is avaiable on all popular operating systems: Linux, Windows, OSX, Solaris. Popular Linux distibutions (such as Ubuntu, Debian, Fedora Core, Suse and etc.) allow to install PHP CLI from package manager (e.g. Synaptic or similar) with couple of mouse clicks. This makes installtion hassle free and you can start using it withing a seconds!
+
+PHP CLI SAPI was first released in PHP 4.2.0 as experimental, but as of version PHP 4.3.0 (including PHP5), it is fully supported and enabeled by default. PHP CLI is just a new SAPI type (Server Application Programming Interface) that focused on developing shell (or desktop as well) applications with PHP. It's worth mentioning that PHP CLI and PHP CGI are different SAPI's although they do share many of the same behaviors.
+
+If you have standart installation of PHP for Apache web server, then there are very high chances that you already have PHP CLI installed on your system. You chances are even higher if your system is running Linux. If you unlucky enought not to have it buy defualt, then you need to recompile your PHP with the --enable-cli flag or reinstall from the package that does have it. If you are running Windows, then you probably need to add php executable to your system path.
+
+The simpliest PHP CLI script on Linux would look like this:
+
+#!/usr/bin/php -q 
+<?php echo "Hello world of PHP CLI!"; ?> 
+
+
+
+Windows user would need to amend the first line with appropriate windows style path to php.exe:
+
+ 
+#!C:\php\php.exe -q 
+<?php echo "Hello world of PHP CLI!"; ?> 
+
+
+
+
+
+# Make First PHP CLI
+
+This tutorial is intended for anybody who wants to write PHP Scripts that don't require a webserver (neither Apache Web Server nor Micrsoft ISS). PHP CLI can be used for a wide range of things. After you read this tutorial, you able to write your own PHP CLI scripts.
+There are two ways you can execute your PHP CLI scripts:
+
+* The first way is to use php -f /path/to/yourfile.php. This calls the PHP binary and passes your script as a parameter. This is ugly and ineffective.
+* The preferred manner is to chmod +x PHP files that you wish to call from a command line and add an appropriate shebang line at the top of your PHP script ( #!/usr/local/bin/php - make sure that you supply here correct path to your PHP binary).
+
+You need to create the following file and save it under myfile.php name for this tutorial. The simpliest "Hello world" CLI script should look like this:
+
+ 
+#!/usr/bin/php -q 
+<?php 
+echo "Hello world of PHP CLI!"; 
+?> 
+
+
+
+
+Do not forget to set executable permissions to the file (e.g. 755):
+
+ 
+$ chmod 755 myfile.php 
+
+
+
+
+Now run it simply by typing the following:
+
+ 
+$ ./myfile.php 
+
+
+
+
+In the case if you are using PHP with Windows then you do not need to set permissions. You will run your PHP script like this:
+C:\php\php.exe myfile.php
+
+Voila! Congratulations! You created and run your first PHP CLI script!
+
+# What do We Need ?
+
+- If u are using UNIX OS, u might be dun need to install any of PHP-CLI. On UNIX environment, PHP-CLI has been installed by default. If it's not, u have to compile the package contains PHP-CLI.
+
+- If u are using Windows OS, u can do the following steps :
+1. Install PHP-CLI for Windows, u can download it here :
+http://windows.php.net/download/
+
+2. Install it on ur computer. Remember, PHP CLI command prompt interface can't be opened directly, u have to open it through command prompt. U can modify ur variable path for exeutable php.exe or just change the directory to be in PHP.
+Eg :
+
+ 
+C:\PHP\cli> 
+or 
+C:\PHP\> 
+
+
+
+
+3. What we wanna deal is PHP-CLI, notice that there's PHP-CGI. We have to make sure that we are working with PHP-CLI. Test it by typing :
+
+ 
+C:\PHP\>php -v 
+
+
+
+
+U should see sumthing that refer to "PHP-CLI". Ok.
+
+4. Test the command line to print out.
+Eg :
+
+ 
+C:\PHP\>php -r "print 23;" 
+
+
+
+
+It should print "print 23".
+
+Note : U can also install Apache Web Server/IIS Server to get PHP-CLI. In computer installed with Apache web server, u can access this PHP-CLI on this directory :
+
+ 
+C:\Program Files\VertrigoServ\Php 
+
+
+
+
+There are PHP-CLI and PHP-CGI.
+
+Ref. :
+http://www.codingforums.com/archive/index.php/t-53355.html
+http://windows.php.net/download/
+http://www.php-cli.com
+http://id2.php.net/features.commandline

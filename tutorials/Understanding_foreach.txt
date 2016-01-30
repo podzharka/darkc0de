@@ -1,0 +1,113 @@
+Hi friend,
+I think I should post a useful article since there are many friends here who didn't understand yet what actually foreach() loop error is.
+
+For u who has understand yet about loop function in PHP, u better skip this or u may just wanna review this issue. This post was based on many references I've read before, so u can easily make cross-check to the site references below.
+
+Ok we'll start with learn what foreach() loop function is.
+
+# foreach() loop function.
+PHP 4 introduced a foreach construct, much like Perl and some other languages. This simply gives an easy way to iterate over arrays. foreach works only on arrays, and will issue an error when you try to use it on a variable with a different data type or an uninitialized variable. There are two syntaxes; the second is a minor but useful extension of the first:
+
+foreach (array_expression as $value) 
+    statement 
+foreach (array_expression as $key => $value) 
+    statement
+
+
+
+The first form loops over the array given by array_expression. On each loop, the value of the current element is assigned to $value and the internal array pointer is advanced by one (so on the next loop, you'll be looking at the next element).
+
+The second form does the same thing, except that the current element's key will be assigned to the variable $key on each loop.
+
+As of PHP 5, it is possible to iterate objects too. And, you can easily modify array's elements by preceding $value with &. This will assign reference instead of copying the value.
+
+<?php 
+$arr = array(1, 2, 3, 4); 
+foreach ($arr as &$value) { 
+    $value = $value * 2; 
+} 
+// $arr is now array(2, 4, 6, 8) 
+unset($value); // break the reference with the last element 
+?>
+
+
+
+
+# What commonly error for foreach() loop funtion.
+U sometimes seen error like this while u are doing ur injection:
+
+Latest error is: Warning: Invalid argument supplied for foreach() in /includes/ functions_gallery.php....
+Warning: Invalid argument supplied for foreach() in /usr/local/cpanel/base/phpMyAdmin/... on line...
+WARNING Invalid argument supplied for foreach() Error in ... phpWARNING invalid argument supplied for each ()Error...
+Warning: Invalid argument supplied for foreach() in > c:\inetpub\wwwroot\...
+etc...
+
+How to deal with this ?
+Ok, remember this statement above :
+"The first form loops over the array given by array_expression. On each loop, the value of the current element is assigned to $value and the internal array pointer is advanced by one (so on the next loop, you'll be looking at the next element)."
+
+foreach (array_expression as $value) 
+    statement 
+foreach (array_expression as $key => $value) 
+    statement
+
+
+
+So, foreach() function needs an array expression for the loop input and the $value is the actual value of the array content. While $key is the initialization key used for initializing each of array element.
+
+Ok, for example :
+
+foreach ($filename as $filevalue) { 
+	.... 
+	}
+
+
+
+Here what actually happens :
+1. foreach() function will check whether the $filename is an array or not. If it's an array expression, then foreach() function will take the first value of the array through the variable $filevalue.
+2 Otherwise, if $filename is not an array expression, then foreach() loop function will throw an error. Why this could happen ?
+$filename has to be an array. If it's not an array or just a null value, then foreach() won't work successfully and will throw an SQL error message.
+
+# Is there any ways to block foreach() loop function ?
+foreach() does not support the ability to suppress error messages using '@'. This's why we sometimes get an error while we input an illegal character for the foreach().
+
+# Real Example
+- Assume we access page like this :
+
+http://site.com/page.php?pgId=products
+
+
+
+- Server will respond with process :
+
+foreach($products as $productType) { 
+... 
+}
+
+
+
+- And, we'll see a normal result.
+- But, how if we do sumthing like this :
+(suppose the page using PHP sanitizer, so all input on the URL will destroy all illegal characters or will be represented as a normal string value).
+
+http://site.com/page.php?pgId=products and 1=1--
+
+
+
+- Server will then respond with process :
+
+foreach($products and 1=1-- as $productType) { 
+... 
+}
+
+
+
+- From above, we see "$products and 1=1--" is a string, not an array expression. And, since there's no array element from "$products and 1=1--", foreach() loop function will throw an error.
+
+Ok, I think it's enough for better understanding about foreach() loop function.
+
+Ref. :
+http://id2.php.net/foreach
+http://www.justskins.com/forums/php-error-on-array-loop-through-foreach-2975.html
+http://stackoverflow.com/questions/360075/php-error-invalid-argument-passed-to-foreach
+http://drupal.org/node/332293

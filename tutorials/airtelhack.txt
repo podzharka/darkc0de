@@ -1,0 +1,57 @@
+So, are your Ready to use airtel Net from your mobile for free...
+All u need to have is
+?>PC
+?>Serial/USB cable/Bluetooth dongle
+?>Any Browser(I suggest Opera as we can browse both wap and other sites)
+
+Now without wasting a minute let me jump into the actual working method
+
+?>Activate Airtel Live sending a message MASALA ACTIVE to 121
+?>Create a profile with the following settings in your data account under Data Communication
+
+GATEWAY : 100.1.200.99
+APN : airtelfun.com
+USERNAME : blank
+PASSWORD : blank
+PASS REQ : OFF
+ALLOW CALLS : AUTOMATIC
+IPADDRESS :
+DNSADDRESS :
+DATA COMP : OFF
+HEADER COMP : OFF
+
+and then Under INTERNET PROFILES,
+
+INTERNET MODE : HTTP or WAP (both works)
+USE PROXY : YES
+IP ADDRESS : 100.1.200.99
+PORT : 8080
+USERNAME :
+PASSWORD :
+
+?>Create a new dial-up connection on your pc after connecting the mobile to pc,using the NEW CONNECTION WIZARD as follows
+
+ISP Name : Anyname
+Phone Number : *99***1#
+Username and Password : blank
+
+?>Configure your browser to use the proxy 100.1.200.99 and port 8080.
+
+?>Connect to the dial-up account. You will be connected at 115.2kbps
+
+?>Now if you try to access any site on your mobile you ll get an error message like "Access Denied"
+
+?>Open your browser, and start browsing and voila it opens the regular sites and if u believe u'll get a d/l speed of 5-6 kbps
+
+Common Errors u Face:
+
+If u are getting any error wile dialing a dial up connection than go to
+Control panel>> Phone and modem>>>select modem and click on its properties >>advanced
+and enter the following initialization commands
+CODE
+AT+CGDCONT=2, "IP","airtelfun.com","",0,0
+
+It should be connected without any error now.
+
+Best regards,
+Aym

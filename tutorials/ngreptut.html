@@ -1,0 +1,314 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>ngrep - network grep tutorial</title>
+</head>
+
+<body>
+
+<pre><font size="3"><h2>ngrep - network grep tutorial</h2> 
+				
+<h4>by d3hydr8 &gt; www.darkc0de.com</h4>
+date: 12/19/07
+
+Homepage: http://ngrep.sourceforge.net/
+Download: http://ngrep.sourceforge.net/download.html
+
+Description:
+
+ngrep strives to provide most of GNU grep's common features, applying them to
+the network layer. ngrep is a pcap-aware tool that will allow you to specify
+extended regular or hexadecimal expressions to match against data payloads of
+packets. It currently recognizes IPv4/6, TCP, UDP, ICMPv4/6, IGMP and Raw across
+Ethernet, PPP, SLIP, FDDI, Token Ring and null interfaces, and understands BPF
+filter logic in the same fashion as more common packet sniffing tools, such as
+tcpdump and snoop.
+
+First, lets look at installing it. I'm not much of a writer so I will just show
+the commands used throughout most of this tutorial.
+
+---------------------------------------------------------------------</font></pre>
+<pre><font size="3"><span style="background-color: #CCC">d3hydr8@linuxbox:~&gt; ls | grep ngrep
+ngrep-1.45.tar.bz2
+d3hydr8@linuxbox:~&gt; tar xvjf ngrep-1.45.tar.bz2
+ngrep-1.45/
+ngrep-1.45/win32/
+ngrep-1.45/win32/ngrep.sln
+[...]
+d3hydr8@linuxbox:~&gt; cd ngrep-1.45
+d3hydr8@linuxbox:~/ngrep-1.45&gt; ./configure &amp;&amp; make
+
+Configuring System ...
+
+checking build system type... i686-pc-linux-gnu
+checking host system type... i686-pc-linux-gnu
+checking target system type... i686-pc-linux-gnu
+checking for gcc... gcc
+checking for C compiler default output file name... a.out
+checking whether the C compiler works... yes
+[...]
+d3hydr8@linuxbox:~/ngrep-1.45&gt; su
+Password:
+linuxbox:/home/d3hydr8/ngrep-1.45 # ./ngrep -help
+usage: ngrep &lt;-hNXViwqpevxlDtTRM&gt; &lt;-IO pcap_dump&gt; &lt;-n num&gt; &lt;-d dev&gt; &lt;-A num&gt;
+             &lt;-s snaplen&gt; &lt;-S limitlen&gt; &lt;-W normal|byline|single|none&gt; &lt;-c cols&gt;
+             &lt;-P char&gt; &lt;-F file&gt; &lt;match expression&gt; &lt;bpf filter&gt;
+   -h  is help/usage
+   -V  is version information
+   -q  is be quiet (don't print packet reception hash marks)
+   -e  is show empty packets
+   -i  is ignore case
+   -v  is invert match
+   -R  is don't do privilege revocation logic
+   -x  is print in alternate hexdump format
+   -X  is interpret match expression as hexadecimal
+   -w  is word-regex (expression must match as a word)
+   -p  is don't go into promiscuous mode
+   -l  is make stdout line buffered
+   -D  is replay pcap_dumps with their recorded time intervals
+   -t  is print timestamp every time a packet is matched
+   -T  is print delta timestamp every time a packet is matched
+   -M  is don't do multi-line match (do single-line match instead)
+   -I  is read packet stream from pcap format file pcap_dump
+   -O  is dump matched packets in pcap format to pcap_dump
+   -n  is look at only num packets
+   -A  is dump num packets after a match
+   -s  is set the bpf caplen
+   -S  is set the limitlen on matched packets
+   -W  is set the dump format (normal, byline, single, none)
+   -c  is force the column width to the specified size
+   -P  is set the non-printable display char to what is specified
+   -F  is read the bpf filter from the specified file
+   -N  is show sub protocol number
+   -d  is use specified device instead of the pcap default</span>
+---------------------------------------------------------------------
+</font></pre>
+<pre><font size="3">If you get an error while compiling like:
+
+checking for a complete set of pcap headers... no
+!!! couldn't find a complete set of pcap headers
+
+Ngrep uses the packet capture (PCAP) client support library which can be found
+here: http://www.tcpdump.org/release/libpcap-0.9.8.tar.gz
+
+Now that we have it installed lets make sure it works. Here I choose the device 
+which is wlan0 (eth0 is default) and I choose to grab 3 packets.
+
+---------------------------------------------------------------------</font></pre>
+<pre><font size="3"><span style="background-color: #CCC">linuxbox</span><span style="background-color: #CCC">:/home/d3hydr8/ngrep-1.45 # ./ngrep -d wlan0 -n 3
+interface: wlan0 (192.168.1.0/255.255.255.0)
+#
+T 192.168.1.104:46594 -&gt; 72.14.219.83:443 [AP]
+  .... .V..Zw......8q...*..b.b.Yhe...d.
+######
+T 192.168.1.104:46595 -&gt; 72.14.219.83:443 [AP]
+  ............=..vB..OsL.w}.2F@;...|...(.k5v.
+.}..?cx.7.....S.ZI.....[.&lt;.....}.8.....9.8.....5.........3.2............./......
+..........
+  ...*.........mail.google.com..................
+##
+T 72.14.219.83:443 -&gt; 192.168.1.104:46595 [AP]
+  &amp;.$.&quot;.
+http://crl.verisign.com/pca3.crl02..+........&amp;0$0&quot;..+.....0...http://ocsp.thawte
+.com04..U.%.-0+..+.........+.........`.H...B...
+ 
+.`.H...E...0...*.H............U.c......_...v..Q....+..wK.iP.........9...ry/....p
+....S4...S...V+.\.....+.7.H.B%.&gt;....o..m.t...|{`&lt;w...H
+  .../..7.**6......?To.............
+exit
+10 received, 0 dropped
+</span><span style="background-color: #FFFFFF">---------------------------------------------------------------------</span></font></pre>
+<pre><font size="3"><span style="background-color: #FFFFFF">It works!!! Now lets see what we can really do.
+
+ngrep -d any port 25
+This will let you monitor all activity crossing source or destination port 25
+(SMTP). I'm currently connected to an irc network so lets try it out.
+</span>
+---------------------------------------------------------------------</font></pre>
+<pre><font color="#00FFFF"></font><font size="3"><span style="background-color: #CCC">linuxbox</span><span style="background-color: #CCC">:/home/d3hydr8/ngrep-1.45 # ./ngrep -d wlan0 port 6667
+interface: wlan0 (192.168.1.0/255.255.255.0)
+filter: (ip) and ( port 6667 )
+#
+T 84.45.99.122:6667 -&gt; 192.168.1.104:56342 [AP]
+  :sh4rpr00ter!sh4rp@</span><span style="background-color: #CCC">vhost.com PRIVMSG #darkc0de :mastermanx2005 u here ?..
+##
+T 192.168.1.104:56342 -&gt; 84.45.99.122:6667 [AP]
+  WHO #rootmybox.</span>
+---------------------------------------------------------------------</font></pre>
+<pre><font size="3">From this you can't tell much but my client is using port 56342 to talk to the
+server at 6667. Now lets disconnect from the irc network, restart ngrep and 
+reconnect back to the irc network.
+
+---------------------------------------------------------------------</font></pre>
+<pre><font size="3"><span style="background-color: #CCC">linuxbox</span><span style="background-color: #CCC">:/home/d3hydr8/ngrep-1.45 # ./ngrep -d wlan0 port 6667
+interface: wlan0 (192.168.1.0/255.255.255.0)
+filter: (ip) and ( port 6667 )
+####
+T 84.45.99.122:6667 -&gt; 192.168.1.104:58388 [AP]
+  :irc.rootmybox.org NOTICE AUTH :*** Looking up your hostname.....
+##
+T 192.168.1.104:58388 -&gt; 84.45.99.122:6667 [AP]
+  PASS mypassword.NICK d3hydr8.USER d3hydr8 8 * :d3hydr8.
+##
+T 84.45.99.122:6667 -&gt; 192.168.1.104:58388 [AP]
+  :irc.rootmybox.org NOTICE AUTH :*** Couldn't resolve your hostname; using your
+IP address instead..</span>
+---------------------------------------------------------------------
+</font></pre>
+<pre><font size="3">As you can see from this output my password was sent in plaintext and picked up
+by ngrep.
+&quot;PASS mypassword.NICK d3hydr8.USER&quot;
+
+What if you don't feel like searching through all those packets for passwords?
+Well, ngrep comes with a regex options. 
+
+-w  is word-regex (expression must match as a word)
+
+We are also going to use the option -i that will ignore case sensitivity. Lets
+disconnect from the irc server again and restart ngrep with these new options.
+
+---------------------------------------------------------------------</font></pre>
+<pre><font size="3"><span style="background-color: #CCC">linuxbox</span><span style="background-color: #CCC">:/home/d3hydr8/ngrep-1.45 # ./ngrep -wi -d wlan0 'user|pass' port 6667
+interface: wlan0 (192.168.1.0/255.255.255.0)
+filter: (ip) and ( port 6667 )
+match: ((^user|pass\W)|(\Wuser|pass$)|(\Wuser|pass\W))
+########
+T 192.168.1.104:60420 -&gt; 84.45.99.122:6667 [AP]
+  PASS mypassword.
+####
+T 192.168.1.104:60420 -&gt; 84.45.99.122:6667 [AP]
+  USER d3hydr8 8 * :d3hydr8.</span></font></pre>
+<pre><font size="3">---------------------------------------------------------------------
+
+This also shows you can search multiple words or regex using the | symbol as a
+separator. This will also work for ftp by changing the port to 21.
+
+./ngrep -wi -d any 'user|pass' port 21
+
+Now lets try some http transactions. Lets sign onto our linuxmail.org account
+and see what shows up.
+</font></pre>
+<pre><font size="3">---------------------------------------------------------------------</font></pre>
+<pre><font size="3"><span style="background-color: #CCC">linuxbox</span><span style="background-color: #CCC">:/home/d3hydr8/ngrep-1.45 # ./ngrep -q -d wlan0 port 80 -n 3
+interface: wlan0 (192.168.1.0/255.255.255.0)
+filter: (ip) and ( port 80 )
+
+T 192.168.1.104:51364 -&gt; 205.158.62.141:80 [AP]
+  GET
+/scripts/common/proxy.main?show_frame=Enter&amp;action=login&amp;domain=linuxmail.org&amp;v=
+97adaf6fcd00942eaacee81142b7008c96456ac9fa3550b44e
+ 
+f6c33bcf041b6d&amp;login=d3hydr8&amp;password=34819d7beeabb9260a5c854bc85b3e44&amp;hash=1&amp;
+md5=1 HTTP/1.1..Host: www.linuxmail.org..User-Agent: Moz
+  illa/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.10) Gecko/20071015
+SUSE/2.0.0.10-0.1 Firefox/2.0.0.10..Accept: text/xml,application/xml,
+ 
+application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5..
+Accept-Language: en-us,en;q=0.5..Accept-Encoding: gzip,def
+  late..Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7..Keep-Alive:
+300..Connection: keep-alive..Referer: http://www.linuxmail.org/scrip
+  ts/common/index.main?signin=1&amp;lang=us..Cookie: loginName=d3hydr8....</span>
+---------------------------------------------------------------------</font></pre>
+<pre><font size="3">As you can see it recorded a GET / request to port 80. I used the -q option to
+quiet the output by not 
+printing the packets hash marks, think of this option as non-verbose. I also set
+the port to 80 and captured 
+3 packets with the -n option. As you can see by the request itself holds
+valuable information.
+
+GET
+/scripts/common/proxy.main?show_frame=Enter&amp;action=login&amp;domain=linuxmail.org&amp;v=
+97adaf6fcd00942eaacee81142b7008c96456ac9fa3550b44e
+f6c33bcf041b6d&amp;login=d3hydr8&amp;password=34819d7beeabb9260a5c854bc85b3e44&amp;hash=1&amp;
+md5=1
+
+Lets try and clean up the output using the -W byline option. -W byline will tell
+ngrep to respect embedded line feeds when they occur.
+
+---------------------------------------------------------------------</font></pre>
+<pre><font size="3"><span style="background-color: #CCC">linuxbox</span><span style="background-color: #CCC">:/home/d3hydr8/ngrep-1.45 # ./ngrep -q -d wlan0 -W byline port 80 -n 5
+interface: wlan0 (192.168.1.0/255.255.255.0)
+filter: (ip) and ( port 80 )
+
+T 192.168.1.104:42263 -&gt; 205.158.62.76:80 [AP]
+GET
+/scripts/common/proxy.main?show_frame=Enter&amp;action=login&amp;domain=linuxmail.org&amp;v=
+9e4b59553085147ce2d5e268d0a8419d05dc4cb5c0f49a1fbc09f367d6d29229&amp;login=d3hydr8&amp;
+password=34819d7beeabb9260a5c854bc85b3e44&amp;hash=1&amp;md5=1 HTTP/1.1.
+Host: www.linuxmail.org.
+User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.10) Gecko/20071015
+SUSE/2.0.0.10-0.1 Firefox/2.0.0.10.
+Accept:
+text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,
+image/png,*/*;q=0.5.
+Accept-Language: en-us,en;q=0.5.
+Accept-Encoding: gzip,deflate.
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7.
+Keep-Alive: 300.
+Connection: keep-alive.
+Referer: http://www.linuxmail.org/scripts/common/index.main?signin=1&amp;lang=us.
+Cookie: loginName=d3hydr8.</span>
+---------------------------------------------------------------------</font></pre>
+<pre><font size="3">That looks better. You can also use this technique to retrieve cookie values ;)
+Now lets try capturing an email transaction. I'm going to send am email to 
+d3hydr8@gmail.com with the subject &quot;secret&quot;.
+
+---------------------------------------------------------------------</font></pre>
+<pre><font size="3"><span style="background-color: #CCC">linuxbox</span><span style="background-color: #CCC">:/home/d3hydr8/ngrep-1.45 # ./ngrep -wi -d wlan0 'secret' port 80 -W
+byline
+interface: wlan0 (192.168.1.0/255.255.255.0)
+filter: (ip) and ( port 80 )
+match: ((^secret\W)|(\Wsecret$)|(\Wsecret\W))
+######
+T 192.168.1.104:48748 -&gt; 205.158.62.232:80 [AP]
+Content-Type: application/x-www-form-urlencoded.
+Content-Length: 489.
+.
+login=d3hydr8%3Alinuxmail.org&amp;current_folder=INBOX&amp;filename=&amp;draft_num=&amp;att=&amp;
+isreply=&amp;isforward=&amp;format=&amp;msgcharset=iso-8859-1&amp;savesent=no&amp;attachmentlists=&amp;
+advancededitor=&amp;body=This+is+a+secret+email...%0D%0A%0D%0A%3D%0D%0ASearch+for+
+products+and+services+at%3A+%0D%0Ahttp%3A%2F%2Fsearch.mail.com&amp;send1=Send&amp;order=
+&amp;mstart=&amp;mview=&amp;mpat=&amp;msg_uid=&amp;mnext=&amp;send=Send&amp;importance=normal&amp;to=d3hydr8%
+40gmail.com&amp;cc=&amp;bcc=&amp;subject=secret&amp;body1=This+is+a+secret+email...&amp;signature=0&amp;
+importance2=normal
+################################################################################
+############################
+</span>
+--------------------------------------------------------------------</font></pre>
+<pre><font size="3">I used the -wi option again with the word 'secret' and picked up a
+packet(email).
+
+to=d3hydr8%40gmail.com&amp;cc=&amp;bcc=&amp;subject=secret&amp;body1=This+is+a+secret+email...&amp;
+signature=0&amp;importance2=normal
+
+Another helpful option is the -O &lt;file&gt; option for sending pcap output to a
+file. Here you can see I am capturing
+3 packets and sending them to the pcap.out file.</font></pre>
+<pre><font size="3">---------------------------------------------------------------------
+<span style="background-color: #CCC">linuxbox:/home/d3hydr8/ngrep-1.45 # ./ngrep -O pcap.out -d wlan0 port 80 -W
+byline -n 3
+interface: wlan0 (192.168.1.0/255.255.255.0)
+filter: (ip) and ( port 80 )
+output: pcap.out
+####
+[...]
+linuxbox:/home/d3hydr8/ngrep-1.45 # ls | grep pcap
+pcap.out
+linuxbox:/home/d3hydr8/ngrep-1.45 # head -n 3 pcap.out
+T 192.168.1.104:33718 -&gt; 216.239.51.99:80 [AP]
+GET /search?hl=en&amp;q=darkc0de.com&amp;btnG=Google+Search HTTP/1.1.
+Host: www.google.com.</span>
+---------------------------------------------------------------------</font></pre>
+<pre><font size="3">I hope you learned something about the basic workings of ngrep from this
+tutorial.
+visit darkc0de.com, thanks d3hydr8[at]darkc0de[dot]com
+
+<a href="http://digg.com/security/ngrep_network_grep_tutorial"><img src="http://digg.com/img/badges/91x17-digg-button.gif" width="91" height="17" alt="Digg!"/></a>
+</font></pre>
+<pre>&nbsp;</pre>
+
+</body>
+
+</html>

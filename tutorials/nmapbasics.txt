@@ -1,0 +1,103 @@
+---------------------------------------------------------------------------------------
+[+] Nmap Basics - Tutorial
+[+] Author: Neutralise
+[+] Location: http://thesoftwareengineer.org/services/tuts/NmapBasics.txt
+
+---------------------------------------------------------------------------------------
+
+Intro:
+The tool i will be teaching you to use is called nmap and you can find the site 
+for nmap and further documentation here:
+http://insecure.org/nmap/
+
+Nmap is the leading security scanner for network professionals.
+
+For starters open up nmap, do this by double clicking the nmap shortcut button.
+It is important to remember that nmap is a commandline tool, not a simple click
+and scan tool like other port scanners.
+
+Typing "nmap -help" will provide you with a FULL list of nmap's commands but since you
+want to use it particularly for port scanning and finding what ports are open and
+what runs on them i will only explian the relevant commands. As to explain them all 
+would take literally hours.
+
+---------------------------------------------------------------------------------------
+
+Firstly, to explain what it is we are doing. Ports are numbers that TCP/IP uses to 
+map packets to services. 
+For example some common ports are:
+21 FTP
+22 SSH
+23 TELNET
+25 SMTP
+80 HTTP
+110 POP3
+
+Full ports list can be viewed here:
+http://www.iss.net/security_center/advice/Exploits/Ports/
+
+---------------------------------------------------------------------------------------
+
+When scanning hosts there are a lot of options you may want to use to find more 
+information about the target. Here are the most commonly used options:
+
+-sS		TCP SYN scan
+-sT		TCP connect scan
+-sU		UDP port scans
+-v		Verbose output
+-vv		very verbose output
+-O		Detect operating system
+-sV		Service version detection
+-P0		Dont ping, just scan
+-p		Choose your ports
+-F		Fast scan
+
+
+For example by scanning:
+nmap -vv -P0 192.168.0.3
+
+Would scan the IP 192.168.0.3, print very verbose output, and to scan the machine 
+without pinging it.
+
+nmap -O 192.168.0.3
+This would do an OS version detection on the target host(TCP/IP finger-prinitng).
+
+nmap -p 1234 -O -sV 192.168.0.3
+This scan would scan port 1234 and see if it was open, as well as an OS version 
+detection.
+
+---------------------------------------------------------------------------------------
+
+You can also make nmap save log files when outputing commands. These options are:
+
+-oN		This logs to a normal file like you see on nmap (human readable).
+-oX		XML output (open with webbrowser)(i use this one).
+
+
+For example by scanning:
+nmap -oX mylog.xml 192.168.0.3
+Would scan the host, then in the nmap program file folder save a file named mylog.xml, 
+with the results of the scan in it.
+
+
+---------------------------------------------------------------------------------------
+
+Nmap has some commands to decoy where your scan is coming from.
+For example:
+
+-D		Add decoy IPs to confuse the target's logs
+
+When the decoy option is used nmap will send spoofed packets from the IP address 
+that you specify. This will confuse targets logs as it will look like many different 
+machines are actually doing a port scan and it will make it hard for the administrator 
+to decipher which IP is actually doing the portscan (yours).
+
+
+For example:
+nmap -P0 -D microsoft.com,ME,google.com 192.168.0.3
+This command wont ping, uses decoys of microsoft.com and google.com and ME is your
+real IP address (required).
+
+---------------------------------------------------------------------------------------
+[+]^Neutralised.
+---------------------------------------------------------------------------------------

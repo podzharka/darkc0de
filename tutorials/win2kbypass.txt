@@ -1,0 +1,41 @@
+How do I bypass password logon in Windows 2000? The password has been forgotten by both the administrator and the user. QUESTION POSED ON: 26 APR 2001
+
+I'm sorry to say that there is no way to really "bypass" the password login. This is something built-in to Windows 2000 (since the first Windows NT). If you have lost the password and need to gain access to the system, here are a few possible solutions.
+
+You could try to "crack" it or to forcefully reset it to something you know. To crack the password, you would need a copy of the database and use a tool like L0phtCrack to brute-force the password.
+
+You can also use a product called "Locksmith" from Winternals at www.winternals.com. Here is a description of their product from their website:
+
+"Locksmith allows the administrator password to be replaced in cases when it has been lost or forgotten, and works even when the administrative account has been renamed."
+
+You could be interested in the Windows 2000 Autologon feature. With this feature, you can start up a computer and automatically have it logon to an account you specify. Of course, I would consider this a security risk.
+
+Here are the instructions from TechNet:
+WARNING: Using Registry Editor incorrectly can cause serious, system-wide problems that may require you to reinstall Windows NT to correct them. Microsoft cannot guarantee that any problems resulting from the use of Registry Editor can be solved. Use this tool at your own risk.
+
+1. Start REGEDT32.EXE and locate the following Registry subkey:
+
+HKEY_LOCAL_MACHINESOFTWAREMicrosoftWindowsNTCurrentVersionWinlogon
+
+2. Using your account name and password, double-click the DefaultUserName entry, type your user name, and the click OK. Double-click the DefaultPassword entry, type your password, and then click OK.
+
+Note: The DefaultPassword value may not exist. If it doesn't, from the Edit menu, choose Add Value. In the Value Name field, type: "DefaultPassword" (without the quotation marks). Select REG_SZ for the Data Type. In the String field, type your password. Save your changes.
+
+Also, if no DefaultPassword string is specified, Windows NT automatically changes the value of the AutoAdminLogon key from 1 (true) to 0 (false), thus disabling the AutoAdminLogon feature.
+
+3. From the Edit menu, choose Add Value. Enter AutoAdminLogon in the Value Name field. Select REG_SZ for the Data Type. Enter 1 in the String field. Save your changes.
+
+4. Exit REGEDT32.
+
+5. Click Start, click Shutdown, and then click OK. Turn off your computer.
+
+6. Restart your computer and Windows NT. You should be able to logon automatically.
+
+Note: To bypass the AutoAdminLogon process, and to logon on as a different user, hold down the SHIFT key after a logoff or after a Windows NT restart.
+
+Note that this only applies to the first logon. To enforce this setting for subsequent logoffs, the administrator needs to set:
+
+Key: HKEY_LOCAL_MACHINESOFTWAREMicrosoftWindowsNTCurrentVersionWinlogon
+Value: ForceAutoLogon
+Type: REG_SZ
+Data: 1

@@ -1,0 +1,39 @@
+Dork: SQL Injection
+
+inurl:"id=" & intext:"Warning: mysql_fetch_assoc()
+
+inurl:"id=" & intext:"Warning: mysql_fetch_array()
+
+inurl:"id=" & intext:"Warning: mysql_num_rows()
+
+inurl:"id=" & intext:"Warning: session_start()
+
+inurl:"id=" & intext:"Warning: getimagesize()
+
+inurl:"id=" & intext:"Warning: is_writable()
+
+inurl:"id=" & intext:"Warning: getimagesize()
+
+inurl:"id=" & intext:"Warning: Unknown()
+
+inurl:"id=" & intext:"Warning: session_start()
+
+inurl:"id=" & intext:"Warning: mysql_result()
+
+inurl:"id=" & intext:"Warning: pg_exec()
+
+inurl:"id=" & intext:"Warning: mysql_result()
+
+inurl:"id=" & intext:"Warning: mysql_num_rows()
+
+inurl:"id=" & intext:"Warning: mysql_query()
+
+inurl:"id=" & intext:"Warning: array_merge()
+
+inurl:"id=" & intext:"Warning: preg_match()
+
+inurl:"id=" & intext:"Warning: ilesize()
+
+inurl:"id=" & intext:"Warning: filesize()
+
+inurl:"id=" & intext:"Warning: require()

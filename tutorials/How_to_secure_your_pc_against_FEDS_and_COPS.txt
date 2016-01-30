@@ -1,0 +1,59 @@
+The most important thing is to encrypt your hardware and do some good changes on some data.
+
+1. go to www.pgp.com and get with a credit card :
+
+[url="http://eu.store.pgp.com/whole_disk_encryption.html"]http://eu.store.pgp.com/whole_disk_encryption.html[/url] "I will re-edit this tomorrow when I get back home bc I have an enteprise serial and u dont need to buy it"
+
+2. Download and install it Be CAREFULL to make a backup of anything you have on your pc, if you have DeepFreeze will not work and will crash your hardware.
+When you will install it it apear something to make a public or private key DONT do it you wont need it...encrypt with password is the best thing
+After you have install it in the left side you have the menu go to Whole Disk Encryption, in the right you have two kind of options " I am telling from my mind I dont have the pgp open it in front" anyway down you will need to make an user and up you have something like to speed-up ur process or to encrypt at normal speed
+
+For vista users I got an small eror after I push the encrption process but after the restart I typed the password and than the process goes to background, the rest of the Windows versions works great.
+
+So. You have to put a password long 20-25-30 characters. DONT forget it bc you CANT recover ur data if you lost the password.
+
+I have 200 Gb hardware and it take like 3-4 hours to encrypt it.
+
+After the hardware is encrypted you can restart the computer and after the bios password and hardware protection password you will have to log in with the pgp password.
+
+To see how good is the PGP before encrypting your hole hardware make a small test on a flashdisk.
+Put your flash in usb and open pgp, go to whole disk encryption the left menu than Select only the flash disk than push encrypt, after you have encrypted your flash than take it out from your usb and put it again, IT will apear a password.. DONT type your password and go to My computer, and see if you can enter in your FLashDisk (It will apear to format your flashdisk YEs or NO...DONT format it). Than take it out and put it again...type your password and you will see all the data from the f;lash disk...
+
+Same thing goes with your hardware.
+
+People that I know and cops got their pc's are not in jail bc you in Romania make only 3-6 months bc you are not divulging your password and is something like you protect someone and dont want to reveal data to Cops...dont know how to explaine but I am sure you guys understand what I want to say.
+
+
+3 Another way to encrypt your hardware if you know some programing and dont trust programs that are already made and you cant see the source code go to
+
+www.truecrypt.org ( [url="http://www.truecrypt.org/downloads.php"]http://www.truecrypt.org/downloads.php[/url] )
+
+Is free and you have the source too, I didnt encrypted my computer with this but I am sure you can do it.
+
+PGP wont work with deepfreez and truecrypt encryption so you have to encrypt one way ur computer
+
+Deepfreez I am sure most of you know what it is.
+You can use PGP and deepfreez BUT you have to make it with VMWARE. to make another windows emulation with it.
+
+True crypt didnt test it if is working with deepfreez
+
+4. Please read this [url="http://www.truecrypt.org/docs/"]http://www.truecrypt.org/docs/[/url]
+
+Even if you use or not use the encryption you have good documenttion there...I am not sure if you guys know that Important and sensitive data is loged in RAM, if you didnt know...you have to read this docs.
+
+
+5. After i have encrypted my computer I have download the truecrypt software, than I have made a hidden volume with it. I have rename it sex.avi, anything you want ISO something that looks like a game or something like that. make it with password and not key.
+
+Than you will open it with your mouse or directly from the truecrypt software, right click > open with > truecrypt. put ur password and than you have the encrypted volume that is hidden on your pc...and keep all your data there.
+
+
+I am sorry if I have bother someone with this post but I wanted to give to all something from my 12+ years experience in hacking and keeping the feds out of my computer
+
+6. THis tools wont keep you out of feds if you are doing illegal things directly from your IP.
+
+7/. I use WIFI, Findnot, TOR + proxifier.
+
+I will make a post about truly hidding your IP.
+
+
+PLEASE dont make illegal things...LOL :)) hack the world:) I dont care...I am doing for money and the fun...was long time ago :) Money RUlls :D

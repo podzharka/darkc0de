@@ -1,0 +1,48 @@
+Tools used:
+-----------
+
+- OllyDbg + plugins
+- ImpREC
+- Cheat Engine 5.3
+- SnagIt
+
+Description:
+-----------
+
+[1/4] How to use WriteProcessMemory to sniff trainers
+[2/4] How to apply the above if game updates and you can't find any working trainers
+[3/4] Basic exporting of code-caves and basic functionality of Cheat Engine (auto-assembler, scripting and making a trainer on the fly)
+[4/4] Getting rid of stupid egotistic nags of releasers (Myth, DEViANCE etc...), basic UPX unpacking...
+
+All tutorials have as target the game called Sacred from Ascaron, but are meant for any game !
+
+First tutorial:
+-------------
+- I used sheep's mega-trainer as a reference;
+* side-note : This is addressed to all sites stating that his trainer is for v1.0; WRONG! It's for v1.02 !!! *
+- Olly + WriteProcessMemory and sniffed what it writes to the game;
+
+Second tutorial:
+---------------
+- Explained how sheep's one-sided god mode works;
+- Basic exporting of code to clipboard;
+- Used SnagIt to get a snapshot of the game code, at "god mode" address;
+
+Third tutorial:
+-------------
+- "Updated" game from v1.02 to v1.8.6
+- Purpose : update sheep's trainer for WHINERS (OMG! I can't find a working trainer - guess what, now you can update the sh!t on your own)
+- Basic Cheat Engine scripting based on sheep's code-cave;
+- On-the-fly trainer making with CE's engine;
+
+Fourth tutorial:
+--------------
+- Myth releases are a pain in the ass;
+- They pack their files and add .dlls along with them, .dlls which have as purpose blowing a gay nag in the face of the user :|
+- Taught how to use Olly to manage basic UPX unpacking and getting rid of the nag;
+
+BIG n0Tes:
+-----------
+1. Sniffing is for teaching purposes, and is meant to help those who don't have working trainers for updated versions of any game available. If you're caught riping code, you're toasted. We know it when we see it !
+2. Excuse any typos or mistakes.
+3. Greetz fly out to team Extalia and to sheep for his tremendous work !

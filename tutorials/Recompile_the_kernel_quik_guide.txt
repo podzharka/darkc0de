@@ -1,0 +1,63 @@
+well sometimes we got problem with the kernel and we need to recompile the kernel :S
+
+so this is a quik one to show how to do it:
+
+[+]first of all we open a new console an cd to
+
+cd /usr/src
+
+
+[+]we download the latest SRC of the kernel[/code]
+
+http://kernel.org/pub/linux/kernel/v2.6/linux-2.6.26.5.tar.bz2
+
+
+[+]we unpack the kernel...
+
+tar xjf linux-2.6.26.5tar.bz2
+
+
+[+]we create a symlink to the linux kernel SRC directory
+
+ln -s linux-2.6.26 linux
+
+
+[+]copy the the config file
+
+cp /route/of/theconfig.txt /usr/src/linux/.config
+
+
+[+]now we compile and we create the modules,to do this we cd to linux
+
+cd linux; make bzImage && make modules && make modules_install
+
+
+we wait a while until all process is done and we pray xD
+[+]we are almos done now we copy the kernel image to the /boot/ directorie
+
+cp arch/i386/boot/bzImage /boot/vmlinuz-2.6.26.5
+
+
+[+]now we open the /etc/lilo.conf with your favorite editor and we do:
+
+nano /etc/lilo.conf
+
+
+[+]add this lines :
+
+image = /boot/vmlinuz-2.6.26.5 
+root = /dev/hda1 
+label = Slackware 
+read-only]
+
+
+[+]done we save the changes ctrl(plus)o then ctrl(plus)x
+
+[+]we execute
+
+lilo -v
+
+
+we restart and there u done we most be working your new kernel recompilated :s
+
+this is a quik guide if is any error just advice to me thanks

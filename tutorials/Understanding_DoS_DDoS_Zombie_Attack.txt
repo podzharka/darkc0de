@@ -1,0 +1,298 @@
+Note : This was get from other site, just enjoy to read this article about Denial Of Service.
+
+What's Denial of Service? There are the many questions that still lurk around. There are different types of Denial of Service attacks. There is DoS, DDoS and Zombie attack.
+
+Protection against DOS is difficult due to the very nature of the attacks. Different scanning tools are available to aid detection and plugging of vulnerabilities leading to Denial of Service. Some famous attacks with Denial of service attacks were on; Yahoo Inc, Buy.com Inc, eBay, Amazon.com, CNN and Microsoft.com. Recently milliondollarhomepage.com of a UK student who had the idea of selling pixels as advertising space was hit by a DDoS attack. There are tons of attacks on smaller websites that go un-reported. Millions of money are lost due to lost revenues and unhappy customers.
+
+A denial of service attack (DOS) is when an attacker can make a system unusable or significantly slow for legitimate users by overloading the resources, so that no one can access it. If an attacker is unable to gain access to a machine, the attacker most probably will just crash the machine by using denial of service attack. Do) is an attack designed to render a computer or network incapable of providing normal services. The most common DoS attacks will target the computer's network bandwidth or connectivity. Bandwidth attacks flood the network with such a high volume of traffic, that's all available network resources are consumed and legitimate user requests cannot get through. Connectivity attacks flood a computer with such a high volume of connection requests, that all available operating system resources are consumed and the computer can no longer process legitimate user requests. Not all service outages, even those that result from malicious activity, are necessarily denial-of-service attacks. Other types of attack may include a denial of service as a component, but the denial of service may be part of a larger attack. Illegitimate use of resources may also result in denial of service. For example, an intruder may use of an anonymous ftp area as a place to store illegal copies of commercial software, consuming disk space and generating network traffic. A denial of service attack can also destroy programming and files in a computer system. Although usually intentional and malicious, a denial of service attack can sometimes happen accidentally. A denial of service attack is a type of security breach to a computer system that does not usually result in the theft of information or other security loss.
+
+A denial-of-service attack is characterized into four attack points:
+
+1.(Flood) a network, thereby preventing legitimate network traffic.
+2.(Disrupt) connections between two machines, thereby preventing access to a service.
+3.(Prevent) a particular individual from accessing a service.
+4.(Disrupt) service to a specific system or person.
+
+
+[DoS Attack Classes]
+
+There are three attack classes in Denial of Service attack.
+
+Bandwidth attack: Bandwidth attacks are relatively straightforward attempts to consume resources, such as network bandwidth or equipment throughput. High-data-volume attacks can consume all available bandwidth between an ISP and your site. The link fills up, and legitimate traffic slows down. Timeouts may occur, causing retransmission, generating even more traffic. An attacker can consume bandwidth by transmitting any traffic at all on your network connection. A basic flood attack might use UDP or ICMP packets to simply consume all available bandwidth. For that matter, an attack could consist of TCP or raw IP packets, as long as the traffic is routed to your network.
+A simple bandwidth-consumption attack can exploit the throughput limits of servers or network equipment by focusing on high packet rates times sending large numbers of small packets. High-packet-rate attacks typically overwhelm network equipment before the traffic reaches the limit of available bandwidth. Routers, servers, and firewalls all have constraints on input-output processing, interrupt processing, CPU, and memory resources. Network equipment that reads packet headers to properly route traffic becomes stressed handling the high packet rate (packets per second), not the volume of the data (Mbps). In practice, denial of service is often accomplished by high packet rates, not by just traffic volume.
+
+Protocol attack: The basic flood attack can be further refined to take advantage of the inherent design of common network protocols. These attacks do not directly exploit weaknesses in TCP/IP stacks or network applications but, instead, use the expected behavior of protocols such as TCP, UDP, and ICMP to the attacker's advantage. Examples of protocol attacks include the following: SYN flood is an asymmetric resource starvation attack in which the attacker floods the victim with TCP SYN packets and the victim allocates resources to accept perceived incoming connections. As mentioned above, the proposed Host Identity Payload and Protocol (HIP) are designed to mitigate the effects of a SYN flood attack. Another technique, SYN Cookies, is implemented in some TCP/IP stacks.
+Smurf is an asymmetric reflector attack that targets a vulnerable network broadcast address with ICMP ECHO REQUEST packets and spoofs the source of the victim. Fraggle is a variant of smurf that sends UDP packets to echo or chargen ports on broadcast addresses and spoofs the source of the victim.
+
+Logic attack: Unlike flooding and protocol attacks, which seek to consume network or state resources, logic attacks exploit vulnerabilities in network software, such as a web server, or the underlying TCP/IP stack. Some vulnerability by crafting even a single malformed packet. There are many variations on these common types of attacks and many varieties of attack tools to implement them.
+Denial-of-service attacks may be effective because of a combination of effects. For example, an attack that does not fully consume bandwidth or overload equipment throughput may be effective because it generates enough malformed traffic to crash a particular service, such as a web server or mail server.
+
+
+[DDoS]
+
+Distributed Denial of Service Attack is when an attacker launches the attack using several machines. In this case, an attacker breaks into several machines, or coordinates with several zombies to launch an attack against a target or network at the same time. This makes it difficult to detect because attacks originate from several IP addresses. This attack is more dangerous because many IP's are participating in this attack. If a single IP address is attacking a website, it can block that address. If it is 50,000 this is extremely difficult. DDoS attacks involve breaking into hundreds or thousands of machines all over the Internet. Then the attacker installs DDoS software on them, allowing them to control all these burgled machines to launch coordinated attacks on victim sites. These attacks typically exhaust bandwidth, router processing capacity, or network stack resources, breaking network connectivity to the victims. DDoS is a combination of DoS attacks staged or carried out in concert from various hosts to penalize the target host from further serving its function. DDoS is term coined when the source of the attack is not coming from a single source, but multiple sources. DDoS cannot be eliminated with merely filtering the source IPs since it is often launched from multiple points installed with agents. Some known DDoS tools are Mstream, Trinoo, TFN2K (Tribe Flood Network), Stacheldraht and Shaft. DDoS attack is an example of a bandwidth attack. A Distributed Denial of Service (DDoS) attack uses many computers to launch a coordinated DoS attack against one or more targets. Using client/server technology, the perpetrator is able to multiply the effectiveness of the Denial of Service significantly by harnessing the resources of multiple unwitting accomplice computers, which serve as attack platforms. Typically, a DDoS master program is installed on one computer using a stolen account. The master program, at a designated time, then communicates to any number of "agent" programs, installed on computers anywhere on the Internet. The agents, when they receive the command, initiate the attack. Using client/server technology, the master program can initiate hundreds or even thousands of agent programs within seconds.
+
+
+[DoS Tools]
+
+There are many denial of service (DoS) Tools/Methods that are available to download. Many are not effective since security became stronger and holes were patched but I will discuss some of the most popular tools still that work. Some of the popular Tools/Methods are: Ping of Death (Affects Win 95/NT), wwwHack (Affects web Servers), SSPing (Affects Win 95/NT and Mac OS), Land Exploit (Affects Win 95/NT), Smurf (Affects Networks), SYN Flood (Affects Web Servers/Most OS), WinNuke (Affects Win 95/NT)(Nukers), Jolt2 (Affects Win NT/2000), Bubonic.c (Affects Win 2000/Some Linux versions), Targa (Affects Linux and BSD Unix). Customized php scripts and executables that are coded to attack web sites/web servers.
+
+[SYN Flood]
+
+SYN attack floods a targeted system with a series of SYN packets. Each packet causes the targeted system to issue a SYN-ACK response, while the targeted system waits for the ACK that follows the SYN-ACK; it queues up all outstanding SYN-ACK responses on what is known as a backlog queue. SYN-ACKs are moved of the queue only when an ACK comes back or when an internal timer (which is set at relatively long intervals) terminates the TCP three-way handshake. Once the queue is full, the system will ignore all incoming SYN requests, making the system unavailable for legitimate users. The connectionless TCP attack does not complete the three-way handshake initiated by the originator. Thus, often the packet is crafted with nonexistent (spoofed) source IP. For a connectionless TCP attack, it is more difficult to filter since the source address is not necessarily the original source IP of the packet. When the host fails to find the source IP, it will wait until it times out. The most effective way of stopping such attacks is by applying rate limit. Rate limit is a method of setting threshold to an acceptable number of packets to be processed by the computer. One of the most common attacks that will appear on many Intruder Detection System alerts is TCP SYN flood alerts. TCP SYN flood attacks are instigated by crafting packets from spoofed or non-existent source address and generating a high number of half-open connections. Because each connection opened must be processed to its completion (to complete the handshake or eventual timeout), the system is pinned down to perform these tasks. This problem is inherent in any network or operating system running full-fledged TCP/IP design and something that is not easily rectified.
+
+Some countermeasure would be like network Ingress filtering can also prevent their downstream networks from injecting packets with faked or "spoofed" addressed into the Internet. Although it may not stop the attack, it will make identifying the source host easier and terminate it immediately. RFC 2267 provides more information on Ingress Filtering.
+
+In the TCP/IP protocol, a three-way handshake takes place as a service is connected to. First in a SYN packet from the client, with which the service responses with a SYN-ACK. Finally, the client responds to the SYN-ACK and the conversation is considered started. A SYN Flood attack is when the client does not response to the SYN-ACK, tying up the service until the service times out, and continues to send SYN packets. The source address of the client is forged to a non-existent host, and as long as the SYN packets are sent faster than the timeout rate of the TCP stack waiting for the time out, the resources of the service will be tied up. This is a simplified version of what exactly happens. During a SYN flood attack, the attacker sends a large number of SYN packets alone, without the corresponding ACK packet response to the victim's SYN/ACK packets. The victim's connections table rapidly fills with incomplete connections, crowding out the legitimate traffic. Because the rate of attacking SYN packets usually far exceeds that of normal traffic, even when a table entry eventually is cleared out, another attacking SYN packet rather than a legitimate connection will fill it. But because SYN packets are a necessary part of legitimate traffic, they cannot be filtered out altogether. Second, SYN packets are relatively small, so an attacker can send large numbers of packets using relatively low-bandwidth Internet connections. Finally, because the attacker does not need to receive any data from the victim, the attacker can place random source IP addresses in the attacking packets to camouflage the actual source of the attack, and make filtering all but impossible. The basic purpose of a SYN flood is to use up all new network connections at a site and thus prevent legal users from being able to connect. TCP connections are made by first sending a request to connect with an ID in it. The receiving connection sends out an acknowledgment saying it's ready and then the sending system is supposed to send an acknowledgment that the connection has been made. The SYN (Synchronize sequence Number) packet is the first of these and contains the ID the receiver is supposed to reply to. If a fake ID is in that packet then the receiving system never gets a connection acknowledgment. Eventually, the connection will time out and that incoming channel on the receiver will become available again for another request. A SYN flood sends so many such requests that all incoming connections be continuously tied up waiting for acknowledgments that never come. This makes the server generally unavailable to legal users (unless one happens to sneak in just at the moment one of the tied-up connections times out).
+
+
+[DoS Security]
+
+You could do the following things to minimize the DoS attack: Effective robust design, Bandwidth limitations, Keep systems patched, Run the least amount of services, Allow only necessary traffic and Block IP addresses. Due to the power of DoS attacks and the way they work, there is nothing that can be done to prevent a Dos attack entirely. The DoS and DDoS attacks in combination with malicious codes implantations are easily launched but difficult to completely stop. With the nature of TCP/IP and programming issues that are often overlooked, the current Internet is still vulnerable to various forms of DoS and DDoS attacks. There is no "silver bullet" solution to this, like many other security issues. Timely application of patches and system updates, especially to potentially exposed machines. For example, update and maintain a current build of BIND on DNS servers. Deployment of only strictly necessary network services, Intrusion detection systems, Firewalls, Anti-virus software and Good password policies. Use of Tripwire or other similar tools to detect changes in configuration information or other important files. Establishment and maintenance of regular backup schedules and policies. As a network is only as secure as its weakest link, protection of mobile and remote machines with personal firewall/intrusion detection software. However, in mitigating DoS or DDoS attacks, it requires good network design to be able to control the point of entry or the gateway. As for mitigating new attacks, it is essential to have filtering capability based on packet header and content within the network or at the critical gateways in order to filter malicious traffic as a response to such attacks while waiting for a permanent solution from suppliers to be applied to the devices. Applying all known patches and fixes to all devices in the network to prevent known attacks is necessary. Finally, it is important to have the relevant referrals in the policy and legislations to address the issue of DoS and DDoS to ensure an effective cooperation between service providers and law enforcement agencies.
+
+
+[DDoS Tools]
+
+The main and popular tools for running DDOS attacks are: Trinoo, TFN, Stacheldraht, Shaft, TFN2K and mstream.
+
+(Trinoo)
+
+UDP packet flood attack
+
+No source address forgery
+
+Some bugs, but full control features
+
+
+(TFN)
+
+Some bugs, limited control features
+
+UDP packet flood attack ("trinoo emulation")
+
+TCP SYN flood attack
+
+ICMP Echo flood attack
+
+Smurf attack
+
+Either randomizes all 32 bits of IP source address, or just the last 8 bits
+
+
+(TFN2K)
+
+Same attacks as TFN, but can randomly do them all at once
+
+Encryption added to improve security of the DDoS network
+
+Control traffic uses UDP/TCP/ICMP
+
+Same source address forgery features as TFN
+
+
+(Stacheldraht/StacheldrahtV4)
+
+Some bugs, full control features
+
+Same basic attacks as TFN
+
+Same source address forgery features as TFN/TFN2K
+
+
+(Stacheldraht v2.666)
+
+Fewer bugs than original
+
+Same basic attacks as Stacheldraht
+
+Adds TCP ACK flood attack
+
+Adds TCP NUL (no flags) flood attack
+
+Adds Smurf attack with pre-compiled list of 16,702 amplifiers
+
+Same source address forgery features as stacheldraht/TFN/TFN2K
+
+
+(shaft)
+
+Some bugs, but full control features
+
+Adds statistics
+
+UDP flood attack
+
+TCP SYN flood attack
+
+ICMP flood attack
+
+Randomize all three attacks
+
+
+(mstream)
+
+Many bugs, with very limited control features
+
+TCP ACK flood (very efficient)
+
+Randomizes all 32 bits of IP address
+
+
+[DDOS - Attack Sequence]
+
+All of the DDOS tools follow this sequence.
+
+Mass-intrusion Phase - automated tools identify potential systems with weaknesses; then root compromise them and install the DDOS software on them. These are the primary victims.
+
+DDOS Attack Phase - The compromised systems are used to run massive DOS against a victim site.
+
+There is an initial mass-intrusion phase, in which automated tools are used to remotely root compromise large numbers (i.e., in the several hundred to several thousand ranges) and the distributed denial of service agents are installed on these compromised systems. These are primary victims (of system compromise.) None of these distributed denials of service tools has any features that facilitate compromising systems, and those groups who wrote them hold these automated tools closely. The mass-intrusion phase is followed by the actual denial of service attack phase, in which these compromised systems which constitute the handlers and agents of the distributed attack network are used to wage massive denial of service attacks against one or more sites. These are secondary victims (of denial of service).
+
+[Trinno]
+
+Trinoo was the first DDOS tool to be discovered. Found in the wild (binary form) on Solaris 2.x systems compromised by buffer overrun bug in RPC services: statd, cmsd, ttdbserverd. Trinoo daemons were UDP based, password protected remote command shells running on compromised systems. Trinoo is a DDOS attack tool. It uses the following TCP Ports:
+
+Attacker to master: 27665/tcp
+Master to daemon: 27444/udp
+Daemon to master: 31335/udp
+
+Daemons reside on the systems that launch that the attack and masters control the daemon systems. Since Trinoo uses TCP, it can be easily detected and disabled. The trinoo distributed denial-of-service system consists of 3 parts:
+
+The Client: The client is not part of the trinoo package. The telnet or Netcat program is used to connect to port 27665 of the "master." An attacker connects to a master to control the "broadcasts" that will flood a target. (The master and broadcast are described later in this section.)
+
+The Master: The master is contained in the file master.c in the trinoo package. While running, it waits for UDP packets going to port 31335. These packets are registration packets from the "broadcast." It also waits for connections to TCP port 27665. When a client connects to port 27665, the master expects the password to be sent before it returns any data. The default password is "betaalmostdone". When the master is run, it displays a "?" prompt, waiting for a password. The password is "gOrave".
+
+The Broadcast (or Beast): The broadcast is the code in trinoo that performs the actual flooding. It is ns.c in the trinoo package. When the broadcast is compiled, the IP addresses of the masters that can control it are hard coded into the program. Starting the broadcast, a UDP packet is sent to port 31335 of each master IP, containing the data "*HELLO*". This packet registers the broadcast with the master. An attacker can then connect to the master and use the daemons to send a UDP flood.
+
+There are six commands that a client can send to the master to cause the master to communicate with the broadcast. A master sending commands to a broadcast sends a UDP packet to port 27444 of the broadcast. The default password between the master and the broadcast daemon is "l44adsl". These are the six commands the client sends to the master:
+
+- - mtimer:
+
+Sets a timer to DoS a target. The master sends a "bbb" command to the broadcast. This packet looks like: "bbb l44adsl 300" when observed on the network.
+
+- - dos:
+
+Performs a Denial of Service attack on a machine. The attack used is explained below. The dos command sends an "aaa" command to the broadcast. This packet looks like: "aaa l44adsl 10.1.1.1" when observed on the network.
+
+- - mdie:
+
+Kills all broadcasts. An attacker cannot use this command when connected to the master unless an additional password is known (the password is unknown as of this writing), but an attacker can send their own UDP packet with the master-broadcast password ("l44adsl") to kill each of the broadcasts. The master then sends a "d1e" command to the broadcast daemon. This packet looks like: "d1e l44adsl" when observed on the network.
+
+- - mping:
+
+Pings all broadcasts. The master sends a "png" command to each broadcast, and the broadcast returns with a "PONG" packet sent to UDP port 31335 of the master. When this packet is transmitted from the master to the broadcast daemon, it looks like: "png 144 adsl".
+
+- - mdos:
+
+This command performs a Denial of Service attack on a list of machines. The master sends a "xyz" command to each broadcast. The packet looks like "xyz l44adsl 123:10.1.1.1:10.1.1.2:10.1.1.3:Ô
+
+- - msize:
+
+This command sets the size of the UDP packets to use when performing a Denial of Service attack on a target. It is undocumented in the master's online help system. The master sends a "rsz" command to the broadcast daemon, and the packet looks like "rsz l44adsl 300".
+
+The DoS attack that trinoo broadcasts use is a UDP flood. Trinoo sends a large number of UDP packets containing 4 data bytes (all zeros) and coming from one source port to random destination ports on the target host. The target host returns ICMP Port Unreachable messages. The target host slows down because it is busy processing the UDP packets, and at this point, there will be little or no network bandwidth left. There is no reliable way to tell the difference between a trinoo flood and a UDP port scan, because it is not possible to determine if someone is monitoring the ICMP messages.
+
+
+[TFN]
+
+Could be thought of as son of trinoo
+
+Improved on some of the weaknesses of trinoo by adding different types of attacks that could be mounted against the victim site. Structured like trinoo with attackers, clients (masters) and daemons. Initial system compromise allows the TFN programs to be installed.
+Tribe Flood Network, like trinoo, uses a master program to communicate with attack agents located across multiple networks. TFN launches coordinated Denial of Service Attacks that are especially difficult to counter as it can generate multiple types of attacks and it can generate packets with spoofed source IP addresses. Some of the attacks that can be launched by TFN include UDP flood, TCP SYN flood, ICMP echo request flood, and ICMP directed broadcast. The basic characteristics of and suggested defense strategies against the TFN DDoS attack follow. To initiate TFN, the attacker accesses the master program and sends it the IP address of one or more targets. The master program proceeds to communicate with all of the agent programs, instructing them to initiate the attack. Communications between TFN master programs and agent programs use ICMP echo reply packets, where the actual instruction to be carried out is embedded in the 16-bit ID field in binary format. The use of ICMP (Internet Control Message Protocol) makes packet protocol filtering possible. TFN agents can be defeated by configuring your router or intrusion detection system to disallow all ICMP echo and echo reply packets onto your network. However, this will break all internet programs (such as "ping") that utilize these functions. The TFN master program reads a list of IP addresses containing the locations of the agents programs. This list of addresses may be encrypted, using "Blowfish" encryption. If it is not encrypted, then the agents can be identified from the list.
+
+[TFN2K]
+
+
+TFN2K is a DDOS program which runs in distributed mode. There are two parts to the program: client and server.
+
+The server (also known as zombies) runs on a machine in listening mode and waits for commands from the client.
+
+Running the server
+#td
+Running the client
+#tn -h 23.4.56.4 -c8 -i 56.3.4.5
+
+This command starts an attack from 23.4.56.4 to the victim's computer 56.3.4.5
+
+The TFN2K distributed denial of service system consists of client/server architecture. The Client: The client is used to connect to master servers, which can then perform specified attacks against one or more victim machines. Commands are sent from the client to the master server within the data fields of ICMP, UDP, and TCP packets. The data fields are encrypted using the CAST algorithm and base64 encoded.
+
+The client can specify the use of random TCP/UDP port numbers and source IP addresses. The system can also send out "decoy" packets to non-target machines. These factors make TFN2K more difficult to detect than the original TFN program.
+
+The Master Server: The master server parses all UDP, TCP, and ICMP echo reply packets for encrypted commands. The master server does not use a default password when it is selected by the user at compile time.
+
+The Attack: The TFN2K client can be used to send various commands to the master for execution, including commands to flood a target machine or set of target machines within a specified address range. The client can send commands using UDP, SYN, ICMP echo, and ICMP broadcast packets. These flood attacks cause the target machine to slow down because of the processing required to handle the incoming packets, leaving little or no network bandwidth. TFN2K can also be used to execute remote commands on the master server and bind shells to a specified TCP port. TFN2K runs on Linux, Solaris, and Windows platforms.
+
+[Stacheldraht]
+
+Stacheldraht combines the features of TFN and Trinoo but adds encryption layer between daemons. Stacheldraht uses TCP and ICMP on the following ports:
+Client to Handler: 16660 TCP
+
+Handler to and from agents: 65000 ICMP
+
+Stacheldraht consists of three parts: the master server, client, and agent programs.
+
+The Client:
+
+The client is used to connect to the master server on port 16660 or port 60001. Packet contents are blowfish encrypted using the default password "sicken", which can be changed by editing the Stacheldraht source code. After entering the password, an attacker can use the client to manage Stacheldraht agents, IP addresses of attack victims, lists of master servers, and to perform DoS attacks against specified machines.
+
+The Master Server: The master server handles all communication between client and agent programs. It listens for connections from the client on port 16660 or 60001. When a client connects to the master, the master waits for the password before returning information about agent programs to the client and processing commands from the client.
+
+The Agent: The agent listens for commands from master servers on port 65000. In addition to this port, master server/agent communications are also managed using ICMP echo reply packets. These packets are transmitted and replied to periodically. They contain specific values in the ID field (such as 666, 667, 668, and 669) and corresponding plaintext strings in the data fields (including "skillz", "ficken", and "spoofworks"). The ICMP packets act as a "heartbeat" between agent and master server, and to determine source IP spoofing capabilities of the master server. The agent identifies master servers using an internal address list, and an external encrypted file containing master server IP addresses. Agents can be directed to "upgrade" themselves by downloading a fresh copy of the agent program and deleting the old image as well as accepting commands to execute flood attacks against target machines.
+
+The Attack: Like TFN/TFN2K, Stacheldraht can be used to perform ICMP, SYN, and UDP flood attacks. The attacks can run for a specified duration, and SYN floods can be directed to a set of specified ports. These flood attacks cause the target machine to slow down because of the processing required to handle the incoming packets, leaving little or no network bandwidth.
+
+Stacheldraht combines features of the "trinoo" distributed denial of service tool, with those of the original TFN, and adds encryption of communication between the attacker and stacheldraht masters and automated update of the agents. One of the weaknesses of TFN was that the attacker's connection to the master(s) that control the network was in clear-text form, and was subject to standard TCP attacks (session hijacking, RST sniping, etc.) Stacheldraht deals with this by adding an encrypting "telnet alike" (stacheldraht term) client. The attacker(s) control one or more handlers using encrypting clients. Each handler can control many agents (up to 1000 agents). The agents are all instructed to coordinate a packet-based attack against one or more victim systems by the handler.Unlike trinoo, which uses UDP for communication between handlers and agents, or the original Tribe Flood Network, which uses ICMP for communication between the handler and agents, stacheldraht uses TCP and ICMP. Client to handler(s): 16660/tcp and Handler to/from agent(s): 65000/tcp, ICMP_ECHOREPLY. Remote control of a stacheldraht network is accomplished using a simple client that uses symmetric key encryption for communication between itself and the handler. After connecting to the handler using the client program, the attacker is prompted for a password. This password (default "sicken") is a standard crypt() encrypted password, which is then Blowfish encrypted using the pass phrase "authentication" before being sent over the network to the handler. One feature of stacheldraht not shared by trinoo or TFN is the ability to upgrade the agents on demand. This feature employs the Berkeley "rcp" command (514/tcp), using a stolen account at some site as a cache.
+
+
+[DDoS Security]
+
+Keep the network secure, Install IDS (Intrusion Detection System), Use scanning tools and Run zombie tools. IDS pattern matching technologies have a database of signatures. When it finds packets that have a given pattern, it sets off an alarm. Important things to do as a current or potential victim of packet flooding Denial of Service are given below:
+
+The bandwidth used in DDoS attacks is important. Therefore, there should be proper coordination with the ISP and the ISP with the upstream providers. To prevent SYN flooding attacks, set up the TCP interception feature. Details about this can be found at http://www.cisco.com. Block the UDP and ICMP messages that are not required by the network. Especially permitting outgoing ICMP unreachable messages could multiply the impact of a packet flooding attack. Deny all traffic that is not explicitly needed for the servers run. Adopt multi-homing as a best practice.
+
+[IDS systems]
+
+Some best IDS systems are; Shareware, Snort, Shadow, Courtney, Commercial, ISS RealSecure, Axent NetProwler, Cisco Secure ID (Net Ranger),
+Network Flight Recorder and Network Security Wizards Dragon.
+
+An Intrusion Detection System (abbreviated as IDS) is a defense system, which detects hostile activities in a network. The key is then to detect and possibly prevent activities that may compromise system security, or a hacking attempt in progress including reconnaissance/data collection phases that involve for example, port scans.
+
+One key feature of intrusion detection systems is their ability to provide a view of unusual activity and issue alerts notifying administrators and/or block a suspected connection. nce an intrusion has been detected, IDS issues alerts notifying administrators of this fact.
+
+Issue 1: Amount of bandwidth exceeds a maximum threshold that is expected normal traffic for a site could cause.
+
+Issue 2: Oversized ICMP and UDP packets. Stateful UDP sessions are normally using small UDP packets, having a payload of not more than 10 bytes. Normal ICMP messages dont exceed 64 to 128 bytes. poofed in control traffic.
+
+Issue 3: TCP packets (and UDP packets) that are not part of a connection. The stealthiest DDOS tools use random protocols, including connection-oriented protocols, to send data over non-connection-oriented channels.
+
+Issue 4: Packet payload contains ONLY alphanumeric character and no spaces, punctuation, control characters). This can be a sign that the packet payload is BASE64-encoded, and therefore contains only base64 characters.
+
+Issue 5: Packet payload contains ONLY binary, high-bit characters. While this can be a binary file transfer traffic transmitted over ports 20, 21, 80, etc. must be excluded if this rule is applied.
+
+
+
+[Find_DDoS]
+
+The tool find_ddos is intended to scan a local system that is either known or suspected to contain a DDOS program. It is capable of scanning executing processes on Solaris 2.6 or later, and of scanning local files on a Solaris 2.x or later system. The tool will detect several known denial-of-service attack tools by looking at all 32-bit ELF format files in a given directory tree, and comparing the files' strings and symbol table against a set of known "fingerprints" for TFN and trinoo tools.
+
+The tool also looks for files named ".sr", "...", "mservers", and optionally makes a copy of them for later analysis. (These are common names for files that contain a list of blowfish-encrypted IP addresses. The blowfish encryption key can be found by examining the binary.)
+
+The distributed denial-of-service tools that are detected by the tool are: mstream master, mstream server, stacheldraht client, stacheldraht daemon,
+stacheldraht master, tfn-rush client, tfn client,
+tfn daemon, tfn2k client, tfn2k daemon, trinoo daemon, trinoo master
+
+The tool must be run as root. The syntax of the tool is:
+
+./find_ddos [-g grabdir] [-1 logfile] [-p] [-v] [-V] [-x exclude1] [scandir]
+
+[DDoSPing]
+
+This is a tool that explores another system and looks for vulnerabilities. DDoSPing is a remote network scanner for the most common DDoS programs. It can detect Trinoo, Stacheldraht and Tribe Flood Network programs running with their default settings, although configuration of each program type is possible from the tool's configuration screen. Scanning is performed by sending the appropriate UDP and ICMP messages at a controllable rate to a user-defined range of addresses.
+
+
+[Zombie Zapper]
+
+Zombie Zapper works against Trinoo, TFN, Stacheldraht, Troj_Trinoo (Windows port of Trinoo), and Shaft. Assuming that the default passwords have not been changed, the user can simply use the same commands that an attacker would use to stop the flood. On Trinoo and Troj_Trinoo, it does stop the daemon entirely (although Trinoo is typically set to be restarted by cron, and Troj_Trinoo will restart after the Zombie Windows computer has been restarted), but on TFN, Stacheldraht, and Shaft the flooding just stops.
+
+
+Denial of Service is a very common way of attacks these days. Knowing how to secure your site and networks will greatly reduce the chances of an attack. There are different tools available for attackers to launch DOS attacks. Protection against DOS is difficult due to the very nature of the attacks. Different scanning tools are available to aid detection and plugging of vulnerabilities. I hope this article was educational for you and thought you a great deal in Denial of service security. The care and diligence used to design and implement networks, software, and operating systems has a great effect on the ability of the attacker to cause denial of service. Prevention and awareness are two factors that have an immediate impact on the success of these attacks. Filtering of unnecessary services and network data, stronger authentication and access control of remote systems and users, and proactive monitoring and updating of systems and software can help protect your network against these attacks.

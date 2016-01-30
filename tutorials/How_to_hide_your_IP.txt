@@ -1,0 +1,85 @@
+Hi there,
+
+I know many of you hiding ip's via Socks or poxy..that's shit...sorry but if they have java they can get ur ip even if u are connected thrhough a socks.
+
+So. If u have a good connection at internet you can use this softwares:
+
+1. Local ip > AOL ( using aol 9.1 or AOL desktop 10.)
+To configure your ip to use AOL USA ip class you have to do go to:
+Open Aol 9.1 > Connection options > Advanced Broadband Settings > continue > & at Broadband u will see something " You are curently editing settings for Broadband, than click and go down to Add a Broadband profile > Put any profil name you want > than down to Connection Type click on Home Network. and SAVE
+
+This is how you get IP privat from AOL.
+
+BUT what you guys didnt know and I am 100% sure about that...AOL have their ip in black list. So to have a PURE and NON blacklisted IP from AOL after you have did this setup you have to:
+
+Connect using this settings, test your ip at [url="http://www.showmyip.com/?version=full"]http://www.showmyip.com/?version=full[/url] and see if ur ip address is from United States verified, if yes than disconect close AOL from taskmanager anything that AOL have than
+
+Download AOL DEsktop ( AOL 10 ), install and make the same connection settings IF those settings are not already same as AOL 9.1. after that DONT open AOL desktop
+
+Open AGAIN aol 9.1 from program files > aol 9.1 > waol.exe than try to connect, You will get an error first time but second time it will work
+
+Usualy 70% of times it will give u an ip with 172.191, 172.192, 172.193 many of those IP's are not in blacklist
+
+For those who is making fake auctions on Craiglist, you might need to know this way u will NOT have to register and make phone registration...YOU dont need to register..you can put FREE POST on AUTOS with no phone required or no Craigslist account
+
+For those who Are making fraud on Ebay same thing...this non blacklist aol put you on website in like 2 hours instead of 8 or not puting u at all on ebay Autos.
+
+
+Some times XP or VISTA dont kick AOL even if u are kicked from task manager so...Better on carding make a new User on your computer for example
+AOL1 pass AOL1. than open AOL 9.1 as I said only after you have downloaded and instaled AOL 10 and than u will see first time NON BLACK listed AOL IP :D pure and simple...after you have done and you have disconected and reconected and didnt gave you a non black listed IP, try few more times 1 2, if not than delete user aol1 and make aol2 and so on :) NEW ip non black listed...
+
+To test if your ip is in black list the easyest way go to this link
+
+https://post.craigslist.org/chi/S/cto/
+
+If you get this "You need to have a craigslist account to post to cars & trucks - by owner on chicago craigslist. " than be sure ur ip is 100% in BLACK LIST.
+
+If you got a page with GREEN and you can add your description on your "car" than your ip is not blacklisted and can be used to a very fucked up site that have the biggest security in the world and YOU can card that site :D I made testes so i am sure about what I am saying :P
+
+=================================
+
+2. Local IP > VPN
+
+www.findnot.com < I used a Japan credit card and i bought it for a year and worked...still working and I am still connected to this
+Findnot have many servers all over the world and there are fast servers
+
+3. Local IP > TOR
+
+This tool is more than great if you dont trust me do this test and you will see what TOR can provide :)
+Also many of you know that TOR connect every time from different 3 IP from DIfferent country's
+
+So far so good...BUT why if you can Change your First IP and Last IP so every time you will Re-connect just from 1 ip that is in the middle and not from 3.
+
+FOR low internet connections.
+
+So for testing to see HOW private is TOR do this..
+
+first open again from your Local IP [url="http://www.showmyip.com/?version=full"]http://www.showmyip.com/?version=full[/url] > AND down at:
+
+Computer/Device Properties (as of August 21, 2008 07:00 UTC) you will see your computer DATA, than open TOR put as socks 127.0.0.1 TOR port and than OPEN again this website...YOU will see the data from there was changed...SO when you are doing CARDING...even if you are not connected from your IP address and u are using all kind of softwares to change your IP..this DATA will remaine 100% sure in their database if they asking for this data...BUT with TOR...no more information about your computer: Operating System Platform, Screen Width: Screen Height: etc.
+
+Now to easy your things and also using TOR on all the softwares you are open use
+
+Proxifier, So first open TOR connect to TOR network than Open proxifier add in proxifier 127.0.0.1:TORport and than. Open Firefox or Iexplore BUT dont click on socks let them choice ip from local..and you will see IP Proxifier take ip from TOR
+
+=============================
+
+Now for those who are fucked up on their mind and are very well scared...You can use this:
+
+Local IP > VPN > Proxifier + TOR + Remote desktop connection or socks or anything u guys want. AOL or CS wont work with Proxifier + tor
+
+or
+
+Local IP > VPN > AOL > TOR and u can change tor's last ip every time u want but modify the config
+
+
+====
+
+Usualy i use just VPN but if I want to do something or to enter to a private network than I use Local IP > VPN > Proxifier + TOR + something else :D
+
+Hope I have helped you a little bit with this tutorial.
+
+p.s: dont use socks or proxy... from LOCAL IP > socks ...this is shit. use LOCAL IP > VPN or TOR > socks :D much more safe than just with socks on local ip even if ur connection is slow try to find a good VPN and than to a socks or proxy
+
+
+Have Fun on carding/hacking/cracking/ or whatever u guys are doing and want to hide ur ip :D[u][/u]

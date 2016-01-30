@@ -1,0 +1,15 @@
+WORKS WITH (Windows NT/2000/XP)
+
+This tweak disables the Windows key that is found between the Ctrl and Alt keys on a Windows enhanced keyboard.Open your registry and find or create the key below. Create a new Binary value, or modify the existing value, called "Scancode Map" and set it according to the value data below. Exit your registry, you may need to restart or log out of Windows for the change to take effect.
+
+(Default) REG_SZ (Value not set)
+ScancodeMap REG_BINARY 0
+
+go to run type regedit and look for Keyboard layout under local machine System Key :[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout]
+Value Name: Scancode Map
+Data Type : REG_BINARY (Binary Value)
+Value Data : 00 00 00 00 00 00 00 00 03 00 00 00 00 00 5B E0 00 00 5C E0 00 00 00 00
+you are done ...working with windows xp tested any prob let me know will help you out
+
+Best regards,
+Aym.

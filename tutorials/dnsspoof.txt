@@ -1,0 +1,140 @@
+What is DNS Spoofing ?
+
+
+DNS Spoofing is the art of making a DNS entry to point to an another IP
+than it would be supposed to point to. To understand better, let's see
+an example.You're on your web browser and wish to see the news on
+www.cnn.com, without to think of it, you just enter this URL in your
+address bar and press enter.
+Now, what's happening behind the scenes
+? Well... basically, your browser is going to send a request to a DNS
+Server to get the matching IP address for www.cnn.com, then the DNS
+server tells your browser the IP address of CNN, so your browser to
+connect to CNN's IP address and display the content of the main page.
+Hold
+on a minute... You get a message saying that CNN's web site has closed
+because they don't have anymore money to pay for their web site. You're
+so amazed, you call and tell that to your best friend on the phone, of
+course he's laughing at you, but to be sure, he goes to CNN web site to
+check by himself.
+You are surprised when he tells you he can see the
+news of the day as usual and you start to wonder what's going on. Are
+you sure you are talking to the good IP address ?Let's check. You ask
+your friend to fire up his favorite DNS resolving tool and to give you
+the IP address he's getting for www.cnn.com.Once you got it, you put it
+in your browser URL bar :
+
+http://212.153.32.65
+
+You feel ridiculous and frustrated when you see CNN's web page with its
+daily news.
+Well
+you've just been the witness of a DNS hijacking scenario. You're
+wondering what happened, did the DNS Server told you the wrong IP
+address ? Maybe... At least this is the most obvious answer coming to
+our mind.
+In fact there are two techniques for accomplishing this DNS hijacking.
+Let's see the first one, the "DNS ID Spoofing" technique.
+
+1) DNS Cache Poisoning
+
+As
+you can imagine, a DNS server can't store information about all
+existing names/IP on the net in its own memory space.That's why DNS
+server have a cache, it enables them to keep a DNS record for a while.
+In
+fact, A DNS Server has the records only for the machines of the domain
+it has the authority, if it needs to know about machines out of his
+domain, it has to send a request to the DNS Server which handles these
+machines and since it doesn't want to ask all the time about records,
+it can store in its cache the replies returned by other DNS servers.
+Now let's see how someone could poison the cache of our DNS Server.
+An
+attacker his running is own domain (attacker.net) with his own hacked
+DNS Server(ns.attacker.net) . Note that I said hacked DNS Server
+because the attacker customized the records in his own DNS server, for
+instance one record could be www.cnn.com=81.81.81.81
+1) The attacker sends a request to your DNS Server asking it to resolve
+www.attacker.net
+2) Your DNS Server is not aware of this machine IP address, it doesn't
+belongs to his domain, so it needs to asks to the responsible name
+server.
+3) The hacked DNS Server is replying to your DNS server,
+and at the same time, giving all his records (including his record
+concerning www.cnn.com) Note : this process is called a zone transfer.
+4) The DNS server is not "poisoned".The attacker got his IP, but who
+cares, his goal was not to get the IP address of his web server but to
+force a zone transfer and make your DNS server poisoned as long as the
+cache will not be cleared or updated.
+5) Now if you ask your DNS
+server, about www.cnn.com IP address it will give you 172.50.50.50,
+where the attacker run his own web server. Or even simple, the attacker
+could just run a bouncer forwarding all packets to the real web site
+and vice versa,so you would see the real web site, but all your traffic
+would be passing through the attacker's web site.
+
+2) DNS ID Spoofing
+
+We
+saw that when a machine X wants to communicate with a machine Y, the
+former always needs the latter IP address. However in most of cases, X
+only has the name of Y, in that case, the DNS protocol is used to
+resolve the name of Y into its IP address.
+Therefore, a DNS request
+is sent to a DNS Server declared at X, asking for the IP address of the
+machine Y. Meanwhile, the machine X assigned a pseudo random
+identification number to its request which should be present in the
+answer from the DNS server.Then when the answer from the DNS server
+will be received by X, it will just have to compare both numbers if
+they're the same, in this case, the answer is taken as valid,otherwise
+it will be simply ignored by X.
+Does this concept is safe ? Not
+completely. Anyone could lead an attack getting this ID number. If
+you're for example on LAN, someone who runs a sniffer could intercept
+DNS requests on the fly, see the request ID number and send you a fake
+reply with the correct ID number... but with the IP address of his
+choice.Then, without to realize it, the machine X will be talking to
+the IP of attacker's choice thinking it's Y.
+
+By the way, the DNS
+protocol relies on UDP for requests (TCP is used only for zone
+transfers), which means that it is easy to send a packet coming from a
+fake IP since there are no SYN/ACK numbers (Unlike TCP, UDP doesn't
+provide a minimum of protection against IP spoofing).
+
+Nevertheless, there are some limitations to accomplish this attack.
+In
+my example above, the attacker runs a sniffer, intercept the ID number
+and replies to his victim with the same ID number and with a reply of
+his choice.
+In the other hand, even if the attacker intercepted your
+request, it will be transmitted to the DNS Server anyway which will
+also reply to the request(unless the attacker is blocking the request
+at the gateway or carry out ARP cache poisoning which would make the
+attack possible on a switched network by the way).
+That means that
+the attacker has to reply BEFORE the real DNS server, which means that
+to succeed this attack, the attacker MUST be on the same LAN so to have
+a very quick ping to your machine, and also to be able to capture your
+packets.
+
+Practical example ( for
+testing purposes ONLY)
+To see yourself how to hijack a connection from a machine on your local
+area network,we can do the followings :
+First step :Poison the ARP cache of the victim's machine (tools and explanations
+for realizing this task can be found at http://www.arp-sk.org)
+Second step :Now, outgoing packets of the target will be redirected to your host,but
+you have to forward the traffic to the real gateway, this can be
+achieved witha tool like Winroute Pro.
+Third step :We then use WinDNSSpoof,
+developed by valgasu (www.securiteinfo.org)
+which isa tool that greatly help to carry out DNS ID Spoofing. (Before
+to use this tool be sure you have the Winpcap library installed on your
+machine, see http://winpcap.polito.it).We
+run it in the cmd like :
+wds -n www.cnn.com -i 123.123.123.123 -g 00-C0-26-DD-59-CF -v
+This
+will make www.cnn.com to point to 123.123.123.123 on the victim's
+machine. 00-C0-26-DD-59-C being the MAC Address of the gateway or DNS
+server.

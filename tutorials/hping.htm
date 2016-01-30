@@ -1,0 +1,349 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Hping - Active Network Security</title>
+</head>
+
+<body>
+
+<div align="left">
+	<pre><h2>Hping - Active Network Security Tool</h2>
+
+Hping Tutorial
+				
+<h3>by d3hydr8 &gt; www.darkc0de.com</h3>
+date: 12/24/07
+
+Homepage: http://www.hping.org/
+Download: http://www.hping.org/download.php
+
+Description:
+
+hping is a command-line oriented TCP/IP packet assembler/analyzer. The interface
+is inspired to the ping(8) unix command, but hping isn't only able to send ICMP
+echo requests. It supports TCP, UDP, ICMP and RAW-IP protocols, has a traceroute
+mode, the ability to send files between a covered channel, and many other
+features.
+
+First, lets look at installing it. I'm not much of a writer so I will just show
+the commands used throughout most of this tutorial.
+
+---------------------------------------------------------------------</pre>
+</div>
+<div align="left">
+	<pre><span style="background-color: #C0C0C0">d3hydr8@linuxbox:~&gt; ls | grep hping
+hping3-20051105.tar.gz
+d3hydr8@linuxbox:~&gt; tar xvf hping3-20051105.tar.gz
+hping3-20051105/
+hping3-20051105/CVS/
+hping3-20051105/CVS/Root
+hping3-20051105/CVS/Repository
+hping3-20051105/CVS/Entries
+[...]
+d3hydr8@linuxbox:~&gt; ls
+hping3-20051105         hping3-20051105.tar.gz  
+d3hydr8@linuxbox:~&gt; cd hping3-20051105
+linuxbox:/home/d3hydr8/hping3-20051105 # ./configure
+build byteorder.c...
+create byteorder.h...
+[...]
+linuxbox:/home/d3hydr8/hping3-20051105 # make
+gcc -c -O2 -Wall   -DUSE_TCL -g  libpcap_stuff.c
+gcc -c -O2 -Wall   -DUSE_TCL -g  memlockall.c
+[...]
+linuxbox:/home/d3hydr8/hping3-20051105 # make install
+cp -f hping3 /usr/sbin/
+chmod 755 /usr/sbin/hping3
+ln -s /usr/sbin/hping3 /usr/sbin/hping
+ln -s /usr/sbin/hping3 /usr/sbin/hping2
+linuxbox:/home/d3hydr8/hping3-20051105 # ./hping3 -v
+hping version 3.0.0-alpha-1 ($Id: release.h,v 1.4 2004/04/09 23:38:56 antirez
+Exp $)
+This binary is TCL scripting capable
+</span>
+---------------------------------------------------------------------</pre>
+</div>
+<div align="left">
+	<pre>Now that we have hping installed lets enter the hping3 interactive shell and 
+use the resolve command.</pre>
+</div>
+<div align="left">
+	<pre>---------------------------------------------------------------------
+
+<span style="background-color: #C0C0C0">linuxbox:/home/d3hydr8 # hping3
+hping3&gt; hping resolve www.darkc0de.com
+97.82.189.122</span></pre>
+</div>
+<div align="left">
+	<pre>---------------------------------------------------------------------
+
+You can find a complete list of commands in the hping3 API page.
+
+http://wiki.hping.org/34
+
+Hping2 is the old version of the tool supporting the command line interface,
+while the new hping3 is the evolution that adds a Tcl scripting engine.
+Since we will be working mainly with the command line, you will see me 
+using hping2 from here on. By using the --help command you will see a list 
+of commands supported by hping or scroll to the bottom of this tutorial.
+</pre>
+</div>
+<div align="left">
+	<pre>---------------------------------------------------------------------
+<span style="background-color: #C0C0C0">linuxbox:/home/d3hydr8 # hping2 --help
+usage: hping host [options]</span></pre>
+</div>
+<div align="left">
+	<pre>---------------------------------------------------------------------
+
+Lets start with some port scanning...</pre>
+</div>
+<div align="left">
+	<pre>---------------------------------------------------------------------
+<span style="background-color: #C0C0C0">linuxbox:/home/d3hydr8 # host yahoo.com
+yahoo.com has address 66.94.234.13
+[...]
+linuxbox:/home/d3hydr8 # hping -I wlan0 -S 66.94.234.13 -p 80 -c 3
+HPING 66.94.234.13 (wlan0 66.94.234.13): S set, 40 headers + 0 data bytes
+len=40 ip=66.94.234.13 ttl=110 id=18735 sport=80 flags=SA seq=0 win=8192 rtt=95.7 ms
+len=40 ip=66.94.234.13 ttl=112 id=18931 sport=80 flags=SA seq=1 win=8192 rtt=97.9 ms
+len=40 ip=66.94.234.13 ttl=110 id=19104 sport=80 flags=SA seq=2 win=8192 rtt=94.4 ms
+
+--- 66.94.234.13 hping statistic ---
+3 packets tramitted, 3 packets received, 0% packet loss
+round-trip min/avg/max = 94.4/96.0/97.9 ms</span></pre>
+</div>
+<div align="left">
+	<pre>---------------------------------------------------------------------
+
+In this output you can see that we used the -I option to choose our interface 
+name (wlan0). You can get your interface name by using the ifconfig command.
+We used the -S option for our scan type SYN aka Stealth scan. We 
+also chose to scan port 80 and only capture 3 packets using the -c option.
+
+flags=SA &gt;&gt; open
+flags=RA &gt;&gt; closed
+
+As you can see by that little table port 80 was open. Lets try another 
+example with a few more flags.
+</pre>
+</div>
+<div align="left">
+	<pre>---------------------------------------------------------------------
+
+<span style="background-color: #C0C0C0">linuxbox:/home/d3hydr8 # hping2 -I wlan0 -S 66.94.234.13 -M 3000 -p ++21 --fast
+HPING 66.94.234.13 (wlan0 66.94.234.13): S set, 40 headers + 0 data bytes
+len=40 ip=66.94.234.13 ttl=110 id=17176 sport=80 flags=SA seq=59 win=8192 rtt=100.5 ms
+len=40 ip=66.94.234.13 ttl=112 id=22501 sport=443 flags=SA seq=422 win=8192 rtt=101.9 ms</span></pre>
+</div>
+<div align="left">
+	<pre>---------------------------------------------------------------------
+
+As you can see from this example we are doing another port scan but this time 
+incrementing the ports from 21 with the -p ++21 option (21,22,23,etc). We also
+use the --fast option which is self-explanatory. The other option is the 
+-M 3000 which will set the TCP sequence number to 3000.
+
+We all know how port scans can be noisy so lets use an option that will 
+help us out.
+</pre>
+</div>
+<div align="left">
+	<pre>---------------------------------------------------------------------
+
+<span style="background-color: #C0C0C0">linuxbox:/home/d3hydr8 # hping2 -I wlan0 -SA -a 192.168.1.100 66.94.234.13 -p ++21 --faster
+HPING 66.94.234.13 (wlan0 66.94.234.13): SA set, 40 headers + 0 data bytes
+len=40 ip=66.94.234.13 ttl=255 id=6899 sport=80 flags=R seq=0 win=0 rtt=0.0 ms
+
+--- 66.94.234.13 hping statistic ---
+161083 packets tramitted, 1 packets received, 100% packet loss
+round-trip min/avg/max = 0.0/0.0/0.0 ms</span></pre>
+</div>
+<div align="left">
+	<pre>---------------------------------------------------------------------
+
+As you can see here we used the -a option to spoof our ip address. We also
+chose to combine scan types with -SA which is a SYN/ACK scan. To see if my 
+ip address was being spoofed I ran a session of tcpdump.</pre>
+</div>
+<div align="left">
+	<pre>---------------------------------------------------------------------
+
+<span style="background-color: #C0C0C0">linuxbox:/home/d3hydr8 # tcpdump -i wlan0
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on wlan0, link-type EN10MB (Ethernet), capture size 96 bytes
+00:14:03.969419 IP 192.168.1.100.29664 &gt; w2.rc.vip.scd.yahoo.com.27299: S 247614302:247614302(0) ack 1324676282 win 512
+00:14:03.971087 IP 192.168.1.100.29665 &gt; w2.rc.vip.scd.yahoo.com.27300: S 1843027743:1843027743(0) ack 503065324 win 512
+</span></pre>
+</div>
+<div align="left">
+	<pre>---------------------------------------------------------------------
+
+Just as I expected my ip is being spoofed &quot;IP 192.168.1.100.29664&quot;.
+
+Lets try some firewall, traceroute action. First lets use nmap to scan a port.</pre>
+</div>
+<div align="left">
+	<pre>---------------------------------------------------------------------
+<span style="background-color: #C0C0C0">
+linuxbox:/home/d3hydr8 # nmap -sS 69.147.122.169 -p 25
+
+Starting Nmap 4.50 ( http://insecure.org ) at 2007-12-24 00:52 EST
+Interesting ports on srp42r2.flickr.re2.yahoo.com (69.147.122.169):
+PORT   STATE    SERVICE
+25/tcp filtered smtp
+
+Nmap done: 1 IP address (1 host up) scanned in 1.489 seconds</span></pre>
+</div>
+<div align="left">
+	<pre>---------------------------------------------------------------------
+
+It seams this port is behind some kind of a firewall. Lets test it with hping and 
+a couple of new options:
+
+-t sets initial ttl in the IP header
+-z binds the “ctrl+z” key combination to the ttl, meaning every time
+you press “crtl+z” the TTL field is increased.</pre>
+</div>
+<div align="left">
+	<pre>---------------------------------------------------------------------
+<span style="background-color: #C0C0C0">
+linuxbox:/home/d3hydr8 # hping -I wlan0 -z -t 6 -S 69.147.122.169 -p 25
+HPING 69.147.122.169 (wlan0 69.147.122.169): S set, 40 headers + 0 data bytes
+TTL 0 during transit from ip=172.22.32.217 name=UNKNOWN
+7: TTL 0 during transit from ip=216.206.221.149 name=atl-edge-18.inet.qwest.net
+8: TTL 0 during transit from ip=205.171.21.161 name=atl-core-01.inet.qwest.net
+9: TTL 0 during transit from ip=67.14.8.206 name=cer-core-02.inet.qwest.net
+10: TTL 0 during transit from ip=205.171.139.118 name=chp-brdr-02.inet.qwest.net
+12: TTL 0 during transit from ip=66.110.27.90 name=if-5-0-0-720.core2.DTX-Dallas.teleglobe.net
+13: TTL 0 during transit from ip=66.198.2.10 name=ix-4-1.core2.DTX-Dallas.teleglobe.net
+14: TTL 0 during transit from ip=216.115.101.144 name=so-4-1-0.pat1.dce.yahoo.com
+15: TTL 0 during transit from ip=216.115.108.61 name=ge-3-1-0-p150.msr2.re1.yahoo.com
+16: TTL 0 during transit from ip=206.190.41.73 name=te4-1.bas-b2.re2.yahoo.com
+17: len=40 ip=69.147.122.169 ttl=255 id=31610 sport=25 flags=SA seq=0 win=0 rtt=0.0 ms
+len=40 ip=69.147.122.169 ttl=255 id=21098 sport=25 flags=SA seq=0 win=0 rtt=0.0 ms
+len=40 ip=69.147.122.169 ttl=255 id=2613 sport=25 flags=SA seq=0 win=0 rtt=0.0 ms</span>
+</pre>
+</div>
+<div align="left">
+	<pre>---------------------------------------------------------------------
+
+As you can see above we reached the server in 11 extra hops.
+
+Using hping as a DOS tool can be as easy as 2 options.
+
+-a option to spoof your address
+-i indicates your intervals in microseconds (-i u1000)
+
+hping2 -I wlan0 -a 192.168.1.100 -S 192.168.1.104 -p 6667 -i u1000
+
+I hope you learned something about the basic workings of hping from this
+tutorial. I encourage you to check out all the options and techniques
+hping has to offer.
+visit darkc0de.com, thanks d3hydr8[at]darkc0de[dot]com</pre>
+</div>
+<div align="left">
+	<pre>Hping Options:
+
+usage: hping host [options]
+  -h  --help      show this help
+  -v  --version   show version
+  -c  --count     packet count
+  -i  --interval  wait (uX for X microseconds, for example -i u1000)
+      --fast      alias for -i u10000 (10 packets for second)
+      --faster    alias for -i u1000 (100 packets for second)
+      --flood      sent packets as fast as possible. Don't show replies.
+  -n  --numeric   numeric output
+  -q  --quiet     quiet
+  -I  --interface interface name (otherwise default routing interface)
+  -V  --verbose   verbose mode
+  -D  --debug     debugging info
+  -z  --bind      bind ctrl+z to ttl           (default to dst port)
+  -Z  --unbind    unbind ctrl+z
+      --beep      beep for every matching packet received
+Mode
+  default mode     TCP
+  -0  --rawip      RAW IP mode
+  -1  --icmp       ICMP mode
+  -2  --udp        UDP mode
+  -8  --scan       SCAN mode.
+                   Example: hping --scan 1-30,70-90 -S www.target.host
+  -9  --listen     listen mode
+</pre>
+</div>
+<div align="left">
+	<pre>IP
+  -a  --spoof      spoof source address
+  --rand-dest      random destionation address mode. see the man.
+  --rand-source    random source address mode. see the man.
+  -t  --ttl        ttl (default 64)
+  -N  --id         id (default random)
+  -W  --winid      use win* id byte ordering
+  -r  --rel        relativize id field          (to estimate host traffic)
+  -f  --frag       split packets in more frag.  (may pass weak acl)
+  -x  --morefrag   set more fragments flag
+  -y  --dontfrag   set dont fragment flag
+  -g  --fragoff    set the fragment offset
+  -m  --mtu        set virtual mtu, implies --frag if packet size &gt; mtu
+  -o  --tos        type of service (default 0x00), try --tos help
+  -G  --rroute     includes RECORD_ROUTE option and display the route buffer
+  --lsrr           loose source routing and record route
+  --ssrr           strict source routing and record route
+  -H  --ipproto    set the IP protocol field, only in RAW IP mode
+ICMP
+  -C  --icmptype   icmp type (default echo request)
+  -K  --icmpcode   icmp code (default 0)
+      --force-icmp send all icmp types (default send only supported types)
+      --icmp-gw    set gateway address for ICMP redirect (default 0.0.0.0)
+      --icmp-ts    Alias for --icmp --icmptype 13 (ICMP timestamp)
+      --icmp-addr  Alias for --icmp --icmptype 17 (ICMP address subnet mask)
+      --icmp-help  display help for others icmp options
+UDP/TCP
+  -s  --baseport   base source port             (default random)
+  -p  --destport   [+][+]&lt;port&gt; destination port(default 0) ctrl+z inc/dec
+  -k  --keep       keep still source port
+  -w  --win        winsize (default 64)
+  -O  --tcpoff     set fake tcp data offset     (instead of tcphdrlen / 4)
+  -Q  --seqnum     shows only tcp sequence number
+  -b  --badcksum   (try to) send packets with a bad IP checksum
+                   many systems will fix the IP checksum sending the packet
+                   so you'll get bad UDP/TCP checksum instead.
+  -M  --setseq     set TCP sequence number
+  -L  --setack     set TCP ack
+  -F  --fin        set FIN flag
+  -S  --syn        set SYN flag
+  -R  --rst        set RST flag
+  -P  --push       set PUSH flag
+  -A  --ack        set ACK flag
+  -U  --urg        set URG flag
+  -X  --xmas       set X unused flag (0x40)
+  -Y  --ymas       set Y unused flag (0x80)
+  --tcpexitcode    use last tcp-&gt;th_flags as exit code
+  --tcp-timestamp  enable the TCP timestamp option to guess the HZ/uptime</pre>
+</div>
+<div align="left">
+	<pre>Common
+  -d  --data       data size                    (default is 0)
+  -E  --file       data from file
+  -e  --sign       add 'signature'
+  -j  --dump       dump packets in hex
+  -J  --print      dump printable characters
+  -B  --safe       enable 'safe' protocol
+  -u  --end        tell you when --file reached EOF and prevent rewind
+  -T  --traceroute traceroute mode              (implies --bind and --ttl 1)
+  --tr-stop        Exit when receive the first not ICMP in traceroute mode
+  --tr-keep-ttl    Keep the source TTL fixed, useful to monitor just one hop
+  --tr-no-rtt       Don't calculate/show RTT information in traceroute mode
+ARS packet description (new, unstable)
+  --apd-send       Send the packet described with APD (see docs/APD.txt)
+
+</pre>
+</div>
+<div align="left">
+	<pre>&nbsp;</pre>
+</div>
+
+</body>
+
+</html>

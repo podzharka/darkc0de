@@ -1,0 +1,74 @@
+When we are talking about protecting email privacy and anonymity we consider that it can be compromised by message interception or an email message contains information that the sender was not intending to pass to the recipient. In this article we will try to explain how email system works, what information can be extracted from regular email message, and how email privacy can be protected.
+
+1. Email privacy - how can it be compromised?
+
+Before we continue with topics on how to protect email privacy, we should understand how the email system works and what are the issues related to email privacy.
+
+How the email system works.
+Most common way of sending email is using the ISP (Internet Service Provider) or company mail server. When you click on "send" button, your email software will establish an SMTP (SMTP stands for Simple Mail Transfer Protocol) connection to your email server. Server will attempt to deliver a message directly to your recipient ISP mail server, but in case this server is not accessible at the moment it will deliver the message to the intermediate email server known as MX relay host. After traveling through the MX hosts, message will be delivered to recipient mailbox on his/her ISP mail server. It will be stored there until your recipient retrieves the message using POP (Post Office Protocol) or IMAP (Internet Message Access Protocol) protocol. This is how your email message travels through the Internet from the sender's computer to the recipient's computer. The same way web mail service work, but instead of email software you would need to use web interface to compose or read emails.
+
+How can an email message be intercepted?
+Where it can be intercepted? It can be intercepted at each step along the way. Email message is stored on two servers on its way at least: on sender ISP mail server and on recipient ISP mail server. When traveling through the MX hosts, message is stored on each of MX hosts. When your mail is addressed to the bank, investment company, business partners, it can attract attention of IT staff that perform mail server monitoring. And there is nothing that can prevent unscrupulous IT staff with access to the mail server to open and read that message. Other problem is that unauthorized personnel or hackers can have access to the mail server where physical access security and network security are weak.
+There is another way to intercept email messages: network traffic interception. In most cases network traffic monitoring is performed by government agencies at ISP level. Email traffic can be rated according to keywords to "suspicious" and stored for later review by government agencies staff – this is how US Carnivore system works.
+
+Email headers anonymity.
+When analyzing email message we can get lot of information about its sender. Computer IP address, geographic location, time zone, language preferences, computer LAN name, email software used etc., – all this information can be found in email message. And an important point is that all this info is being passed without sender's knowing about it. Well, what is bad about it, you can ask. This will depend on the way this information can be used. For example, you may not wish your recipient to know that your operating system uses Dutch language as default (e.g. your native language is Dutch), or that you are in Australia now and use one of the local ISPs services. All this information can be easily extracted from the email message headers.
+Every email message consists of two parts: message header and message body.
+Header part can be compared to a letter envelope. It contains message subject, sender's and recipient's email addresses, date and time message was sent and arrived, lists the points your message went through on its way to recipient. Message headers also contain service information about sender's email software. This information is used to deliver message, and allow tech staff to debug email problems when they occur.
+
+Here is an example message headers:
+
+Return-Path: <customer@somedomain.com> 
+Received: from [192.168.157.3] by web5203.mail.foobar.com; Sat, 21 Nov 2003 12:42:20 –0800 PST 
+Message-ID: <2003114546184545.45639.qmail@foobar.com > 
+Date: Sat, 21 Nov 2003 12:42:20 -0800 (PST) 
+From: "Peter J. Smith" <customer@somedomain.com> 
+Subject: My Private Message 
+To: example@yahooo.com 
+MIME-Version: 1.0 
+Content-Type: text/html;charset="GB2312" 
+X-Mailer: Microsoft Outlook Express 5.00.2615.2000 
+
+
+
+
+And here is the information we can extract from the headers (using it to draw a picture of the sender):
+Sender IP address: [192.168.157.3] points to the sender's computer. Anyone can get further details about ISP (address, phone, fax, email) running a search through the WHOIS databases.
+Sender ISP: "web5203.mail.foobar.com" and "@foobar.com" – message was sent using web interface from foobar.com (further details available at the website)
+Senders email software: Microsoft Outlook Express 5.00.2615.2000 (this version's known bugs could be used for sending a troyan to the computer)
+Senders local time zone: -0800 (PST) US Pacific coast (points to the geographic location of the computer)
+Senders native language: charset="GB2312" – Chinese char set (the user's probably a member of the local Chinese community)
+
+It should be noted, that only three lines in the message headers were explicitly supplied by the sender: "from" address, "to" address and "subject" line. All other data was inserted by email software and intermediate servers. Usually users have no control over these headers, but these headers are the most dangerous for email privacy and contain lot of information about the sender. There is no problem to track the message sender using headers data.
+
+Secure email software.
+Using right email software is an important point for email security. If you are using buggy email software you are open to hacker attacks since email message contains your email software vendor and version number. There will be enough info to write a specially formatted (to use your email software security vulnerabilities) message to hung your computer or infect it by Trojan. If somebody suspects you to store confidential information on your computer he/she can try to hack in to get it. All the attacker needs to start is your IP address from email message header. Using security holes in your computer software (new Windows vulnerabilities are published almost daily) attacker can gain full access to your computer and in worst case obtain all your email passwords, banking and investment account data, private correspondence, business data etc. All this horror scenarios are not a myth but today's reality, just search on Google on companies offering spying over the Internet. If your competitors can afford spending hundred dollars to know your secrets you are in danger.
+
+Web bugs.
+How can be web browsing related to emailing you may ask? It's simple. Most of email applications are capable to display HTML formatted email messages. This is not different from viewing a regular web page, but the web page is displayed in your email software window, not in a browser. When viewing web pages in your email window you are taking the same risk as when browsing, e.g. you have to deal with cookies, Java Scripts, Java, ActiveX controls, etc. IP anonymity and data interception issues should be taken into consideration as well.
+
+There is one popular spying technique: web bugs. To illustrate how they work let us imagine that you are running some online business and have received an email message (possibly business related) form some unknown person:
+
+From: someuser@yahoo.com 
+    To: customer@foobar.com 
+    Subject: Hello! 
+    Hello! 
+    How are you? 
+    I'm fine. 
+    David.
+
+
+
+
+To attract your attention your full name or your company name can be written in "Subject" line. You have opened this message, and after reading it and considering it to be spam you through it away. But you have not noticed that the message was HTML formatted, and it contained an image. Dot symbol after the word "fine" was replaced by a small image, and that image was automatically downloaded from some website by your email software when you had opened the message. Now, the email sender after analyzing web server logs can get some information on you: date and time you have read this email, your IP address, operating system, etc.
+All this means that your email privacy can be compromised when you simply open an email message, even without replying to it.
+
+2. How to protect your email privacy.
+Even if you have nothing to hide it is a good idea to take care of your email privacy. We have developed recommendations on how to make emailing secure and private as much as possible.
+
+2.1 Use encryption to protect your email messages. The only way to protect email messages from the interception is to encrypt them. There are few techniques to do so.
+
+* PGP and S\MIME encryption. Both PGP and S\MIME encryption are used to encrypt message body only, leaving message headers unprotected. PGP and S\MIME can be used if you require end-to-end encryption. Using those methods requires prior agreement between parties, and "public key" exchange should be done before emailing securely.
+* SSL encrypted connection to mail server. SSL can be successfully used to encrypt email traffic in the whole. SSL encrypted transport prevents from message headers and message body interception on the way to/from the mail server while sending/receiving email. SSL can be used to effectively protect from intercepting your email traffic by ISP or government agencies.
+
+Please note, PGP and S\MIME do not provide anonymity. Even if you encrypt email messages with PGP or S/MIME the message headers still remain open, and will be transferred in clear text through the Internet. You have to understand that unencrypted "To:", "From:", "Subject:", etc. fields may disclose your identity and can contain confidential information. In addition to PGP or S/MIME, SSL connection

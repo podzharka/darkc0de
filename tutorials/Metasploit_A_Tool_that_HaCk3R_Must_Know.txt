@@ -1,0 +1,63 @@
+Hi friends,
+Let us review little about Metasploit. I think Metasploit is a great tool which could be used for security auditing and could be applied from home computer to enterprise computer network. I could say most of IT security use this for self testing of theirs network. This have to be done to find any security hole/exploit exist on network computer, before a bad guy/cracker find this hole. Meanwhile, hacker use this for own purpose to check or attack computer target over there with some payloads.
+
+As stated on its website, Metasploit provides useful information to people who perform penetration testing, IDS signature development, and exploit research. This project was created to provide information on exploit techniques and to create a useful resource for exploit developers and security professionals. The tools and information on this site are provided for legal security research and testing purposes only. Metasploit is a community project managed by Metasploit LLC.
+
+In the old days, upon finding a vulnerability, the attacker either had to create custom exploit code from scratch or scour the Internet to find such code to exploit the hole. Today, instead of scraping together a bunch of individual exploits, these integrated exploit frameworks include around one hundred or more exploits to compromise target systems.
+
+One of the nicest properties of the exploit tools from an attacker's perspective is the separation of the exploit from the payload. An exploit is the software that takes advantage of a flaw, letting the attacker load and execute machine language instructions [that is, a program] of the attacker's choosing. The code triggered by the exploit is known as the payload.
+
+The Metasploit framework includes several payloads worth mentioning. One of the flashiest is its Virtual Network Computing [VNC] DLL injection tool. This payload, which can be run against vulnerable Windows machines, inserts the remote GUI-control tool VNC inside of the vulnerable running process. The attacker can then remotely control the GUI across the network.
+
+An even more interesting Metasploit payload is the Meterpreter. This little baby is a complete command shell environment which gets injected inside of a vulnerable running process. Attackers like to use this kind of payload for three reasons: stealthy,meterpreter lets an attacker stay entirely in memory, some systems are configured to hide their command shell.
+
+Another very promising Metasploit payload is called PassiveX. This one loads any ActiveX control of the attacker's choosing into the victim machine and runs it. When used by an attacker, the payload fires up Internet Explorer on the victim system, which could be a workstation or server system. The payload then makes IE fetch code in the form of an ActiveX control from the attacker's Web site, using normal, outbound HTTP. Once the ActiveX control gets loaded into the browser, it runs. This code then uses the browser to fetch other commands from the attacker and run them.
+
+But all of the payloads we've discussed so far -- from simple command shells through the Meterpeter and PassiveX -- all suffer from one limitation: They have a predefined set of functions built into them when they are developed. What if the attacker wants something even more flexible, a magic payload that can do anything, even changing its function after it is loaded into a target system's memory? What could an attacker do with such a magic payload?
+
+Such a magic payload does exist, and is included in the commercial tool CORE IMPACT. To understand this so-called "agent" payload, though, we need to quickly review how programs run on a local system.
+
+When a program runs, it relies on user mode and kernel mode code. The user mode code is the program itself, doing what the program is supposed to do. But, when the program needs to access the hardware [e.g., to send a packet, read the hard drive, allocate memory, start other programs, etc.] it must make a call into kernel mode to invoke special software included in the operating system. These calls are named "system calls" and the magic payload relies heavily on this concept.
+
+The CORE IMPACT agent payload injects a little software stub into the target machine. This stub receives system calls across the network. So in a sense, the victim machine has its kernel interface exposed, waiting for system calls sent from the attacker. The attacker can then run any program locally on the attacker's own machine. But all system calls made by this program are redirected, not executed in the attacker machine's kernel, but instead sent across the network to the victim.
+
+When received by the agent payload in the victim machine, the system calls take place within the kernel of the victim system. Thus, the program runs [from a user-mode perspective] on the attacker's machine, but all of its interactions with the world around it happen on the victim machine.
+
+Once loading the agent payload on a victim, the attacker can then run a sniffer [locally on the attacker's machine], and sniff packets going by on the victim's network. Or, the attacker could run a port or vulnerability scanner to look for other flawed systems, for the perspective of the current victim machine!
+
+# Basic Common Commands
+There are some common msfconsole commands you should know about:
+
+* help (or '?') – shows the available commands in msfconsole
+* show exploits – shows the exploits you can run (in our case here, the ms05_039_pnp exploit)
+* show payloads – shows the various payload options you can execute on the exploited system such as spawn a command shell, uploading programs to run, etc.
+* info exploit [exploit name] – shows a description of a specific exploit name along with its various options and requirements (ex. info exploit ms05_039_pnp shows information on that specific attack)
+* info payload [payload name] – shows a description of a specific payload name along with its various options and requirements (ex. info payload win32_reverse shows information on spawning a command shell)
+* use [exploit name] – instructs msfconsole to enter into a specific exploit's environment (ex. use ms05_039_pnp will bring up the command prompt ms05_039_pnp > for this specific exploit
+* show options – shows the various parameters for the specific exploit you're working with
+* show payloads – shows the payloads compatible with the specific exploit you're working with
+* set PAYLOAD – allows you to set the specific payload for your exploit
+* show targets – shows the available target OSs and applications that can be exploited
+* set TARGET – allows you to select your specific target OS/application
+* set RHOST – allows you to set your target host's IP address
+* set LHOST – allows you to set the local host's IP address for the reverse communications needed to open the reverse command shell
+* back – allows you to exit the current exploit environment you've loaded and go back to the main msfconsole prompt
+
+# Download Metasploit
+U can download this Metasploit at the official link :
+http://metasploit.com/framework/download/
+
+Or u can use online Metasploit with ofcourse minimized feature rather than launching attack from ur own box. See here :
+http://www.metasploit.com:55555/
+
+Metasploit could be installed on Windows, BSD, Mac OS C, Linux, Windows (using Cygwin).
+
+
+Ref. :
+http://metasploit.com/framework/download/
+http://searchsecurity.techtarget.com/sDefinition/0,,sid14_gci214475,00.html
+http://searchsecurity.techtarget.com/news/article/0,289142,sid14_gci1135581,00.html
+http://www.cgisecurity.net/2008/11/metasploit-fram.html
+http://searchsqlserver.techtarget.com/tip/1,289483,sid87_gci1159718,00.html
+http://www.metasploit.com:55555/
+http://en.wikipedia.org/wiki/Payload_(software)

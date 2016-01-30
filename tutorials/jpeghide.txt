@@ -1,0 +1,24 @@
+
+Tutorial on How To Hide Files in JPEG Images.
+
+Written Tutorial:
+In this example we will hide a text message inside a picture. We have choose for this tutorial a text file named Secret.txt and a picture firefox.jpg.
+
+1. Move your files you want to combine in a new folder, in our case C:\Hidden.
+
+2. Add the file you want to hide into a new RAR archive (in our example named Secret.txt.rar).
+
+3. WinRar created the archive in the folder where our files are located.
+
+4. Open Command Prompt (Start -> Run..., type cmd and press Enter).
+
+5. Go to the folder where your files are located, in this case C:\Hidden by using the cmd command.
+
+6. Now type copy /b firefox.jpg + secret.txt.rar helpero.jpg where firefox.jpg is the original picture, secret.txt.rar is the file that will be hidden, and helpero.jpg is the file which contains both.
+
+7. If you open helpero.jpg you will see the firefox.jpg image.
+
+8. Try opening the file with WinRar (select All files).
+
+
+9. Now you can see the text file that is hidden in the picture.

